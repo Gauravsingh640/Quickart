@@ -12,14 +12,22 @@ function AuthProvider({
 
   // USER
 
-  const [user, setUser] =
+  const storedUser =
+    localStorage.getItem(
+        "user"
+    );
+
+    const [user, setUser] =
     useState(
 
-      JSON.parse(
-        localStorage.getItem(
-          "user"
-        )
-      ) || null
+        storedUser &&
+        storedUser !== "undefined"
+
+        ? JSON.parse(
+            storedUser
+            )
+
+        : null
     );
 
   // CART
