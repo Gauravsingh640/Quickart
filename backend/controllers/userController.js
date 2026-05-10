@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { verifyEmail } from "../emailVerify/verifyEmail.js";
 import { Session } from "../models/sessionModel.js";
+import cloudinary from "../utils/cloudinary.js";
+
 export const register = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
@@ -262,3 +264,124 @@ export const logout = async (req, res) => {
     });
   }
 };
+
+export const updateProfile =
+  async (req, res) => {
+
+    try {
+
+      const userId =
+        req.id;
+
+      const {
+
+        firstName,
+
+        lastName,
+
+        phoneNo,
+
+        address,
+
+        city,
+
+        zipCode,
+      } = req.body;
+
+      const user =
+        await User.findById(
+          userId
+        );
+
+      if (!user) {
+
+        return res.status(404).json({
+
+          success: false,
+
+          message:
+            "User Not Found",
+        });
+      }
+
+      // TEXT UPDATE
+
+      user.firstName =
+        firstName;
+
+      user.lastName =
+        lastName;
+
+      user.phoneNo =
+        phoneNo;
+
+      user.address =
+        address;
+
+      user.city =
+        city;
+
+      user.zipCode =
+        zipCode;
+
+      // IMAGE UPLOAD
+
+      if (req.file) {
+
+        // DELETE OLD IMAGE
+
+        if (
+          user.profilePicPublicId
+        ) {
+
+          await cloudinary.uploader.destroy(
+
+            user.profilePicPublicId
+          );
+        }
+
+        // UPLOAD NEW IMAGE
+
+        const result =
+          await cloudinary.uploader.upload(
+
+            req.file.path,
+
+            {
+              folder:
+                "quickart_profiles",
+            }
+          );
+
+        user.profilePic =
+          result.secure_url;
+
+        user.profilePicPublicId =
+          result.public_id;
+      }
+
+      await user.save();
+
+      return res.status(200).json({
+
+        success: true,
+
+        message:
+          "Profile Updated",
+
+        user,
+      });
+
+    } catch (error) {
+
+      console.log(error);
+
+      return res.status(500).json({
+
+        success: false,
+
+        message:
+          error.message,
+      });
+    }
+  };
