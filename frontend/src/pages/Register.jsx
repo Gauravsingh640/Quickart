@@ -34,19 +34,19 @@ function Register() {
 
         formData
       );
-
+      console.log(res.data);
       toast.success(
         res.data.message
      );
 
     } catch (err) {
 
-      console.log(err);
+    console.log(err.response.data);
 
-      toast.success(
-        err.response.data.message
-      );
-    }
+    toast.error(
+      err.response.data.message
+    );
+}
   };
 
   return (

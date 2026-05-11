@@ -177,7 +177,7 @@ function Login() {
           }
         />
 
-        <button type="submit">
+        <button type="submit" style={{ cursor: "pointer" }}>
           Login
         </button>
 
