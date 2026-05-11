@@ -6,13 +6,19 @@ dotenv.config({ path: "./.env" });
 export const verifyEmail = async (token, email) => {
 
   try {
+
     console.log(process.env.MAIL_USER);
     console.log(process.env.MAIL_PASS);
+
     console.log("verifyEmail function called");
 
     const transporter = nodemailer.createTransport({
 
-      service: "gmail",
+      host: "smtp.gmail.com",
+
+      port: 465,
+
+      secure: true,
 
       auth: {
 
@@ -20,6 +26,8 @@ export const verifyEmail = async (token, email) => {
 
         pass: process.env.MAIL_PASS,
       },
+
+      connectionTimeout: 10000,
     });
 
     console.log("Transporter Created");
@@ -37,9 +45,14 @@ export const verifyEmail = async (token, email) => {
 https://quickart-one.vercel.app/verify/${token}`,
     };
 
-    const info = await transporter.sendMail(mailConfigurations);
+    const info =
+      await transporter.sendMail(
+        mailConfigurations
+      );
 
-    console.log("Email Sent Successfully");
+    console.log(
+      "Email Sent Successfully"
+    );
 
     console.log(info);
 
