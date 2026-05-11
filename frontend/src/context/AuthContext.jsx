@@ -13,7 +13,7 @@ function AuthProvider({
   // USER
 
   const storedUser =
-    localStorage.getItem(
+    sessionStorage.getItem(
         "user"
     );
 

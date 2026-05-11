@@ -120,7 +120,7 @@ function UserDetails() {
       try {
 
         const token =
-          localStorage.getItem(
+          sessionStorage.getItem(
             "token"
           );
 
@@ -188,7 +188,7 @@ function UserDetails() {
             res.data.user
           );
 
-          localStorage.setItem(
+          sessionStorage.setItem(
 
             "user",
 

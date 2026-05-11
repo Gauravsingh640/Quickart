@@ -112,14 +112,14 @@ function Login() {
 
       // SAVE TOKEN
 
-      localStorage.setItem(
+      sessionStorage.setItem(
         "token",
         res.data.token || res.data.accessToken
       );
 
       // SAVE USER
 
-      localStorage.setItem(
+      sessionStorage.setItem(
         "user",
         JSON.stringify(res.data.user)
       );
