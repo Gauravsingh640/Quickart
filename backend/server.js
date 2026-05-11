@@ -27,6 +27,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/", (req, res) => {
+  res.send("Welcome to QuickArt API");
+});
 // Routes
 app.use("/api/v1/user", userRoute);
 
