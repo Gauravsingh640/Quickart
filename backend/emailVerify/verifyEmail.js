@@ -14,17 +14,23 @@ export const verifyEmail = async (token, email) => {
 
     const transporter = nodemailer.createTransport({
 
-      host: process.env.MAIL_HOST,
+      host: "smtp-relay.brevo.com",
 
-      port: process.env.MAIL_PORT,
+      port: 587,
 
       secure: false,
+
+      requireTLS: true,
 
       auth: {
 
         user: process.env.MAIL_USER,
 
         pass: process.env.MAIL_PASS,
+      },
+
+      tls: {
+        rejectUnauthorized: false,
       },
     });
 
@@ -43,10 +49,14 @@ export const verifyEmail = async (token, email) => {
 https://quickart-one.vercel.app/verify/${token}`,
     };
 
+    console.log("Sending Mail...");
+
     const info =
       await transporter.sendMail(
         mailConfigurations
       );
+
+    console.log("Mail Sent");
 
     console.log(
       "Email Sent Successfully"
