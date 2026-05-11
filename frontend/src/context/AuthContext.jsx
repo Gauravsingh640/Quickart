@@ -1,88 +1,57 @@
-import {
-  createContext,
-  useState,
-} from "react";
+import { createContext, useState, useEffect } from "react";
 
-export const AuthContext =
-  createContext();
+export const AuthContext = createContext();
 
-function AuthProvider({
-  children,
-}) {
-
+function AuthProvider({ children }) {
   // USER
 
-  const storedUser =
-    sessionStorage.getItem(
-        "user"
-    );
+  const storedUser = sessionStorage.getItem("user");
 
-    const [user, setUser] =
-    useState(
-
-        storedUser &&
-        storedUser !== "undefined"
-
-        ? JSON.parse(
-            storedUser
-            )
-
-        : null
-    );
+  const [user, setUser] = useState(
+    storedUser && storedUser !== "undefined" ? JSON.parse(storedUser) : null,
+  );
 
   // CART
 
-  const [cart, setCart] =
-    useState([]);
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+  useEffect(() => {
+
+    localStorage.setItem(
+      "cart",
+      JSON.stringify(cart)
+    );
+
+  }, [cart]);
 
   // PROMO
 
-  const [discount, setDiscount] =
-    useState(0);
+  const [discount, setDiscount] = useState(0);
 
-  const [promoCode, setPromoCode] =
-    useState("");
+  const [promoCode, setPromoCode] = useState("");
 
-
-  const [orders, setOrders] =
-  useState([]);
+  const [orders, setOrders] = useState([]);
   // ADD TO CART
 
-  const addToCart = (
-    product
-  ) => {
-
-    const itemExists =
-      cart.find(
-        (item) =>
-          item.id ===
-          product.id
-      );
+  const addToCart = (product) => {
+    const itemExists = cart.find((item) => item.id === product.id);
 
     if (itemExists) {
+      const updatedCart = cart.map((item) =>
+        item.id === product.id
+          ? {
+              ...item,
 
-      const updatedCart =
-        cart.map((item) =>
-
-          item.id ===
-          product.id
-
-            ? {
-                ...item,
-
-                quantity:
-                  item.quantity +
-                  1,
-              }
-
-            : item
-        );
+              quantity: item.quantity + 1,
+            }
+          : item,
+      );
 
       setCart(updatedCart);
-
-    }
-    else {
-
+    } else {
       setCart([
         ...cart,
 
@@ -97,67 +66,43 @@ function AuthProvider({
 
   // INCREASE QTY
 
-  const increaseQty = (
-    id
-  ) => {
+  const increaseQty = (id) => {
+    const updatedCart = cart.map((item) =>
+      item.id === id
+        ? {
+            ...item,
 
-    const updatedCart =
-      cart.map((item) =>
-
-        item.id === id
-
-          ? {
-              ...item,
-
-              quantity:
-                item.quantity +
-                1,
-            }
-
-          : item
-      );
+            quantity: item.quantity + 1,
+          }
+        : item,
+    );
 
     setCart(updatedCart);
   };
 
   // DECREASE QTY
 
-  const decreaseQty = (
-    id
-  ) => {
+  const decreaseQty = (id) => {
+    const updatedCart = cart
 
-    const updatedCart =
-      cart
+      .map((item) =>
+        item.id === id
+          ? {
+              ...item,
 
-        .map((item) =>
+              quantity: item.quantity - 1,
+            }
+          : item,
+      )
 
-          item.id === id
-
-            ? {
-                ...item,
-
-                quantity:
-                  item.quantity -
-                  1,
-              }
-
-            : item
-        )
-
-        .filter(
-          (item) =>
-            item.quantity > 0
-        );
+      .filter((item) => item.quantity > 0);
 
     setCart(updatedCart);
   };
 
   return (
-
     <AuthContext.Provider
-
       value={{
-
         // USER
 
         user,
@@ -185,9 +130,7 @@ function AuthProvider({
         setOrders,
       }}
     >
-
       {children}
-
     </AuthContext.Provider>
   );
 }
