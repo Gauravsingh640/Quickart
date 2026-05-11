@@ -6,7 +6,8 @@ dotenv.config({ path: "./.env" });
 export const verifyEmail = async (token, email) => {
 
   try {
-
+    console.log(process.env.MAIL_USER);
+    console.log(process.env.MAIL_PASS);
     console.log("verifyEmail function called");
 
     const transporter = nodemailer.createTransport({
@@ -33,7 +34,7 @@ export const verifyEmail = async (token, email) => {
 
       text: `Verify Email:
       
-http://localhost:5173/verify/${token}`,
+https://quickart-one.vercel.app/verify/${token}`,
     };
 
     const info = await transporter.sendMail(mailConfigurations);
