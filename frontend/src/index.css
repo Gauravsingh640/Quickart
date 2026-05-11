@@ -121,6 +121,12 @@ body {
   border-radius: 10px;
 }
 
+.sidebar input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
 /* FIX FILTER RADIO BUTTONS */
 
 .sidebar label {
@@ -131,12 +137,6 @@ body {
   gap: 12px;
   margin-bottom: 15px;
   cursor: pointer;
-}
-
-.sidebar input[type="radio"] {
-  margin: 0;
-  width: 18px;
-  height: 18px;
 }
 
 .sidebar button {
