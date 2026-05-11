@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import axios from "axios";
 import dotenv from "dotenv";
 
 dotenv.config({ path: "./.env" });
@@ -7,67 +7,81 @@ export const verifyEmail = async (token, email) => {
 
   try {
 
-    console.log(process.env.MAIL_USER);
-    console.log(process.env.MAIL_PASS);
+    console.log("========== VERIFY EMAIL ==========");
 
-    console.log("verifyEmail function called");
+    console.log("BREVO API KEY:");
+    console.log(process.env.BREVO_API_KEY);
 
-    const transporter = nodemailer.createTransport({
+    console.log("USER EMAIL:");
+    console.log(email);
 
-      host: "smtp-relay.brevo.com",
+    console.log("TOKEN:");
+    console.log(token);
 
-      port: 587,
+    console.log("Sending request to Brevo API...");
 
-      secure: false,
+    const response = await axios.post(
 
-      requireTLS: true,
+      "https://api.brevo.com/v3/smtp/email",
 
-      auth: {
+      {
 
-        user: process.env.MAIL_USER,
+        sender: {
 
-        pass: process.env.MAIL_PASS,
-      },
+          name: "Quickart",
 
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
+          email: "gauravsingh71205@gmail.com",
+        },
 
-    console.log("Transporter Created");
+        to: [
+          {
+            email: email,
+          },
+        ],
 
-    const mailConfigurations = {
+        subject: "Email Verification",
 
-      from: process.env.MAIL_USER,
+        textContent: `Verify Email:
 
-      to: email,
-
-      subject: "Email Verification",
-
-      text: `Verify Email:
-      
 https://quickart-one.vercel.app/verify/${token}`,
-    };
+      },
 
-    console.log("Sending Mail...");
+      {
 
-    const info =
-      await transporter.sendMail(
-        mailConfigurations
-      );
+        headers: {
 
-    console.log("Mail Sent");
+          accept: "application/json",
 
-    console.log(
-      "Email Sent Successfully"
+          "api-key":
+            process.env.BREVO_API_KEY,
+
+          "content-type":
+            "application/json",
+        },
+      }
     );
 
-    console.log(info);
+    console.log("========== SUCCESS ==========");
+
+    console.log("Email Sent Successfully");
+
+    console.log(response.data);
 
   } catch (error) {
 
-    console.log("MAIL ERROR:");
+    console.log("========== MAIL ERROR ==========");
 
-    console.log(error);
+    if (error.response) {
+
+      console.log("STATUS:");
+      console.log(error.response.status);
+
+      console.log("DATA:");
+      console.log(error.response.data);
+
+    } else {
+
+      console.log(error.message);
+    }
   }
 };
