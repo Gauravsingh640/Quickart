@@ -1,40 +1,39 @@
 import dotenv from "dotenv";
 dotenv.config();
-import express from 'express'
-import connectdb from './database/db.js' 
-import userRoute from './routes/userRoute.js'
+
+import express from "express";
+import connectdb from "./database/db.js";
+import userRoute from "./routes/userRoute.js";
+import cors from "cors";
+
 const app = express();
-import cors from "cors"; 
+
+// CORS
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://quickart-one.vercel.app"
-    ],
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
-app.use(express.json());
 
-const PORT = process.env.PORT || 3000
-app.set('port', PORT)
-app.use(express.urlencoded({ extended: true }))
-app.use(express.static('public')) // Serve static files from the 'public' directory
- 
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+
+// Logging Middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} request for '${req.url}'`);
+  next();
+});
+
+// Routes
 app.use("/api/v1/user", userRoute);
 
-// Middleware for logging requests
+// PORT
+const PORT = process.env.PORT || 3000;
 
-app.use((req, res, next) => {
-  res.json({
-    success: true,
-    message: "Email Verified Successfully",
-  });
-  console.log(`${req.method} request for '${req.url}'`)
-  next()
-})
-
-app.listen(PORT, () => {
-  connectdb()
-  console.log(`Server is running on http://localhost:${PORT}`)
-})
+app.listen(PORT, async () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+  await connectdb();
+});

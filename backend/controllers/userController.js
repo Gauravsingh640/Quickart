@@ -16,6 +16,8 @@ export const register = async (req, res) => {
         message: "All fields are required",
       });
     }
+    console.log("User Controller Loaded");
+    console.log(req.body);
 
     // check user exists
     const user = await User.findOne({ email });
@@ -35,10 +37,17 @@ export const register = async (req, res) => {
       email,
       password : hashedPassword,
     });
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+    console.log("User Controller Loaded");
+    console.log(newUser)
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { //
       expiresIn: "10m",
     });
-    verifyEmail(token, email);
+    console.log("Verification Token:", token); // Debugging line to check the generated token
+    console.log("BEFORE MAIL");
+
+    await verifyEmail(token, email);
+
+    console.log("AFTER MAIL");
     newUser.token = token;
     // save (optional, create already saves)
     await newUser.save();
@@ -55,6 +64,8 @@ export const register = async (req, res) => {
     });
   }
 };
+
+
 
 export const verify = async (req, res) => {
   try {
