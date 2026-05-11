@@ -14,11 +14,11 @@ export const verifyEmail = async (token, email) => {
 
     const transporter = nodemailer.createTransport({
 
-      host: "smtp.gmail.com",
+      host: process.env.MAIL_HOST,
 
-      port: 465,
+      port: process.env.MAIL_PORT,
 
-      secure: true,
+      secure: false,
 
       auth: {
 
@@ -26,8 +26,6 @@ export const verifyEmail = async (token, email) => {
 
         pass: process.env.MAIL_PASS,
       },
-
-      connectionTimeout: 10000,
     });
 
     console.log("Transporter Created");
