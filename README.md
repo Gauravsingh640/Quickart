@@ -103,7 +103,7 @@ QUICKART/
 │   └── server.js
 │
 └── README.md
-
+```
 ⚙️ Installation:
 
  Clone Repository
