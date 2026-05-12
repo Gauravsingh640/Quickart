@@ -192,9 +192,16 @@ function UserDetails() {
 
             "user",
 
-            JSON.stringify(
-              res.data.user
-            )
+            JSON.stringify({
+
+              ...res.data.user,
+
+              accessToken:
+                res.data.accessToken,
+
+              refreshToken:
+                res.data.refreshToken,
+            })
           );
 
           toast.success(

@@ -1,8 +1,12 @@
-// Orders.jsx
-
 import {
+
   useContext,
+  useEffect,
+  useState,
+
 } from "react";
+
+import axios from "axios";
 
 import {
   FaArrowLeft,
@@ -15,7 +19,6 @@ import {
 import {
   AuthContext,
 } from "../context/AuthContext";
- 
 
 function Orders() {
 
@@ -23,8 +26,58 @@ function Orders() {
     useNavigate();
 
   const {
-    orders,
+    user,
   } = useContext(AuthContext);
+
+  const [orders, setOrders] =
+    useState([]);
+
+  // FETCH ORDERS
+
+  useEffect(() => {
+
+    fetchOrders();
+
+  }, []);
+
+  const fetchOrders =
+    async () => {
+
+      try {
+
+        const token =
+          sessionStorage.getItem(
+            "token"
+          );
+
+        const res =
+          await axios.get(
+
+            "https://quickart-jxc5.onrender.com/api/v1/order/my",
+
+            {
+
+              headers: {
+
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
+
+        console.log(
+          res.data
+        );
+
+        setOrders(
+          res.data.orders
+        );
+
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
 
   // NO ORDERS
 
@@ -93,7 +146,7 @@ function Orders() {
           (order) => (
 
             <div
-              key={order.id}
+              key={order._id}
               className="order-card"
             >
 
@@ -108,7 +161,7 @@ function Orders() {
                     Order ID:
                     {" "}
 
-                    {order.id}
+                    {order._id}
 
                   </h2>
 
@@ -118,14 +171,14 @@ function Orders() {
                     {" "}
 
                     {
-                      order.user
+                      user
                         ?.firstName
                     }
 
                     {" "}
 
                     {
-                      order.user
+                      user
                         ?.lastName
                     }
 
@@ -137,7 +190,7 @@ function Orders() {
                     {" "}
 
                     {
-                      order.user
+                      user
                         ?.email
                     }
 
@@ -155,14 +208,14 @@ function Orders() {
                     INR
                     {" "}
 
-                    {order.total.toFixed(
+                    {order.totalPrice.toFixed(
                       2
                     )}
 
                   </h3>
 
                   <span>
-                    Paid
+                    {order.status}
                   </span>
 
                 </div>
@@ -176,7 +229,7 @@ function Orders() {
               </h2>
 
               {
-                order.products.map(
+                order.items.map(
                   (
                     item
                   ) => (

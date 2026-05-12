@@ -40,7 +40,7 @@ export const register = async (req, res) => {
     console.log("User Controller Loaded");
     console.log(newUser)
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { //
-      expiresIn: "10m",
+      expiresIn: "7d",
     });
     console.log("Verification Token:", token); // Debugging line to check the generated token
     console.log("BEFORE MAIL");
