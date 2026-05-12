@@ -6,9 +6,12 @@ export const createOrder =
 
     try {
 
+      console.log(req.body);
+
+      console.log(req.id);
+
       const {
 
-        userId,
         items,
         totalPrice,
 
@@ -17,7 +20,7 @@ export const createOrder =
       const order =
         await Order.create({
 
-          user: userId,
+          user: req.id,
 
           items,
 
