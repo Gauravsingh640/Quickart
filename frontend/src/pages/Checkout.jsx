@@ -1,7 +1,7 @@
 // Checkout.jsx
 
 import { useContext, useState } from "react";
-
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../context/AuthContext";
@@ -127,34 +127,42 @@ function Checkout() {
 
       image: "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
 
-      handler: function (response) {
+      handler: async function (response) {
         console.log(response);
 
         toast.success("Payment Successful");
 
-        const newOrder = {
-          id: Date.now(),
+        try {
+          const token = JSON.parse(sessionStorage.getItem("user"))?.token;
 
-          user,
+          const res = await axios.post(
+            "https://quickart-jxc5.onrender.com/api/v1/order/create",
 
-          products: cart,
+            {
+              items: cart,
 
-          total,
+              totalPrice: total,
+            },
 
-          paymentStatus: "Paid",
-        };
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
 
-        // SAVE ORDER
+          console.log(res.data);
 
-        setOrders([...orders, newOrder]);
+          // CLEAR CART
 
-        // CLEAR CART
+          setCart([]);
 
-        setCart([]);
+          localStorage.removeItem("cart");
 
-        // SUCCESS
-
-        navigate("/success");
+          navigate("/success");
+        } catch (error) {
+          console.log(error);
+        }
       },
 
       prefill: {
