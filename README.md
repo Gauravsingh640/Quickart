@@ -46,34 +46,45 @@ A full-stack modern E-Commerce web application built using the MERN Stack with a
 3. Display Ordered Products
 4. Order Status Support
 
-🛠️ Tech Stack
+# 🛠️ Tech Stack
 
-Frontend
-    React.js
-    React Router DOM
-    Context API
-    Axios
-    React Toastify
-    React Icons
+## Frontend
 
-Backend
-    Node.js
-    Express.js
-    MongoDB
-    Mongoose
-    JWT Authentication
-    Bcrypt.js
-    Nodemailer
-    Multer
-    Cloud & Services
-    Cloudinary
-    Razorpay
-    Render
-    Vercel
-    Brevo SMTP
+- React.js
+- React Router DOM
+- Context API
+- Axios
+- React Toastify
+- React Icons
 
+---
 
-📁 Project Structure
+## Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- Bcrypt.js
+- Nodemailer
+- Multer
+
+---
+
+## Cloud & Services
+
+- Cloudinary
+- Razorpay
+- Render
+- Vercel
+- Brevo SMTP
+
+---
+
+# 📁 Project Structure
+
+```bash
 QUICKART/
 │
 ├── frontend/
@@ -95,7 +106,7 @@ QUICKART/
 
 ⚙️ Installation:
 
-1️⃣ Clone Repository
+ Clone Repository
     git clone <your-repository-url>
 2️⃣ Install Dependencies
 Frontend
@@ -104,9 +115,8 @@ Frontend
 Backend
     cd backend
     npm install
-🔑 Environment Variables
 
-Create .env file inside backend folder.
+🔑 Environment Variables
 
 PORT=8000
 
