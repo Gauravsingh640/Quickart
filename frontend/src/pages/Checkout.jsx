@@ -108,69 +108,141 @@ function Checkout() {
   // PAYMENT
 
   const handlePayment = () => {
+
     if (cart.length === 0) {
+
       alert("Cart is Empty");
 
       return;
     }
 
     const options = {
+
       key: "rzp_test_SbA8xxgskiDGuP",
 
-      amount: Math.round(total * 100),
+      amount: Math.round(
+        total * 100
+      ),
 
       currency: "INR",
 
       name: "KART",
 
-      description: "Order Payment",
+      description:
+        "Order Payment",
 
-      image: "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
+      image:
+        "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
 
-      handler: async function (response) {
+      handler: async function (
+        response
+      ) {
+
         console.log(response);
 
-        toast.success("Payment Successful");
+        toast.success(
+          "Payment Successful"
+        );
 
         try {
-          const token = JSON.parse(sessionStorage.getItem("user"))?.token;
 
-          const res = await axios.post(
-            "https://quickart-jxc5.onrender.com/api/v1/order/create",
+          const storedUser =
+            JSON.parse(
+              sessionStorage.getItem(
+                "user"
+              )
+            );
 
-            {
-              items: cart,
-
-              totalPrice: total,
-            },
-
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
+          console.log(
+            "STORED USER:"
           );
 
-          console.log(res.data);
+          console.log(
+            storedUser
+          );
+
+          const token =
+
+            storedUser?.user
+              ?.token ||
+
+            storedUser?.token;
+
+          console.log(
+            "TOKEN:"
+          );
+
+          console.log(
+            token
+          );
+
+          const res =
+            await axios.post(
+
+              "https://quickart-jxc5.onrender.com/api/v1/order/create",
+
+              {
+
+                items: cart,
+
+                totalPrice: total,
+              },
+
+              {
+
+                headers: {
+
+                  Authorization:
+                    `Bearer ${token}`,
+                },
+              }
+            );
+
+          console.log(
+            "ORDER RESPONSE:"
+          );
+
+          console.log(
+            res.data
+          );
 
           // CLEAR CART
 
           setCart([]);
 
-          localStorage.removeItem("cart");
+          localStorage.removeItem(
+            "cart"
+          );
 
           navigate("/success");
+
         } catch (error) {
+
+          console.log(
+            "ORDER ERROR:"
+          );
+
           console.log(error);
+
+          console.log(
+            error.response?.data
+          );
         }
       },
 
       prefill: {
-        name: user?.firstName || "Guest User",
 
-        email: user?.email || "guest@gmail.com",
+        name:
+          user?.firstName ||
+          "Guest User",
 
-        contact: user?.phoneNo || "9999999999",
+        email:
+          user?.email ||
+          "guest@gmail.com",
+
+        contact:
+          user?.phoneNo ||
+          "9999999999",
       },
 
       theme: {
@@ -178,7 +250,10 @@ function Checkout() {
       },
     };
 
-    const razorpay = new window.Razorpay(options);
+    const razorpay =
+      new window.Razorpay(
+        options
+      );
 
     razorpay.open();
   };
