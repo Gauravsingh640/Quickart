@@ -1,19 +1,15 @@
 import { Order }
 from "../models/orderModel.js";
-console.log("BODY:");
-console.log(req.body);
 
-console.log("REQ ID:");
-console.log(req.id);
 export const createOrder =
   async (req, res) => {
 
     try {
-
+      console.log("BODY:");
       console.log(req.body);
 
-      console.log(req.id);
-
+      console.log("REQ ID:");
+      console.log(req.id); 
       const {
 
         items,
