@@ -104,20 +104,22 @@ QUICKART/
 │
 └── README.md
 ```
-⚙️ Installation:
-
- Clone Repository
+# ⚙️ Installation:
+```bash
+ 1. Clone Repository
     git clone <your-repository-url>
-2️⃣ Install Dependencies
-Frontend
-    cd frontend
-    npm install
-Backend
-    cd backend
-    npm install
 
-🔑 Environment Variables
+ 2. Install Dependencies
+    Frontend
+        cd frontend
+        npm install
+    Backend
+        cd backend
+        npm install
+```
 
+# 🔑 Environment Variables
+```bash
 PORT=8000
 
 MONGO_URI=your_mongodb_url
@@ -133,19 +135,19 @@ CLOUDINARY_API_SECRET=your_api_secret
 
 RAZORPAY_KEY_ID=your_key
 RAZORPAY_SECRET=your_secret
-
-▶️ Run Project
+```
+# ▶️ Run Project
+```bash
 Backend
 npm run dev
 Frontend
 npm run dev
+```
 
-
-🌐 Deployment
-
+# 🌐 Deployment
+```bash
 Frontend : Vercel
 Backend : Render
-
-👨‍💻 Author
-
-Gaurav Singh
+```
+# 👨‍💻 Author
+# Gaurav Singh
