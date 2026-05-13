@@ -1,73 +1,232 @@
 // Checkout.jsx
 
-import { useContext, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import {
+  useContext,
+  useState,
+  useEffect,
+} from "react";
 
-import { AuthContext } from "../context/AuthContext";
-import { toast } from "react-toastify";
+import axios from "axios";
+
+import {
+  useNavigate,
+} from "react-router-dom";
+
+import {
+  AuthContext,
+} from "../context/AuthContext";
+
+import {
+  toast,
+} from "react-toastify";
 
 function Checkout() {
-  const navigate = useNavigate();
+
+  const navigate =
+    useNavigate();
 
   // ADDRESS FORM
 
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] =
+    useState(false);
+
+  // SELECTED ADDRESS
+
+  const [selectedAddress, setSelectedAddress] =
+    useState(0);
 
   const {
     cart,
     setCart,
-
     user,
-
-    discount, 
+    discount,
   } = useContext(AuthContext);
 
-  // SAVED ADDRESSES
+  // ADDRESSES
 
-  const [addresses, setAddresses] = useState([
-    {
-      fullName: "Rohit Singh",
-      phone: "123456789",
-      email: "rohitsingh280504+2@gmail.com",
-      address: "mai nhi bataunga",
-      city: "kolkata",
-      state: "LA",
-      zipCode: "70005",
-      country: "United States",
-    },
-  ]);
+  const [addresses, setAddresses] =
+    useState([]);
+
+  // LOAD ADDRESSES
+
+  useEffect(() => {
+
+    // LOGGED USER
+    if (user) {
+
+      const userAddresses =
+        JSON.parse(
+          localStorage.getItem(
+            "userAddresses"
+          )
+        ) || [];
+
+      const guestAddresses =
+        JSON.parse(
+          sessionStorage.getItem(
+            "guestAddresses"
+          )
+        ) || [];
+
+      // PROFILE ADDRESS
+
+      let profileAddress = [];
+
+      if (user.address) {
+
+        profileAddress = [
+
+          {
+            fullName:
+              `${user.firstName || ""} ${user.lastName || ""}`,
+
+            phone:
+              user.phoneNo || "",
+
+            email:
+              user.email || "",
+
+            address:
+              user.address || "",
+
+            city:
+              user.city || "",
+
+            state:
+              user.state || "",
+
+            zipCode:
+              user.zipCode || "",
+
+            country:
+              "India",
+
+            isProfileAddress: true,
+          }
+        ];
+      }
+
+      // MERGE
+
+      const mergedAddresses = [
+
+        ...profileAddress,
+
+        ...userAddresses,
+
+        ...guestAddresses,
+      ];
+
+      setAddresses(
+        mergedAddresses
+      );
+
+      localStorage.setItem(
+
+        "userAddresses",
+
+        JSON.stringify(
+          mergedAddresses.filter(
+            (item) =>
+              !item.isProfileAddress
+          )
+        )
+      );
+
+      sessionStorage.removeItem(
+        "guestAddresses"
+      );
+
+    } else {
+
+      // GUEST
+
+      const guestAddresses =
+        JSON.parse(
+          sessionStorage.getItem(
+            "guestAddresses"
+          )
+        ) || [];
+
+      setAddresses(
+        guestAddresses
+      );
+    }
+
+  }, [user]);
+
+  // SAVE ADDRESSES
+
+  useEffect(() => {
+
+    const filteredAddresses =
+      addresses.filter(
+        (item) =>
+          !item.isProfileAddress
+      );
+
+    if (user) {
+
+      localStorage.setItem(
+        "userAddresses",
+        JSON.stringify(
+          filteredAddresses
+        )
+      );
+
+    } else {
+
+      sessionStorage.setItem(
+        "guestAddresses",
+        JSON.stringify(
+          filteredAddresses
+        )
+      );
+    }
+
+  }, [addresses, user]);
 
   // FORM DATA
 
-  const [formData, setFormData] = useState({
-    fullName: "",
-    phone: "",
-    email: "",
-    address: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    country: "",
-  });
+  const [formData, setFormData] =
+    useState({
+
+      fullName: "",
+      phone: "",
+      email: "",
+      address: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      country: "",
+    });
 
   // INPUT CHANGE
 
   const handleChange = (e) => {
+
     setFormData({
+
       ...formData,
-      [e.target.name]: e.target.value,
+
+      [e.target.name]:
+        e.target.value,
     });
   };
 
   // SAVE ADDRESS
 
   const saveAddress = (e) => {
+
     e.preventDefault();
 
-    setAddresses([...addresses, formData]);
+    setAddresses([
+      ...addresses,
+      formData,
+    ]);
 
     setFormData({
+
       fullName: "",
       phone: "",
       email: "",
@@ -79,313 +238,663 @@ function Checkout() {
     });
 
     setShowForm(false);
+
+    toast.success(
+      "Address Added"
+    );
   };
 
   // DELETE ADDRESS
 
   const deleteAddress = (index) => {
-    const updated = addresses.filter((_, i) => i !== index);
 
-    setAddresses(updated);
-  };
+    if (
+      addresses[index]
+        .isProfileAddress
+    ) {
 
-  // TOTALS
-
-  const subtotal = cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-
-    0,
-  );
-
-  const shipping = 90.0;
-
-  const tax = subtotal * 0.18;
-
-  const total = subtotal + shipping + tax - discount;
-
-  // PAYMENT
-
-  const handlePayment = () => {
-    if (cart.length === 0) {
-      alert("Cart is Empty");
+      toast.error(
+        "Default Address Can't Be Deleted"
+      );
 
       return;
     }
 
-    if (!user) { 
-      toast.error("Please Login First");
+    const updated =
+      addresses.filter(
+        (_, i) => i !== index
+      );
+
+    setAddresses(updated);
+
+    toast.success(
+      "Address Deleted"
+    );
+  };
+
+  // TOTALS
+
+  const subtotal =
+    cart.reduce(
+
+      (acc, item) =>
+
+        acc +
+        item.price *
+        item.quantity,
+
+      0
+    );
+
+  const shipping = 90;
+
+  const tax =
+    subtotal * 0.18;
+
+  const total =
+
+    subtotal +
+    shipping +
+    tax -
+    discount;
+
+  // PAYMENT
+
+  const handlePayment = () => {
+
+    if (
+      cart.length === 0
+    ) {
+
+      toast.error(
+        "Cart is Empty"
+      );
+
+      return;
+    }
+
+    if (!user) {
+
+      toast.error(
+        "Please Login First"
+      );
+
       navigate("/login");
 
       return;
     }
 
+    if (
+      addresses.length === 0
+    ) {
+
+      toast.error(
+        "Please Add Address"
+      );
+
+      return;
+    }
 
     const options = {
-      key: "rzp_test_SbA8xxgskiDGuP",
 
-      amount: Math.round(total * 100),
+      key:
+        "rzp_test_SbA8xxgskiDGuP",
 
-      currency: "INR",
+      amount:
+        Math.round(
+          total * 100
+        ),
 
-      name: "KART",
+      currency:
+        "INR",
 
-      description: "Order Payment",
+      name:
+        "KART",
 
-      image: "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
+      description:
+        "Order Payment",
 
-      handler: async function (response) {
-        console.log(response);
+      image:
+        "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
 
-        toast.success("Payment Successful");
+      handler:
+        async function () {
 
-        try {
-          const storedUser = JSON.parse(sessionStorage.getItem("user"));
-
-          console.log("STORED USER:");
-
-          console.log(storedUser);
-
-          // const token = storedUser?.user?.token || storedUser?.token;
-
-          // console.log("TOKEN:");
-
-          // console.log(token);
-          const token = sessionStorage.getItem("token");
-          console.log("TOKEN:");
-          console.log(token
-  );
-
-          const res = await axios.post(
-            "https://quickart-jxc5.onrender.com/api/v1/order/create",
-
-            {
-              items: cart,
-
-              totalPrice: total,
-            },
-
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
+          toast.success(
+            "Payment Successful"
           );
 
-          console.log("ORDER RESPONSE:");
+          try {
 
-          console.log(res.data);
+            const token =
+              sessionStorage.getItem(
+                "token"
+              );
 
-          // CLEAR CART
+            await axios.post(
 
-          setCart([]);
+              "https://quickart-jxc5.onrender.com/api/v1/order/create",
 
-          localStorage.removeItem("cart");
+              {
+                items: cart,
 
-          navigate("/success");
-        } catch (error) {
-          console.log("ORDER ERROR:");
+                totalPrice:
+                  total,
 
-          console.log(error);
+                address:
+                  addresses[
+                    selectedAddress
+                  ],
+              },
 
-          console.log(error.response?.data);
-        }
-      },
+              {
+                headers: {
+
+                  Authorization:
+                    `Bearer ${token}`,
+                },
+              }
+            );
+
+            setCart([]);
+
+            localStorage.removeItem(
+              "userCart"
+            );
+
+            navigate(
+              "/success"
+            );
+
+          } catch (error) {
+
+            console.log(
+              error
+            );
+          }
+        },
 
       prefill: {
-        name: user?.firstName || "Guest User",
 
-        email: user?.email || "guest@gmail.com",
+        name:
+          user?.firstName ||
+          "Guest User",
 
-        contact: user?.phoneNo || "9999999999",
+        email:
+          user?.email ||
+          "guest@gmail.com",
+
+        contact:
+          user?.phoneNo ||
+          "9999999999",
       },
 
       theme: {
-        color: "#e60073",
+        color:
+          "#e60073",
       },
     };
 
-    const razorpay = new window.Razorpay(options);
+    const razorpay =
+      new window.Razorpay(
+        options
+      );
 
     razorpay.open();
   };
 
   return (
+
     <div className="checkout-page">
+
       {/* LEFT */}
 
       <div className="checkout-left">
-        {/* ADDRESSES */}
 
-        <h2>Saved Addresses</h2>
+        <h2>
+          Saved Addresses
+        </h2>
 
-        {addresses.map((item, index) => (
-          <div className="address-card" key={index}>
-            <div>
-              <h3>{item.fullName}</h3>
+        {
+          !user &&
+          addresses.length === 0 && (
 
-              <p>{item.phone}</p>
-
-              <p>{item.email}</p>
+            <div className="guest-warning">
 
               <p>
-                {item.address}, {item.city}, {item.state}, {item.zipCode},{" "}
-                {item.country}
+                Add Delivery
+                Address
               </p>
+
+            </div>
+          )
+        }
+
+        {
+          user &&
+          addresses.length === 0 ? (
+
+            <div className="no-address">
+
+              <p>
+                No Address Found
+              </p>
+
+              <button
+                onClick={() =>
+                  navigate(
+                    "/profile/userDetails"
+                  )
+                }
+              >
+                Add Details
+              </button>
+
             </div>
 
-            <span className="delete-btn" onClick={() => deleteAddress(index)}>
-              Delete
-            </span>
-          </div>
-        ))}
+          ) : (
+
+            addresses.map(
+              (
+                item,
+                index
+              ) => (
+
+                <div
+
+                  className={`address-card ${
+                    selectedAddress === index
+                      ? "active-address"
+                      : ""
+                  }`}
+
+                  key={index}
+
+                  onClick={() =>
+                    setSelectedAddress(index)
+                  }
+                >
+
+                  <div className="address-top">
+
+                    <div className="address-left">
+
+                      <input
+
+                        type="radio"
+
+                        checked={
+                          selectedAddress === index
+                        }
+
+                        onChange={() =>
+                          setSelectedAddress(index)
+                        }
+                      />
+
+                      <h3>
+                        {item.fullName}
+                      </h3>
+
+                    </div>
+
+                    <div>
+
+                      {
+                        !item.isProfileAddress && (
+
+                          <div
+
+                            className="delete-btn"
+
+                            onClick={(e) => {
+
+                              e.stopPropagation();
+
+                              deleteAddress(index);
+                            }}
+                          >
+                            Delete
+                          </div>
+                        )
+                      }
+
+                    </div>
+
+                  </div>
+
+                  <p className="address-text">
+
+                    {item.phone}
+                    {" | "}
+                    {item.email}
+
+                    <br />
+
+                    {item.address},
+                    {" "}
+                    {item.city},
+                    {" "}
+                    {item.state},
+                    {" "}
+                    {item.zipCode},
+                    {" "}
+                    {item.country}
+
+                  </p>
+
+                  {
+                    item.isProfileAddress && (
+
+                      <span className="default-badge">
+                        Default Address
+                      </span>
+                    )
+                  }
+
+                </div>
+              )
+            )
+          )
+        }
 
         {/* ADD ADDRESS BUTTON */}
 
         <button
+
           className="add-address-btn"
-          onClick={() => setShowForm(!showForm)}
+
+          onClick={() =>
+            setShowForm(
+              !showForm
+            )
+          }
         >
-          + Add New Address
+          + Add Another Address
         </button>
 
         {/* FORM */}
 
-        {showForm && (
-          <form className="address-form" onSubmit={saveAddress}>
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={handleChange}
-              required
-            />
+        {
+          showForm && (
 
-            <input
-              type="text"
-              name="phone"
-              placeholder="Phone Number"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
+            <form
 
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+              className="address-form"
 
-            <input
-              type="text"
-              name="address"
-              placeholder="Address"
-              value={formData.address}
-              onChange={handleChange}
-              required
-            />
+              onSubmit={
+                saveAddress
+              }
+            >
 
-            <div className="input-row">
               <input
+
                 type="text"
-                name="city"
-                placeholder="City"
-                value={formData.city}
-                onChange={handleChange}
+
+                name="fullName"
+
+                placeholder="Full Name"
+
+                value={
+                  formData.fullName
+                }
+
+                onChange={
+                  handleChange
+                }
+
                 required
               />
 
               <input
+
                 type="text"
-                name="state"
-                placeholder="State"
-                value={formData.state}
-                onChange={handleChange}
+
+                name="phone"
+
+                placeholder="Phone Number"
+
+                value={
+                  formData.phone
+                }
+
+                onChange={
+                  handleChange
+                }
+
                 required
               />
-            </div>
 
-            <div className="input-row">
               <input
-                type="text"
-                name="zipCode"
-                placeholder="Zip Code"
-                value={formData.zipCode}
-                onChange={handleChange}
+
+                type="email"
+
+                name="email"
+
+                placeholder="Email"
+
+                value={
+                  formData.email
+                }
+
+                onChange={
+                  handleChange
+                }
+
                 required
               />
 
               <input
+
                 type="text"
-                name="country"
-                placeholder="Country"
-                value={formData.country}
-                onChange={handleChange}
+
+                name="address"
+
+                placeholder="Address"
+
+                value={
+                  formData.address
+                }
+
+                onChange={
+                  handleChange
+                }
+
                 required
               />
-            </div>
 
-            <button type="submit">Save & Continue</button>
-          </form>
-        )}
+              <div className="input-row">
+
+                <input
+
+                  type="text"
+
+                  name="city"
+
+                  placeholder="City"
+
+                  value={
+                    formData.city
+                  }
+
+                  onChange={
+                    handleChange
+                  }
+
+                  required
+                />
+
+                <input
+
+                  type="text"
+
+                  name="state"
+
+                  placeholder="State"
+
+                  value={
+                    formData.state
+                  }
+
+                  onChange={
+                    handleChange
+                  }
+
+                  required
+                />
+
+              </div>
+
+              <div className="input-row">
+
+                <input
+
+                  type="text"
+
+                  name="zipCode"
+
+                  placeholder="Zip Code"
+
+                  value={
+                    formData.zipCode
+                  }
+
+                  onChange={
+                    handleChange
+                  }
+
+                  required
+                />
+
+                <input
+
+                  type="text"
+
+                  name="country"
+
+                  placeholder="Country"
+
+                  value={
+                    formData.country
+                  }
+
+                  onChange={
+                    handleChange
+                  }
+
+                  required
+                />
+
+              </div>
+
+              <button type="submit">
+                Save Address
+              </button>
+
+            </form>
+          )
+        }
 
         {/* PAYMENT */}
 
-        <button className="checkout-btn" onClick={handlePayment}>
+        <button
+
+          className="checkout-btn"
+
+          onClick={
+            handlePayment
+          }
+        >
           Proceed To Checkout
         </button>
+
       </div>
 
       {/* RIGHT */}
 
       <div className="checkout-right">
-        <h2>Order Summary</h2>
+
+        <h2>
+          Order Summary
+        </h2>
 
         <div className="summary-row">
-          <span>Subtotal ({cart.length} items)</span>
 
-          <span>₹ {subtotal.toFixed(2)}</span>
+          <span>
+            Subtotal (
+            {cart.length}
+            {" "}
+            items)
+          </span>
+
+          <span>
+            ₹
+            {" "}
+            {subtotal.toFixed(2)}
+          </span>
+
         </div>
 
         <div className="summary-row">
-          <span>Shipping</span>
 
-          <span>₹ {shipping.toFixed(2)}</span>
+          <span>
+            Shipping
+          </span>
+
+          <span>
+            ₹
+            {" "}
+            {shipping.toFixed(2)}
+          </span>
+
         </div>
 
         <div className="summary-row">
-          <span>Tax (18%)</span>
 
-          <span>₹ {tax.toFixed(2)}</span>
+          <span>
+            Tax (18%)
+          </span>
+
+          <span>
+            ₹
+            {" "}
+            {tax.toFixed(2)}
+          </span>
+
         </div>
 
-        {/* DISCOUNT */}
-
         <div className="summary-row">
-          <span>Discount</span>
 
-          <span>- ₹ {discount.toFixed(2)}</span>
+          <span>
+            Discount
+          </span>
+
+          <span>
+            - ₹
+            {" "}
+            {discount.toFixed(2)}
+          </span>
+
         </div>
 
         <hr />
 
         <div className="summary-total">
-          <span>Total</span>
 
-          <span>₹ {total.toFixed(2)}</span>
+          <span>
+            Total
+          </span>
+
+          <span>
+            ₹
+            {" "}
+            {total.toFixed(2)}
+          </span>
+
         </div>
 
-        <ul>
-          <li>Free shipping on orders over ₹50</li>
-
-          <li>30-day return policy</li>
-
-          <li>Secure checkout with SSL encryption</li>
-        </ul>
       </div>
+
     </div>
   );
 }

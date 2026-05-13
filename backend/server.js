@@ -8,11 +8,11 @@ import orderRoute from "./routes/orderRoute.js";
 import cors from "cors";
 
 const app = express();
-
+ 
 // CORS
 app.use(
   cors({
-    origin:"https://quickart-one.vercel.app", 
+    origin:"https://quickart-one.vercel.app",
     credentials: true,
   })
 );

@@ -749,6 +749,296 @@ body {
     align-items: flex-start;
   }
 }
+/* NO ADDRESS */
+
+.no-address {
+  padding: 25px;
+  border: 2px dashed #ddd;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  text-align: center;
+  background: #fafafa;
+}
+
+.no-address p {
+  color: #555;
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+.no-address button {
+  padding: 10px 20px;
+  border: none;
+  background: #e6007e;
+  color: white;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.no-address button:hover {
+  opacity: 0.9;
+}
+
+
+/* ADDRESS CARD */
+
+.address-card {
+  width: 100% ;
+  max-width: 900px;
+  padding: 22px;
+  margin: 0 auto 20px; 
+  border: 2px solid #e5e5e5;
+  border-radius: 16px;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.address-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ACTIVE ADDRESS */
+
+.active-address {
+  border: 2px solid #fd008b;
+  background: #fff7fb; 
+
+}
+
+.address-card {
+  border: 2px solid #dcdcdc;
+  transition: all 0.3s ease;
+}
+
+.address-card.active-address {
+  border: 2px solid #fd008b !important;
+  background: #fff7fb;
+}
+
+
+/* TOP */
+
+.address-top {
+  display: grid;
+  grid-template-columns: 20% 65% 15%;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* LEFT */
+
+.address-left {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+/* HIDE RADIO */
+
+.address-left input {
+  display: none;
+}
+
+
+/* NAME */
+
+.address-left h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+
+/* ADDRESS DETAILS */
+
+.address-text {
+  width: 100% ;
+  margin-top: 10px;
+  color: #555;
+  word-break: break-word;
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 85%;
+}
+
+
+/* DELETE */
+.delete-btn {
+  text-align: right;
+  color: #e6007e;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.delete-btn:hover {
+  opacity: 0.7;
+}
+
+
+/* DEFAULT BADGE */
+
+.default-badge {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 12px;
+  background: #e6007e;
+  color: white;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+
+/* GUEST WARNING */
+
+.guest-warning {
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  background: #fff4fa;
+  border: 1px solid #ffc7e3;
+}
+
+.guest-warning p {
+  color: #e6007e;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+/* DEFAULT BADGE */
+
+.default-badge {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: #e6007e;
+  color: white;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+
+/* GUEST WARNING */
+
+.guest-warning {
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  background: #fff4fa;
+  border: 1px solid #ffc7e3;
+}
+
+.guest-warning p {
+  color: #e6007e;
+  font-size: 14px;
+  font-weight: 500;
+}
+/* DEFAULT BADGE */
+
+.default-badge {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 12px;
+  border-radius: 30px;
+  background: #e6007e;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* DELETE */
+
+.delete-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  color: red;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  text-decoration: underline;
+}
+
+/* NO ADDRESS */
+
+.no-address {
+  padding: 25px;
+  border-radius: 14px;
+  border: 2px dashed #ccc;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.no-address p {
+  margin-bottom: 14px;
+  color: #555;
+}
+
+.no-address button {
+  padding: 10px 18px;
+  border: none;
+  background: #e6007e;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.address-card {
+  position: relative;
+  padding: 25px;
+  border-radius: 14px;
+  border: 2px solid #ddd;
+  margin-bottom: 20px;
+  background: white;
+}
+
+.address-content h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.address-content p {
+  margin: 6px 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #e6007e;
+  cursor: pointer;
+  font-weight: 500;
+}
+/* GUEST WARNING */
+
+.guest-warning {
+  margin-bottom: 18px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #fff4fa;
+  color: #e6007e;
+  border: 1px solid #ffc2df;
+}
 
 /* ======================
    PRODUCT DETAILS
@@ -994,6 +1284,11 @@ body {
 
 .checkout-left{
     flex: 2;
+}
+.checkout-left {
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
 }
 
 .checkout-right{

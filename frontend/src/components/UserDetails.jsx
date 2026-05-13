@@ -211,7 +211,10 @@ function UserDetails() {
 
       }
       catch (error) {
-
+        if(!token){
+          toast.error("Please login to update profile");
+          navigate("/login");
+        }
         toast.error(
           error.response?.data
             ?.message
