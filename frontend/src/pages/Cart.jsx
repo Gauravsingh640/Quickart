@@ -60,7 +60,7 @@ function Cart() {
 
   const shipping = 90;
 
-  const tax = subtotal * 0.05;
+  const tax = subtotal * 0.18;
 
   // FINAL TOTAL
 
@@ -174,7 +174,7 @@ function Cart() {
         {/* TAX */}
 
         <div className="summary-row">
-          <span>Tax (5%)</span>
+          <span>Tax (18%)</span>
 
           <span>₹ {tax.toFixed(2)}</span>
         </div>

@@ -11,22 +11,110 @@ function AuthProvider({ children }) {
     storedUser && storedUser !== "undefined" ? JSON.parse(storedUser) : null,
   );
 
+  const mergeCarts = (guestCart, userCart) => {
+
+    const merged = [...userCart];
+
+    guestCart.forEach((guestItem) => {
+
+      const existingItem = merged.find(
+        (item) => item.id === guestItem.id
+      );
+
+      if (existingItem) {
+
+        existingItem.quantity += guestItem.quantity;
+
+      } else {
+
+        merged.push(guestItem);
+      }
+    });
+
+    return merged;
+  };
+
+  useEffect(() => {
+
+    if (user) {
+
+      const savedUserCart =
+        JSON.parse(
+          localStorage.getItem("userCart")
+        ) || [];
+
+      const guestCart =
+        JSON.parse(
+          sessionStorage.getItem("guestCart")
+        ) || [];
+ 
+      // MERGE BOTH CARTS
+      const mergedCart =
+        mergeCarts(
+          guestCart,
+          savedUserCart
+        );
+
+      setCart(mergedCart);
+
+      // SAVE MERGED CART
+      localStorage.setItem(
+        "userCart",
+        JSON.stringify(mergedCart)
+      );
+
+      // CLEAR GUEST CART
+      sessionStorage.removeItem("guestCart");
+
+    } else {
+
+      const guestCart =
+        JSON.parse(
+          sessionStorage.getItem("guestCart")
+        ) || [];
+
+      setCart(guestCart);
+    }
+
+  }, [user]);
   // CART
 
   const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem("cart");
 
-    return savedCart ? JSON.parse(savedCart) : [];
+    if (storedUser) {
+
+      return JSON.parse(
+        localStorage.getItem("userCart")
+      ) || [];
+    }
+
+    return JSON.parse(
+      sessionStorage.getItem("guestCart")
+    ) || [];
   });
+
+  // SAVE CART
+
   useEffect(() => {
 
-    localStorage.setItem(
-      "cart",
-      JSON.stringify(cart)
-    );
+    if (user) {
 
-  }, [cart]);
+      // SAVE USER CART
+      localStorage.setItem(
+        "userCart",
+        JSON.stringify(cart)
+      );
 
+    } else {
+
+      // SAVE GUEST CART
+      sessionStorage.setItem(
+        "guestCart",
+        JSON.stringify(cart)
+      );
+    }
+
+  }, [cart, user]);
   // PROMO
 
   const [discount, setDiscount] = useState(0);

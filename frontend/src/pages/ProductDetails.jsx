@@ -28,13 +28,14 @@ function ProductDetails() {
     useNavigate();
 
   const {
-    user,
+    cart,
     addToCart,
+    increaseQty,
+    decreaseQty,
   } = useContext(AuthContext);
 
   const product =
     products.find(
-
       (item) =>
         item.id === Number(id)
     );
@@ -44,24 +45,22 @@ function ProductDetails() {
       product.images[0]
     );
 
+  // FIND PRODUCT IN CART
+
+  const cartItem =
+    cart.find(
+      (item) =>
+        item.id === product.id
+    );
+
+  const quantity =
+    cartItem
+      ? cartItem.quantity
+      : 0;
+
   // ADD TO CART
 
   const handleAddToCart = () => {
-
-    // LOGIN CHECK
-
-    if (!user) {
-
-      toast.error(
-        "Please Login First"
-      );
-
-      navigate("/login");
-
-      return;
-    }
-
-    // ADD PRODUCT
 
     addToCart(product);
 
@@ -86,11 +85,8 @@ function ProductDetails() {
 
                 <img
                   key={index}
-
                   src={img}
-
                   alt=""
-
                   onClick={() =>
                     setMainImage(img)
                   }
@@ -135,18 +131,46 @@ function ProductDetails() {
         </h2>
 
         <p className="desc">
-          {
-            product.description
-          }
+          {product.description}
         </p>
 
-        <button
-          onClick={
-            handleAddToCart
-          }
-        >
-          Add To Cart
-        </button>
+        {
+          quantity === 0 ? (
+
+            <button
+              onClick={handleAddToCart}
+            >
+              Add To Cart
+            </button>
+
+          ) : (
+
+            <div className="qty-box1">
+
+              <button
+                onClick={() =>
+                  decreaseQty(product.id)
+                }
+              >
+                -
+              </button>
+
+              <span>
+                {quantity}
+              </span>
+
+              <button
+                onClick={() =>
+                  increaseQty(product.id)
+                }
+              >
+                +
+              </button>
+
+            </div>
+
+          )
+        }
 
       </div>
 

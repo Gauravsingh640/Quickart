@@ -14,6 +14,7 @@ import {
 import {
   AuthContext,
 } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 
 function Navbar() {
@@ -25,6 +26,7 @@ function Navbar() {
     user,
     setUser,
     cart,
+    setCart,
   } = useContext(AuthContext);
 
   // TOTAL CART ITEMS
@@ -52,7 +54,17 @@ function Navbar() {
 
   const handleLogout = () => {
 
+    // REMOVE SESSION
+    sessionStorage.removeItem("user");
+
+    sessionStorage.removeItem("token");
+
+    // LOAD GUEST CART
+    sessionStorage.removeItem("guestCart");
+    setCart([]);
     setUser(null);
+
+    toast.success("Logged Out Successfully");
 
     navigate("/login");
   };
@@ -60,13 +72,6 @@ function Navbar() {
   // CART CLICK
 
   const handleCart = () => {
-
-    if (!user) {
-
-      navigate("/login");
-
-      return;
-    }
 
     navigate("/cart");
   };
@@ -135,7 +140,7 @@ function Navbar() {
 
               <FaShoppingCart />
 
-              <span>0</span>
+              <span>{totalItems}</span>
 
             </div>
 

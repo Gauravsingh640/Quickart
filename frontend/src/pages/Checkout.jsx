@@ -20,9 +20,7 @@ function Checkout() {
 
     user,
 
-    discount,
-    orders,
-    setOrders,
+    discount, 
   } = useContext(AuthContext);
 
   // SAVED ADDRESSES
@@ -101,7 +99,7 @@ function Checkout() {
 
   const shipping = 90.0;
 
-  const tax = subtotal * 0.05;
+  const tax = subtotal * 0.18;
 
   const total = subtotal + shipping + tax - discount;
 
@@ -113,6 +111,14 @@ function Checkout() {
 
       return;
     }
+
+    if (!user) { 
+      toast.error("Please Login First");
+      navigate("/login");
+
+      return;
+    }
+
 
     const options = {
       key: "rzp_test_SbA8xxgskiDGuP",
@@ -351,7 +357,7 @@ function Checkout() {
         </div>
 
         <div className="summary-row">
-          <span>Tax (5%)</span>
+          <span>Tax (18%)</span>
 
           <span>₹ {tax.toFixed(2)}</span>
         </div>
