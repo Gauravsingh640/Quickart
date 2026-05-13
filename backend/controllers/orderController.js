@@ -129,7 +129,7 @@ export const createOrder =
           address,
         });
       
-      await sendOrderMail(
+      sendOrderMail(
 
         user.email,
 
