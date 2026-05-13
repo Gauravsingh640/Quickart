@@ -12,6 +12,13 @@ A full-stack modern E-Commerce web application built using the MERN Stack with a
 5. Email Verification System
 6. Re-Verification Email Support
 7. Logout Functionality
+8. Guest Cart Support
+9. Cart Merge After Login
+10. Persistent User Cart
+11. Multiple Address Management
+12. Address Selection During Checkout
+13. Order Confirmation Email
+14. Responsive Checkout UI
 
 👤 User Features:
 1. Update Profile
@@ -39,12 +46,16 @@ A full-stack modern E-Commerce web application built using the MERN Stack with a
 3. Payment Success Handling
 4. Automatic Order Creation
 5. Cart Clearing After Successful Payment
+6. Order Confirmation Email via Brevo
+7. Delivery Address Selection
 
 📦 Order Management
 1. Store Orders in MongoDB
 2. Fetch Logged-In User Orders
 3. Display Ordered Products
 4. Order Status Support
+5. Order Confirmation Mail
+6. Selected Address Storage
 
 # 🛠️ Tech Stack
 
@@ -79,6 +90,7 @@ A full-stack modern E-Commerce web application built using the MERN Stack with a
 - Render
 - Vercel
 - Brevo SMTP
+- Brevo Transactional Email API
 
 ---
 
@@ -142,6 +154,19 @@ Backend
 npm run dev
 Frontend
 npm run dev
+```
+
+# ✨ Advanced Features
+```bash
+- Guest users can add items to cart
+- Guest cart automatically merges after login
+- Persistent cart for logged-in users
+- Multiple delivery address support
+- Dynamic address selection during checkout
+- Email verification system
+- Order confirmation emails
+- Responsive modern UI
+- Secure payment integration
 ```
 
 # 🌐 Deployment
