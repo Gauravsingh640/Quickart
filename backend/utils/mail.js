@@ -5,20 +5,20 @@ const transporter =
   nodemailer.createTransport({
 
     host:
-      process.env.SMTP_HOST,
+      process.env.MAIL_HOST,
 
     port:
-      process.env.SMTP_PORT,
+      process.env.MAIL_PORT,
 
     secure: false,
 
     auth: {
 
       user:
-        process.env.SMTP_EMAIL,
+        process.env.MAIL_USER,
 
       pass:
-        process.env.SMTP_PASSWORD,
+        process.env.MAIL_PASS,
     },
   });
 

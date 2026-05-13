@@ -35,7 +35,7 @@ export const sendOrderMail =
         await transporter.sendMail({
 
         from:
-            process.env.SMTP_EMAIL,
+            process.env.MAIL_USER,
 
         to:
             email,
