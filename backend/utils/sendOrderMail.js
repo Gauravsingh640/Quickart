@@ -1,5 +1,4 @@
-import transporter
-from "./mail.js";
+import axios from "axios";
 
 export const sendOrderMail =
   async (
@@ -9,121 +8,172 @@ export const sendOrderMail =
     totalPrice
   ) => {
 
-    const itemsHtml =
-      items.map(
+    try {
 
-        (item) => `
+      console.log(
+        "SEND ORDER MAIL CALLED"
+      );
 
-          <tr>
+      const itemsHtml =
+        items.map(
 
-            <td style="padding:10px;">
-              ${item.title}
-            </td>
+          (item) => `
 
-            <td style="padding:10px;">
-              ${item.quantity}
-            </td>
+            <tr>
 
-            <td style="padding:10px;">
-              ₹${item.price}
-            </td>
+              <td style="padding:10px;">
+                ${item.title}
+              </td>
 
-          </tr>
-        `
-      ).join("");
-    try{
-        await transporter.sendMail({
+              <td style="padding:10px;">
+                ${item.quantity}
+              </td>
 
-        from:
-            process.env.MAIL_USER,
+              <td style="padding:10px;">
+                ₹${item.price}
+              </td>
 
-        to:
-            email,
+            </tr>
+          `
+        ).join("");
 
-        subject:
-            "Order Placed Successfully 🎉",
+      const response =
+        await axios.post(
 
-        html: `
+          "https://api.brevo.com/v3/smtp/email",
 
-            <div
-            style="
-                font-family:sans-serif;
-                padding:20px;
-            "
-            >
+          {
 
-            <h2>
-                Your Order Has Been Placed Successfully 🎉
-            </h2>
+            sender: {
 
-            <p>
-                Thank you for shopping with QUICKART.
-            </p>
+              name:
+                "Quickart",
 
-            <h3>
-                Delivery Address
-            </h3>
+              email:
+                "gauravsingh71205@gmail.com",
+            },
 
-            <p>
-                ${address.fullName}
-                <br/>
-                ${address.address}
-                <br/>
-                ${address.city},
-                ${address.state}
-                <br/>
-                ${address.zipCode},
-                ${address.country}
-                <br/>
-                ${address.phone}
-            </p>
+            to: [
+              {
+                email,
+              },
+            ],
 
-            <h3>
-                Order Summary
-            </h3>
+            subject:
+              "Order Placed Successfully 🎉",
 
-            <table
-                border="1"
-                cellpadding="10"
-                cellspacing="0"
+            htmlContent: `
+
+              <div
                 style="
-                border-collapse:collapse;
+                  font-family:sans-serif;
+                  padding:20px;
                 "
-            >
+              >
 
-                <tr>
+                <h2>
+                  Your Order Has Been Placed Successfully 🎉
+                </h2>
 
-                <th>
-                    Product
-                </th>
+                <p>
+                  Thank you for shopping with QUICKART.
+                </p>
 
-                <th>
-                    Quantity
-                </th>
+                <h3>
+                  Delivery Address
+                </h3>
 
-                <th>
-                    Price
-                </th>
+                <p>
+                  ${address.fullName}
+                  <br/>
+                  ${address.address}
+                  <br/>
+                  ${address.city},
+                  ${address.state}
+                  <br/>
+                  ${address.zipCode},
+                  ${address.country}
+                  <br/>
+                  ${address.phone}
+                </p>
 
-                </tr>
+                <h3>
+                  Order Summary
+                </h3>
 
-                ${itemsHtml}
+                <table
+                  border="1"
+                  cellpadding="10"
+                  cellspacing="0"
+                  style="
+                    border-collapse:collapse;
+                  "
+                >
 
-            </table>
+                  <tr>
 
-            <h2
-                style="
-                margin-top:20px;
-                "
-            >
-                Total Amount:
-                ₹${totalPrice}
-            </h2>
+                    <th>
+                      Product
+                    </th>
 
-            </div>
-        `,
-        });
-    }catch(error){
-        console.log("Error sending email:", error);
+                    <th>
+                      Quantity
+                    </th>
+
+                    <th>
+                      Price
+                    </th>
+
+                  </tr>
+
+                  ${itemsHtml}
+
+                </table>
+
+                <h2
+                  style="
+                    margin-top:20px;
+                  "
+                >
+                  Total Amount:
+                  ₹${totalPrice}
+                </h2>
+
+              </div>
+            `,
+          },
+
+          {
+
+            headers: {
+
+              accept:
+                "application/json",
+
+              "api-key":
+                process.env.BREVO_API_KEY,
+
+              "content-type":
+                "application/json",
+            },
+          }
+        );
+
+      console.log(
+        "ORDER MAIL SENT SUCCESSFULLY"
+      );
+
+      console.log(response.data);
+
+    } catch (error) {
+
+      console.log(
+        "ORDER MAIL ERROR:"
+      );
+
+      console.log(
+        error.response?.data ||
+        error.message
+      );
     }
 };

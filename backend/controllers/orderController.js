@@ -153,6 +153,12 @@ export const createOrder =
 
     } catch (error) {
 
+      console.log(
+        "ORDER ERROR:"
+      );
+
+      console.log(error);
+
       return res.status(500).json({
 
         success: false,
@@ -181,6 +187,12 @@ export const getMyOrders =
       });
 
     } catch (error) {
+
+      console.log(
+        "ORDER ERROR:"
+      );
+
+      console.log(error);
 
       return res.status(500).json({
 
