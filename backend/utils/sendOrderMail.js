@@ -1,5 +1,5 @@
 import transporter
-from "../emailVerify/verifyEmail.js";
+from "./mail.js";
 
 export const sendOrderMail =
   async (
@@ -119,10 +119,6 @@ export const sendOrderMail =
             Total Amount:
             ₹${totalPrice}
           </h2>
-
-          <p>
-            Your order will be delivered soon 🚚
-          </p>
 
         </div>
       `,
