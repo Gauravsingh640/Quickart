@@ -20,12 +20,6 @@ async (req, res) => {
     console.log("REQ ID:");
     console.log(req.id);
 
-    console.log(email);
-
-    console.log(items);
-
-    console.log(address);
-
     const {
 
       items,
@@ -37,6 +31,14 @@ async (req, res) => {
       address,
 
     } = req.body;
+
+    console.log(
+      address.email
+    );
+
+    console.log(items);
+
+    console.log(address);
 
     // FORMAT ITEMS
 
@@ -312,4 +314,4 @@ async (req, res) => {
       message:error.message,
     });
   }
-}; 
+};
