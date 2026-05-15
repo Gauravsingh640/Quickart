@@ -11,13 +11,10 @@ async (
   try {
 
     console.log(
-      "========== ORDER MAIL DEBUG =========="
+      "SEND ORDER MAIL CALLED"
     );
 
-    console.log(email);
-    console.log(process.env.MAIL_USER);
-
-    console.log(process.env.MAIL_PASS);
+    // TRANSPORTER
 
     const transporter =
     nodemailer.createTransport({
@@ -51,7 +48,7 @@ async (
 
         <td
           style="
-          padding:14px;
+          padding:12px;
           border-bottom:1px solid #e2e8f0;
           "
         >
@@ -84,32 +81,39 @@ async (
 
         <td
           style="
-          padding:14px;
+          padding:12px;
           text-align:center;
           border-bottom:1px solid #e2e8f0;
           "
         >
+
           ${item.quantity}
+
         </td>
 
         <td
           style="
-          padding:14px;
+          padding:12px;
           text-align:center;
           border-bottom:1px solid #e2e8f0;
           "
         >
+
           ₹${item.price}
+
         </td>
 
       </tr>
       `
     ).join("");
 
+    // SEND MAIL
+
+    const info =
     await transporter.sendMail({
 
       from:
-      process.env.MAIL_USER,
+      `"QuickArt" <${process.env.MAIL_USER}>`,
 
       to:email,
 
@@ -228,12 +232,10 @@ async (
 
                 ${address.city},
                 ${address.state}
-
                 <br/>
 
                 ${address.zipCode},
                 ${address.country}
-
                 <br/>
 
                 ${address.phone}
@@ -381,6 +383,8 @@ async (
       "ORDER MAIL SENT SUCCESSFULLY"
     );
 
+    console.log(info);
+
   }
 
   catch(error){
@@ -391,4 +395,4 @@ async (
 
     console.log(error);
   }
-};
+}; 

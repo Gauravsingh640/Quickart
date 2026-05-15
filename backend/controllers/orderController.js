@@ -20,6 +20,11 @@ async (req, res) => {
     console.log("REQ ID:");
     console.log(req.id);
 
+    console.log(items);
+    console.log(address);
+    console.log(formattedItems);
+    console.log(address.email);
+
     const {
 
       items,
