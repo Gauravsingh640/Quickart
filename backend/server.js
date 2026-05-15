@@ -14,7 +14,7 @@ const app = express();
 // CORS
 app.use(
   cors({
-    origin:["https://quickart-one.vercel.app","http://localhost:5173"],
+    origin:"https://quickart-one.vercel.app",
     credentials: true,
   })
 );

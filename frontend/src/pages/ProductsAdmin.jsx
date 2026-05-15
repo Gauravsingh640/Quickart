@@ -43,7 +43,7 @@ function ProductsAdmin() {
 
       const res =
       await axios.get(
-        "http://localhost:8000/api/v1/products"
+        "https://quickart-jxc5.onrender.com/api/v1/products"
       );
 
       setAllProducts(
@@ -78,7 +78,7 @@ function ProductsAdmin() {
       const res =
       await axios.delete(
 
-        `http://localhost:8000/api/v1/products/${id}`
+        `https://quickart-jxc5.onrender.com/api/v1/products/${id}`
       );
 
       toast.success(
