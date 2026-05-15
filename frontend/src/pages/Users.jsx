@@ -1,230 +1,3 @@
-// import {
-//   useEffect,
-//   useState,
-// } from "react";
-
-// import axios from "axios";
-
-// import {
-//   FaEdit,
-// } from "react-icons/fa";
-
-// import { toast }
-// from "react-toastify";
-
-
-// function Users() {
-
-//   const [users,
-//     setUsers] =
-//     useState([]);
-
-//   const [searchText,
-//     setSearchText] =
-//     useState("");
-
-//   // FETCH USERS
-
-//   const fetchUsers =
-//   async () => {
-
-//     try {
-
-//       const res =
-//       await axios.get(
-
-//         "https://quickart-jxc5.onrender.com/api/v1/user/all-users"
-//       );
-
-//       setUsers(
-//         res.data.users
-//       );
-
-//     }
-
-//     catch(error){
-
-//       console.log(error);
-
-//       toast.error(
-//         "Failed To Fetch Users"
-//       );
-//     }
-//   };
-
-//   useEffect(() => {
-
-//     fetchUsers();
-
-//   }, []);
-
-//   // UPDATE ROLE
-
-//   const handleRoleChange =
-//   async (id, role) => {
-
-//     try {
-
-//       const res =
-//       await axios.put(
-
-//         `https://quickart-jxc5.onrender.com/api/v1/user/update-role/${id}`,
-
-//         { role }
-//       );
-
-//       toast.success(
-//         res.data.message
-//       );
-
-//       fetchUsers();
-
-//     }
-
-//     catch(error){
-
-//       toast.error(
-
-//         error.response?.data
-//         ?.message
-//       );
-//     }
-//   };
-
-//   // FILTER USERS
-
-//   const filteredUsers =
-//   users.filter((item) =>
-
-//     `${item.firstName}
-//      ${item.lastName}`
-
-//     .toLowerCase()
-
-//     .includes(
-//       searchText.toLowerCase()
-//     )
-//   );
-
-//   return (
-
-//     <div className="adminUsersContainer">
-
-//       {/* TOP BAR */}
-//       <h1>User Management</h1> 
-//       <br />
-//       <div className="adminUsersTopBar">
-
-//         <input
-
-//           className="adminUsersSearch"
-
-//           type="text"
-
-//           placeholder="Search User..."
-
-//           value={searchText}
-
-//           onChange={(e) =>
-//             setSearchText(
-//               e.target.value
-//             )
-//           }
-//         />
-
-//       </div>
-
-//       {/* USERS */}
-
-//       {
-
-//         filteredUsers.map((item) => (
-
-//           <div
-//             className="adminSingleUser"
-
-//             key={item._id}
-//           >
-
-//             {/* USER INFO */}
-
-//             <div className="adminUserInfo">
-
-//               <h3>
-
-//                 {item.firstName}
-//                 {" "}
-//                 {item.lastName}
-
-//               </h3>
-
-//               <p>
-//                 {item.email}
-//               </p>
-
-//             </div>
-
-//             {/* ROLE */}
-
-//             <select
-
-//               disabled={
-//                 item.role ===
-//                 "superAdmin"
-//               }
-
-//               value={item.role}
-
-//               onChange={(e) =>
-
-//                 handleRoleChange(
-
-//                   item._id,
-
-//                   e.target.value
-//                 )
-//               }
-//             >
-
-//               <option value="user">
-//                 User
-//               </option>
-
-//               <option value="admin">
-//                 Admin
-//               </option>
-
-//               {
-//                 item.role ===
-//                 "superAdmin"
-
-//                 &&
-
-//                 <option value="superAdmin">
-
-//                   Super Admin
-
-//                 </option>
-//               }
-
-//             </select>
-
-//             {/* EDIT ICON */}
-
-//             <FaEdit
-//               className="adminUserEdit"
-//             />
-
-//           </div>
-//         ))
-//       }
-
-//     </div>
-//   );
-// }
-
-// export default Users;
-
 import {
   useEffect,
   useState,
@@ -267,7 +40,7 @@ function Users() {
       const res =
       await axios.get(
 
-        "https://quickart-jxc5.onrender.com/api/v1/user/all-users"
+        "http://localhost:8000/api/v1/user/all-users"
       );
 
       setUsers(
@@ -299,31 +72,31 @@ function Users() {
 
     try {
 
-      const res =
-      await axios.put(
+        const res =
+        await axios.put(
 
-        `https://quickart-jxc5.onrender.com/api/v1/user/update-role/${id}`,
+        `http://localhost:8000/api/v1/user/update-role/${id}`,
 
         { role }
-      );
+        );
 
-      toast.success(
+        toast.success(
         res.data.message
-      );
+        );
 
-      fetchUsers();
+        fetchUsers();
 
     }
 
     catch(error){
 
-      toast.error(
+        toast.error(
 
         error.response?.data
         ?.message
-      );
+        );
     }
-  };
+    };
 
   // FILTER USERS
 

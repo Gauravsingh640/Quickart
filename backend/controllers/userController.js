@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import { verifyEmail } from "../emailVerify/verifyEmail.js";
 import { Session } from "../models/sessionModel.js";
 import cloudinary from "../utils/cloudinary.js";
+import {sendAdminAccessMail} from "../utils/sendAdminMail.js";
+
 
 export const register = async (req, res) => {
   try {
@@ -454,7 +456,8 @@ async (req, res) => {
 
         success:false,
 
-        message:"User Not Found",
+        message:
+        "User Not Found",
       });
     }
 
@@ -475,12 +478,30 @@ async (req, res) => {
       });
     }
 
+    // UPDATE ROLE
+
     user.role =
     req.body.role;
 
     await user.save();
 
-    return res.status(200).json({
+    // SEND ADMIN MAIL
+
+    if (
+      req.body.role ===
+      "admin"
+    ) {
+
+      await sendAdminAccessMail(
+
+        user.email,
+
+        user.firstName
+      );
+    }
+
+    return res.status(200)
+    .json({
 
       success:true,
 
@@ -492,7 +513,8 @@ async (req, res) => {
 
   catch(error){
 
-    return res.status(500).json({
+    return res.status(500)
+    .json({
 
       success:false,
 
@@ -500,3 +522,5 @@ async (req, res) => {
     });
   }
 };
+
+ 

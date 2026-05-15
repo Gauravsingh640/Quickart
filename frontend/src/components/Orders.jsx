@@ -54,7 +54,7 @@ function Orders() {
       const res =
       await axios.get(
 
-        "https://quickart-jxc5.onrender.com/api/v1/order/my",
+        "http://localhost:8000/api/v1/order/my",
 
         {
 

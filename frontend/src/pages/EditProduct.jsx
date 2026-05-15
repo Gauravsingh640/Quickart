@@ -28,7 +28,7 @@ function EditProduct() {
   const getProduct = async () => {
     try {
       const res = await axios.get(
-        `https://quickart-jxc5.onrender.com/api/v1/products/${id}`,
+        `http://localhost:8000/api/v1/products/${id}`,
       );
 
       setFormData({
@@ -98,7 +98,7 @@ function EditProduct() {
       // API
 
       const res = await axios.put(
-        `https://quickart-jxc5.onrender.com/api/v1/products/${id}`,
+        `http://localhost:8000/api/v1/products/${id}`,
 
         data,
 

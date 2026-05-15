@@ -23,11 +23,11 @@ const userSchema = new mongoose.Schema(
 
     otp: { type: String, default: null },
     otpExpiry: { type: Date, default: null },
-
+ 
     address: { type: String },
     city: { type: String },
     zipCode: { type: String },
-    phoneNo: { type: String },
+    phoneNo: { type: String }, 
   },
   { timestamps: true }
 );

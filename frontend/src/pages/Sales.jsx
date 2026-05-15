@@ -34,7 +34,7 @@ function Sales() {
       const res =
       await axios.get(
 
-        "https://quickart-jxc5.onrender.com/api/v1/admin/stats"
+        "http://localhost:8000/api/v1/admin/stats"
       );
 
       setStats(

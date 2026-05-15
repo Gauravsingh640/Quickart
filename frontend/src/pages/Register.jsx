@@ -30,7 +30,7 @@ function Register() {
 
       const res = await axios.post(
 
-        "https://quickart-jxc5.onrender.com/api/v1/user/register",
+        "http://localhost:8000/api/v1/user/register",
 
         formData
       );

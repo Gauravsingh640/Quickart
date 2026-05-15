@@ -7,7 +7,7 @@ import {
   verify,
   updateProfile,
   getAllUsers,
-  updateUserRole,
+  updateUserRole, 
 } from "../controllers/userController.js";
 import { isAuthenticated } from "../middleware/isAuthenticated.js";
 import { upload } from "../middleware/multer.js";
@@ -20,5 +20,5 @@ router.post("/login", login);
 router.post("/logout", isAuthenticated, logout);
 router.put("/profile/update",isAuthenticated,upload.single("profilePic"),updateProfile);
 router.get("/all-users",getAllUsers);
-router.put("/update-role/:id",updateUserRole); 
+router.put("/update-role/:id",updateUserRole);  
 export default router;

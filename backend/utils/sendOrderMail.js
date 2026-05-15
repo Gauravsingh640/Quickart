@@ -1,179 +1,412 @@
 import axios from "axios";
 
 export const sendOrderMail =
-  async (
-    email,
-    items,
-    address,
-    totalPrice
-  ) => {
+async (
+  email,
+  items,
+  address,
+  totalPrice
+) => {
 
-    try {
+  try {
 
-      console.log(
-        "SEND ORDER MAIL CALLED"
-      );
+    console.log(
+      "SEND ORDER MAIL CALLED"
+    );
 
-      const itemsHtml =
-        items.map(
+    // PRODUCTS HTML
 
-          (item) => `
+    const itemsHtml =
+    items.map(
 
-            <tr>
+      (item) => `
 
-              <td style="padding:10px;">
-                ${item.title}
-              </td>
+      <tr>
 
-              <td style="padding:10px;">
-                ${item.quantity}
-              </td>
+        <td
+          style="
+          padding:14px;
+          border-bottom:1px solid #e2e8f0;
+          "
+        >
 
-              <td style="padding:10px;">
-                ₹${item.price}
-              </td>
+          <div
+            style="
+            display:flex;
+            align-items:center;
+            gap:10px;
+            "
+          >
 
-            </tr>
-          `
-        ).join("");
+            <img
+              src="${item.image}"
+              width="60"
+              height="60"
+              style="
+              border-radius:8px;
+              object-fit:cover;
+              "
+            />
 
-      const response =
-        await axios.post(
+            <span>
+              ${item.title}
+            </span>
 
-          "https://api.brevo.com/v3/smtp/email",
+          </div>
 
+        </td>
+
+        <td
+          style="
+          padding:14px;
+          border-bottom:1px solid #e2e8f0;
+          text-align:center;
+          "
+        >
+          ${item.quantity}
+        </td>
+
+        <td
+          style="
+          padding:14px;
+          border-bottom:1px solid #e2e8f0;
+          text-align:center;
+          "
+        >
+          ₹${item.price}
+        </td>
+
+      </tr>
+      `
+    ).join("");
+
+    const response =
+    await axios.post(
+
+      "https://api.brevo.com/v3/smtp/email",
+
+      {
+
+        sender:{
+
+          name:"QuickArt",
+
+          email:
+          "gauravsingh71205@gmail.com",
+        },
+
+        to:[
           {
+            email,
+          },
+        ],
 
-            sender: {
+        subject:
+        "Order Placed Successfully 🎉",
 
-              name:
-                "Quickart",
+        htmlContent:`
 
-              email:
-                "gauravsingh71205@gmail.com",
-            },
+        <div
+          style="
+          background:#0f172a;
+          padding:40px;
+          font-family:Arial,sans-serif;
+          "
+        >
 
-            to: [
-              {
-                email,
-              },
-            ],
+          <div
+            style="
+            max-width:700px;
+            margin:auto;
+            background:white;
+            border-radius:14px;
+            overflow:hidden;
+            "
+          >
 
-            subject:
-              "Order Placed Successfully 🎉",
+            <!-- HEADER -->
 
-            htmlContent: `
+            <div
+              style="
+              background:linear-gradient(
+              135deg,
+              #2563eb,
+              #7c3aed
+              );
+
+              color:white;
+              padding:35px;
+              text-align:center;
+              "
+            >
+
+              <h1
+                style="
+                margin:0;
+                font-size:34px;
+                "
+              >
+                QUICKART 🛒
+              </h1>
+
+              <p
+                style="
+                margin-top:10px;
+                font-size:16px;
+                opacity:0.9;
+                "
+              >
+                Your Order Has Been Confirmed 🎉
+              </p>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div
+              style="
+              padding:35px;
+              color:#1e293b;
+              "
+            >
+
+              <h2>
+                Thank You For Shopping With Us ❤️
+              </h2>
+
+              <p
+                style="
+                line-height:1.8;
+                "
+              >
+                Your order has been successfully placed and is now being processed.
+              </p>
+
+              <!-- ADDRESS -->
 
               <div
                 style="
-                  font-family:sans-serif;
-                  padding:20px;
+                background:#f8fafc;
+                padding:20px;
+                border-radius:10px;
+                margin-top:25px;
                 "
               >
 
-                <h2>
-                  Your Order Has Been Placed Successfully 🎉
-                </h2>
-
-                <p>
-                  Thank you for shopping with QUICKART.
-                </p>
-
-                <h3>
+                <h3
+                  style="
+                  margin-top:0;
+                  color:#2563eb;
+                  "
+                >
                   Delivery Address
                 </h3>
 
-                <p>
-                  ${address.fullName}
-                  <br/>
-                  ${address.address}
-                  <br/>
-                  ${address.city},
-                  ${address.state}
-                  <br/>
-                  ${address.zipCode},
-                  ${address.country}
-                  <br/>
-                  ${address.phone}
-                </p>
-
-                <h3>
-                  Order Summary
-                </h3>
-
-                <table
-                  border="1"
-                  cellpadding="10"
-                  cellspacing="0"
+                <p
                   style="
-                    border-collapse:collapse;
+                  line-height:1.8;
+                  margin:0;
                   "
                 >
 
-                  <tr>
+                  ${address.fullName}
+                  <br/>
 
-                    <th>
+                  ${address.address}
+                  <br/>
+
+                  ${address.city},
+                  ${address.state}
+
+                  <br/>
+
+                  ${address.zipCode},
+                  ${address.country}
+
+                  <br/>
+
+                  ${address.phone}
+
+                </p>
+
+              </div>
+
+              <!-- ORDER SUMMARY -->
+
+              <h3
+                style="
+                margin-top:35px;
+                color:#2563eb;
+                "
+              >
+                Order Summary
+              </h3>
+
+              <table
+                width="100%"
+                style="
+                border-collapse:collapse;
+                margin-top:15px;
+                "
+              >
+
+                <thead>
+
+                  <tr
+                    style="
+                    background:#eff6ff;
+                    "
+                  >
+
+                    <th
+                      style="
+                      padding:14px;
+                      text-align:left;
+                      "
+                    >
                       Product
                     </th>
 
-                    <th>
-                      Quantity
+                    <th
+                      style="
+                      padding:14px;
+                      "
+                    >
+                      Qty
                     </th>
 
-                    <th>
+                    <th
+                      style="
+                      padding:14px;
+                      "
+                    >
                       Price
                     </th>
 
                   </tr>
 
+                </thead>
+
+                <tbody>
+
                   ${itemsHtml}
 
-                </table>
+                </tbody>
+
+              </table>
+
+              <!-- TOTAL -->
+
+              <div
+                style="
+                margin-top:30px;
+                text-align:right;
+                "
+              >
 
                 <h2
                   style="
-                    margin-top:20px;
+                  color:#111827;
                   "
                 >
-                  Total Amount:
+
+                  Total:
                   ₹${totalPrice}
+
                 </h2>
 
               </div>
-            `,
-          },
 
-          {
+              <!-- BUTTON -->
 
-            headers: {
+              <div
+                style="
+                text-align:center;
+                margin-top:35px;
+                "
+              >
 
-              accept:
-                "application/json",
+                <a
+                  href="https://quickart-one.vercel.app/profile/orders"
 
-              "api-key":
-                process.env.BREVO_API_KEY,
+                  style="
+                  background:#2563eb;
+                  color:white;
+                  padding:14px 28px;
+                  border-radius:8px;
+                  text-decoration:none;
+                  font-weight:bold;
+                  display:inline-block;
+                  "
+                >
 
-              "content-type":
-                "application/json",
-            },
-          }
-        );
+                  View Orders
 
-      console.log(
-        "ORDER MAIL SENT SUCCESSFULLY"
-      );
+                </a>
 
-      console.log(response.data);
+              </div>
 
-    } catch (error) {
+            </div>
 
-      console.log(
-        "ORDER MAIL ERROR:"
-      );
+            <!-- FOOTER -->
 
-      console.log(
-        error.response?.data ||
-        error.message
-      );
-    }
-};
+            <div
+              style="
+              background:#f8fafc;
+              padding:20px;
+              text-align:center;
+              color:#64748b;
+              font-size:14px;
+              "
+            >
+
+              Thank you for choosing QuickArt ❤️
+
+            </div>
+
+          </div>
+
+        </div>
+        `,
+      },
+
+      {
+
+        headers:{
+
+          accept:
+          "application/json",
+
+          "api-key":
+          process.env.BREVO_API_KEY,
+
+          "content-type":
+          "application/json",
+        },
+      }
+    );
+
+    console.log(
+      "ORDER MAIL SENT SUCCESSFULLY"
+    );
+
+    console.log(
+      response.data
+    );
+
+  }
+
+  catch(error){
+
+    console.log(
+      "ORDER MAIL ERROR:"
+    );
+
+    console.log(
+
+      error.response?.data ||
+
+      error.message
+    );
+  }
+}; 
