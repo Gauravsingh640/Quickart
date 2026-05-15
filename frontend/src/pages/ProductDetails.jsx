@@ -1,15 +1,14 @@
 import {
   useParams,
-  useNavigate,
 } from "react-router-dom";
 
 import {
+  useEffect,
   useState,
   useContext,
 } from "react";
 
-import products
-from "../data/products";
+import axios from "axios";
 
 import {
   AuthContext,
@@ -19,53 +18,177 @@ import {
   toast,
 } from "react-toastify";
 
+import {
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
+
 function ProductDetails() {
 
   const { id } =
-    useParams();
-
-  const navigate =
-    useNavigate();
+  useParams();
 
   const {
+
     cart,
+
     addToCart,
+
     increaseQty,
+
     decreaseQty,
-  } = useContext(AuthContext);
 
-  const product =
-    products.find(
-      (item) =>
-        item.id === Number(id)
-    );
+  } = useContext(
+    AuthContext
+  );
 
-  const [mainImage, setMainImage] =
-    useState(
-      product.images[0]
-    );
+  const [product,
+    setProduct] =
+    useState(null);
 
-  // FIND PRODUCT IN CART
+  const [mainImage,
+    setMainImage] =
+    useState("");
+
+  const [currentIndex,
+    setCurrentIndex] =
+    useState(0);
+
+  // FETCH PRODUCT
+
+  const fetchProduct =
+  async () => {
+
+    try {
+
+      const res =
+      await axios.get(
+
+        `https://quickart-jxc5.onrender.com/api/v1/products/${id}`
+      );
+
+      setProduct(
+        res.data.product
+      );
+
+      setMainImage(
+
+        res.data.product
+        ?.images?.[0]?.url
+      );
+
+    }
+
+    catch(error){
+
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+
+    fetchProduct();
+
+  }, []);
+
+  // LOADING
+
+  if (!product){
+
+    return <h1>Loading...</h1>;
+  }
+
+  // CART ITEM
 
   const cartItem =
-    cart.find(
-      (item) =>
-        item.id === product.id
-    );
+  cart.find(
+
+    (item) =>
+
+      item._id ===
+      product._id
+  );
 
   const quantity =
-    cartItem
-      ? cartItem.quantity
-      : 0;
+  cartItem
+  ?
+  cartItem.quantity
+  :
+  0;
 
   // ADD TO CART
 
-  const handleAddToCart = () => {
+  const handleAddToCart =
+  () => {
 
-    addToCart(product);
+    addToCart({
+
+      ...product,
+
+      quantity:1,
+    });
 
     toast.success(
       "Added To Cart"
+    );
+  };
+
+  // NEXT IMAGE
+
+  const nextImage =
+  () => {
+
+    const newIndex =
+
+      currentIndex ===
+      product.images.length - 1
+
+      ?
+
+      0
+
+      :
+
+      currentIndex + 1;
+
+    setCurrentIndex(
+      newIndex
+    );
+
+    setMainImage(
+
+      product.images[
+        newIndex
+      ].url
+    );
+  };
+
+  // PREVIOUS IMAGE
+
+  const prevImage =
+  () => {
+
+    const newIndex =
+
+      currentIndex === 0
+
+      ?
+
+      product.images.length - 1
+
+      :
+
+      currentIndex - 1;
+
+    setCurrentIndex(
+      newIndex
+    );
+
+    setMainImage(
+
+      product.images[
+        newIndex
+      ].url
     );
   };
 
@@ -77,32 +200,96 @@ function ProductDetails() {
 
       <div className="details-left">
 
+        {/* SMALL IMAGES */}
+
         <div className="small-images">
 
           {
+
             product.images.map(
+
               (img, index) => (
 
                 <img
+
                   key={index}
-                  src={img}
+
+                  src={img.url}
+
                   alt=""
-                  onClick={() =>
-                    setMainImage(img)
-                  }
+
+                  onClick={() => {
+
+                    setMainImage(
+                      img.url
+                    );
+
+                    setCurrentIndex(
+                      index
+                    );
+                  }}
                 />
-              )
-            )
+              ))
           }
 
         </div>
 
+        {/* MAIN IMAGE */}
+
         <div className="main-image">
 
+          {/* LEFT ARROW */}
+
+          {
+
+            product.images.length > 1
+
+            &&
+
+            <button
+
+              className="img-arrow left-arrow"
+
+              onClick={
+                prevImage
+              }
+            >
+
+              <FaChevronLeft />
+
+            </button>
+          }
+
+          {/* IMAGE */}
+
           <img
+
             src={mainImage}
+
             alt=""
           />
+
+          {/* RIGHT ARROW */}
+
+          {
+
+            product.images.length > 1
+
+            &&
+
+            <button
+
+              className="img-arrow right-arrow"
+
+              onClick={
+                nextImage
+              }
+            >
+
+              <FaChevronRight />
+
+            </button>
+          }
 
         </div>
 
@@ -113,7 +300,9 @@ function ProductDetails() {
       <div className="details-right">
 
         <h1>
-          {product.title}
+
+          {product.name}
+
         </h1>
 
         <p className="brand">
@@ -127,44 +316,76 @@ function ProductDetails() {
         </p>
 
         <h2>
-          ₹ {product.price}
+
+          ₹
+          {product.price}
+
         </h2>
 
         <p className="desc">
+
           {product.description}
+
         </p>
 
         {
-          quantity === 0 ? (
+
+          quantity === 0
+
+          ?
+
+          (
 
             <button
-              onClick={handleAddToCart}
+              onClick={
+                handleAddToCart
+              }
             >
+
               Add To Cart
+
             </button>
 
-          ) : (
+          )
+
+          :
+
+          (
 
             <div className="qty-box1">
 
               <button
+
                 onClick={() =>
-                  decreaseQty(product.id)
+
+                  decreaseQty(
+                    product._id
+                  )
                 }
               >
+
                 -
+
               </button>
 
               <span>
+
                 {quantity}
+
               </span>
 
               <button
+
                 onClick={() =>
-                  increaseQty(product.id)
+
+                  increaseQty(
+                    product._id
+                  )
                 }
               >
+
                 +
+
               </button>
 
             </div>

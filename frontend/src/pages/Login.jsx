@@ -134,7 +134,7 @@ function Login() {
             res.data.refreshToken,
         })
       );
-
+ 
       // CONTEXT UPDATE
 
       setUser(res.data.user);
@@ -143,7 +143,7 @@ function Login() {
 
       // REDIRECT
 
-      navigate("/products");
+      navigate("/");
 
     }
     catch (err) {

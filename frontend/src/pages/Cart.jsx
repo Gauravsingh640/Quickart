@@ -43,7 +43,7 @@ function Cart() {
   // REMOVE ITEM
 
   const removeItem = (id) => {
-    const updatedCart = cart.filter((item) => item.id !== id);
+    const updatedCart = cart.filter((item) => item._id !== id);
 
     setCart(updatedCart);
 
@@ -113,14 +113,14 @@ function Cart() {
         <h1>Shopping Cart</h1>
 
         {cart.map((item) => (
-          <div key={item.id} className="cart-card">
+          <div key={item._id} className="cart-card">
             {/* PRODUCT */}
 
             <div className="cart-product">
-              <img src={item.image} alt="" />
+              <img src={item.images?.[0]?.url} alt="" />
 
               <div>
-                <h3>{item.title}</h3>
+                <h3>{item.name}</h3>
 
                 <p>₹ {item.price}</p>
               </div>
@@ -129,11 +129,11 @@ function Cart() {
             {/* QUANTITY */}
 
             <div className="qty-section">
-              <button onClick={() => decreaseQty(item.id)}>-</button>
+              <button onClick={() => decreaseQty(item._id)}>-</button>
 
               <span>{item.quantity}</span>
 
-              <button onClick={() => increaseQty(item.id)}>+</button>
+              <button onClick={() => increaseQty(item._id)}>+</button>
             </div>
 
             {/* ITEM TOTAL */}
@@ -142,7 +142,7 @@ function Cart() {
 
             {/* REMOVE */}
 
-            <button className="remove-btn" onClick={() => removeItem(item.id)}>
+            <button className="remove-btn" onClick={() => removeItem(item._id)}>
               <FaTrash />
               Remove
             </button>

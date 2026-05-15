@@ -29,7 +29,8 @@ function Orders() {
     user,
   } = useContext(AuthContext);
 
-  const [orders, setOrders] =
+  const [orders,
+    setOrders] =
     useState([]);
 
   // FETCH ORDERS
@@ -41,49 +42,51 @@ function Orders() {
   }, []);
 
   const fetchOrders =
-    async () => {
+  async () => {
 
-      try {
+    try {
 
-        const token =
-          sessionStorage.getItem(
-            "token"
-          );
+      const token =
+      sessionStorage.getItem(
+        "token"
+      );
 
-        const res =
-          await axios.get(
+      const res =
+      await axios.get(
 
-            "https://quickart-jxc5.onrender.com/api/v1/order/my",
+        "https://quickart-jxc5.onrender.com/api/v1/order/my",
 
-            {
+        {
 
-              headers: {
+          headers: {
 
-                Authorization:
-                  `Bearer ${token}`,
-              },
-            }
-          );
+            Authorization:
+            `Bearer ${token}`,
+          },
+        }
+      );
 
-        console.log(
-          res.data
-        );
+      console.log(
+        res.data
+      );
 
-        setOrders(
-          res.data.orders
-        );
+      setOrders(
+        res.data.orders
+      );
 
-      } catch (error) {
+    }
 
-        console.log(error);
-      }
-    };
+    catch(error){
+
+      console.log(error);
+    }
+  };
 
   // NO ORDERS
 
   if (
     orders.length === 0
-  ) {
+  ){
 
     return (
 
@@ -92,13 +95,16 @@ function Orders() {
         <div className="orders-top">
 
           <button
+
             className="back-btn"
 
             onClick={() =>
               navigate("/")
             }
           >
+
             <FaArrowLeft />
+
           </button>
 
           <h1>
@@ -124,13 +130,16 @@ function Orders() {
       <div className="orders-top">
 
         <button
+
           className="back-btn"
 
           onClick={() =>
             navigate("/")
           }
         >
+
           <FaArrowLeft />
+
         </button>
 
         <h1>
@@ -142,154 +151,171 @@ function Orders() {
       {/* ALL ORDERS */}
 
       {
-        orders.map(
-          (order) => (
 
-            <div
-              key={order._id}
-              className="order-card"
-            >
+        orders.map((order) => (
 
-              {/* HEADER */}
+          <div
 
-              <div className="order-header">
+            key={order._id}
 
-                <div>
+            className="order-card"
+          >
 
-                  <h2>
+            {/* HEADER */}
 
-                    Order ID:
-                    {" "}
+            <div className="order-header">
 
-                    {order._id}
+              <div>
 
-                  </h2>
+                <h2>
 
-                  <h3>
+                  Order ID:
+                  {" "}
+                  {order._id}
 
-                    User:
-                    {" "}
+                </h2>
 
-                    {
-                      user
-                        ?.firstName
-                    }
+                <h3>
 
-                    {" "}
+                  User:
+                  {" "}
 
-                    {
-                      user
-                        ?.lastName
-                    }
+                  {
+                    user
+                    ?.firstName
+                  }
 
-                  </h3>
+                  {" "}
 
-                  <p>
+                  {
+                    user
+                    ?.lastName
+                  }
 
-                    Email:
-                    {" "}
+                </h3>
 
-                    {
-                      user
-                        ?.email
-                    }
+                <p>
 
-                  </p>
+                  Email:
+                  {" "}
 
-                </div>
+                  {
+                    user
+                    ?.email
+                  }
 
-                <div className="order-right">
-
-                  <h3>
-
-                    Amount:
-                    {" "}
-
-                    INR
-                    {" "}
-
-                    {order.totalPrice.toFixed(
-                      2
-                    )}
-
-                  </h3>
-
-                  <span>
-                    {order.status}
-                  </span>
-
-                </div>
+                </p>
 
               </div>
 
-              {/* PRODUCTS */}
+              <div className="order-right">
 
-              <h2 className="products-heading">
-                Products:
-              </h2>
+                <h3>
 
-              {
-                order.items.map(
-                  (
-                    item
-                  ) => (
+                  Amount:
+                  {" "}
 
-                    <div
-                      key={
-                        item.id
+                  INR
+                  {" "}
+
+                  {
+                    order.totalPrice
+                    .toFixed(2)
+                  }
+
+                </h3>
+
+                <span
+
+                  className={`orderStatus ${order.status}`}
+                >
+
+                  {order.status}
+
+                </span>
+
+              </div>
+
+            </div>
+
+            {/* PRODUCTS */}
+
+            <h2 className="products-heading">
+
+              Products:
+
+            </h2>
+
+            {
+
+              order.items.map(
+
+                (
+                  item,
+                  index
+                ) => (
+
+                  <div
+
+                    key={index}
+
+                    className="order-product"
+                  >
+
+                    {/* IMAGE */}
+
+                    <img
+
+                      src={
+                        item.image
                       }
 
-                      className="order-product"
-                    >
+                      alt=""
+                    />
 
-                      {/* IMAGE */}
+                    {/* INFO */}
 
-                      <img
-                        src={
-                          item.image
-                        }
-
-                        alt=""
-                      />
-
-                      {/* TITLE */}
-
-                      <div className="product-info">
-
-                        <h3>
-                          {
-                            item.title
-                          }
-                        </h3>
-
-                      </div>
-
-                      {/* PRICE */}
+                    <div className="product-info">
 
                       <h3>
 
-                        ₹
                         {
-                          item.price
-                        }
-
-                        {" "}
-                        x
-                        {" "}
-                        {
-                          item.quantity
+                          item.title
                         }
 
                       </h3>
 
-                    </div>
-                  )
-                )
-              }
+                      <p>
 
-            </div>
-          )
-        )
+                        Quantity:
+                        {" "}
+
+                        {
+                          item.quantity
+                        }
+
+                      </p>
+
+                    </div>
+
+                    {/* PRICE */}
+
+                    <h3>
+
+                      ₹
+
+                      {
+                        item.price
+                      }
+
+                    </h3>
+
+                  </div>
+                ))
+            }
+
+          </div>
+        ))
       }
 
     </div>

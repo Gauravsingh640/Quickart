@@ -356,6 +356,57 @@ function Checkout() {
 
       image:
         "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
+      modal:{
+
+        ondismiss: async function () {
+
+          try {
+
+            const token =
+            sessionStorage.getItem(
+              "token"
+            );
+
+            await axios.post(
+
+              "https://quickart-jxc5.onrender.com/api/v1/order/create",
+
+              {
+
+                items: cart,
+
+                totalPrice: total,
+
+                address:
+                addresses[
+                  selectedAddress
+                ],
+
+                status:"Failed",
+              },
+
+              {
+
+                headers:{
+
+                  Authorization:
+                  `Bearer ${token}`,
+                },
+              }
+            );
+
+            toast.error(
+              "Payment Failed"
+            );
+
+          }
+
+          catch(error){
+
+            console.log(error);
+          }
+        },
+      },
 
       handler:
         async function () {
@@ -373,8 +424,7 @@ function Checkout() {
 
             await axios.post(
 
-              "https://quickart-jxc5.onrender.com/api/v1/order/create",
-
+              "https://quickart-jxc5.onrender.com/api/v1/order/create",  
               {
                 items: cart,
 
@@ -385,6 +435,8 @@ function Checkout() {
                   addresses[
                     selectedAddress
                   ],
+
+                 status:"Paid",
               },
 
               {
@@ -413,7 +465,7 @@ function Checkout() {
             );
           }
         },
-
+      
       prefill: {
 
         name:
@@ -444,7 +496,7 @@ function Checkout() {
   };
 
   return (
-
+ 
     <div className="checkout-page">
 
       {/* LEFT */}

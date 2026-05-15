@@ -11,22 +11,21 @@ function AuthProvider({ children }) {
     storedUser && storedUser !== "undefined" ? JSON.parse(storedUser) : null,
   );
 
-  const mergeCarts = (guestCart, userCart) => {
+  // MERGE CARTS
 
+  const mergeCarts = (
+    guestCart,
+
+    userCart,
+  ) => {
     const merged = [...userCart];
 
     guestCart.forEach((guestItem) => {
-
-      const existingItem = merged.find(
-        (item) => item.id === guestItem.id
-      );
+      const existingItem = merged.find((item) => item._id === guestItem._id);
 
       if (existingItem) {
-
         existingItem.quantity += guestItem.quantity;
-
       } else {
-
         merged.push(guestItem);
       }
     });
@@ -34,102 +33,88 @@ function AuthProvider({ children }) {
     return merged;
   };
 
-  useEffect(() => {
-
-    if (user) {
-
-      const savedUserCart =
-        JSON.parse(
-          localStorage.getItem("userCart")
-        ) || [];
-
-      const guestCart =
-        JSON.parse(
-          sessionStorage.getItem("guestCart")
-        ) || [];
- 
-      // MERGE BOTH CARTS
-      const mergedCart =
-        mergeCarts(
-          guestCart,
-          savedUserCart
-        );
-
-      setCart(mergedCart);
-
-      // SAVE MERGED CART
-      localStorage.setItem(
-        "userCart",
-        JSON.stringify(mergedCart)
-      );
-
-      // CLEAR GUEST CART
-      sessionStorage.removeItem("guestCart");
-
-    } else {
-
-      const guestCart =
-        JSON.parse(
-          sessionStorage.getItem("guestCart")
-        ) || [];
-
-      setCart(guestCart);
-    }
-
-  }, [user]);
   // CART
 
   const [cart, setCart] = useState(() => {
-
     if (storedUser) {
-
-      return JSON.parse(
-        localStorage.getItem("userCart")
-      ) || [];
+      return JSON.parse(localStorage.getItem("userCart")) || [];
     }
 
-    return JSON.parse(
-      sessionStorage.getItem("guestCart")
-    ) || [];
+    return JSON.parse(sessionStorage.getItem("guestCart")) || [];
   });
+
+  // LOAD CART
+
+  useEffect(() => {
+    if (user) {
+      const savedUserCart = JSON.parse(localStorage.getItem("userCart")) || [];
+
+      const guestCart = JSON.parse(sessionStorage.getItem("guestCart")) || [];
+
+      // MERGE
+
+      const mergedCart = mergeCarts(
+        guestCart,
+
+        savedUserCart,
+      );
+
+      setCart(mergedCart);
+
+      // SAVE
+
+      localStorage.setItem(
+        "userCart",
+
+        JSON.stringify(mergedCart),
+      );
+
+      // CLEAR GUEST
+
+      sessionStorage.removeItem("guestCart");
+    } else {
+      const guestCart = JSON.parse(sessionStorage.getItem("guestCart")) || [];
+
+      setCart(guestCart);
+    }
+  }, [user]);
 
   // SAVE CART
 
   useEffect(() => {
-
     if (user) {
-
-      // SAVE USER CART
       localStorage.setItem(
         "userCart",
-        JSON.stringify(cart)
+
+        JSON.stringify(cart),
       );
-
     } else {
-
-      // SAVE GUEST CART
       sessionStorage.setItem(
         "guestCart",
-        JSON.stringify(cart)
+
+        JSON.stringify(cart),
       );
     }
-
   }, [cart, user]);
+
   // PROMO
 
   const [discount, setDiscount] = useState(0);
 
   const [promoCode, setPromoCode] = useState("");
 
+  // ORDERS
+
   const [orders, setOrders] = useState([]);
+
   // ADD TO CART
 
   const addToCart = (product) => {
-    const itemExists = cart.find((item) => item.id === product.id);
+    const itemExists = cart.find((item) => item._id === product._id);
 
     if (itemExists) {
       const updatedCart = cart.map((item) =>
-        item.id === product.id
+        item._id === product._id
           ? {
               ...item,
 
@@ -152,11 +137,11 @@ function AuthProvider({ children }) {
     }
   };
 
-  // INCREASE QTY
+  // INCREASE
 
   const increaseQty = (id) => {
     const updatedCart = cart.map((item) =>
-      item.id === id
+      item._id === id
         ? {
             ...item,
 
@@ -168,13 +153,13 @@ function AuthProvider({ children }) {
     setCart(updatedCart);
   };
 
-  // DECREASE QTY
+  // DECREASE
 
   const decreaseQty = (id) => {
     const updatedCart = cart
 
       .map((item) =>
-        item.id === id
+        item._id === id
           ? {
               ...item,
 
@@ -204,6 +189,7 @@ function AuthProvider({ children }) {
         addToCart,
 
         increaseQty,
+
         decreaseQty,
 
         // PROMO
@@ -213,6 +199,8 @@ function AuthProvider({ children }) {
 
         promoCode,
         setPromoCode,
+
+        // ORDERS
 
         orders,
         setOrders,

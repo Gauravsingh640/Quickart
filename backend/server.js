@@ -4,9 +4,11 @@ dotenv.config();
 import express from "express";
 import connectdb from "./database/db.js";
 import userRoute from "./routes/userRoute.js";
-import orderRoute from "./routes/orderRoute.js";
+import orderRoute from "./routes/orderRoute.js"; 
+import productRoutes from "./routes/productRoute.js";
+import adminRoutes from "./routes/adminRoute.js";
 import cors from "cors";
-
+ 
 const app = express();
  
 // CORS
@@ -28,13 +30,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
+app.get("/user/all-users", (req, res) => {
   res.send("Welcome to QuickArt API");
 });
 // Routes
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/order",orderRoute);
-
+app.use("/api/v1/products",productRoutes);
+app.use("/api/v1/admin",adminRoutes);
 // PORT
 const PORT = process.env.PORT || 3000;
 

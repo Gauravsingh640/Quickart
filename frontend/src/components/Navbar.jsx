@@ -29,6 +29,7 @@ function Navbar() {
     setCart,
   } = useContext(AuthContext);
 
+  console.log("NAVBAR USER:", user);
   // TOTAL CART ITEMS
 
   const totalItems =
@@ -76,6 +77,7 @@ function Navbar() {
     navigate("/cart");
   };
 
+   
   return (
 
     <nav className="navbar">
@@ -106,6 +108,12 @@ function Navbar() {
               {user.name ||
                user.firstName}
             </h4>
+
+            {/* ADMIN DASHBOARD LINK */}
+
+            {user?.role === "admin"||user?.role === "superAdmin"?
+              <Link to="/dashboard"> Dashboard </Link> : null
+            }
 
             <div
               className="cart"

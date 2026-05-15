@@ -146,7 +146,6 @@ export const reVerify = async (req, res) => {
         message: "Email already verified",
       });
     }
-
     // NEW TOKEN
     const token = jwt.sign(
       { id: user._id },
@@ -396,3 +395,108 @@ export const updateProfile =
       });
     }
   };
+// GET ALL VERIFIED USERS
+
+export const getAllUsers =
+async (req, res) => {
+
+  try {
+
+    const users =
+    await User.find({
+
+      isVerified:true,
+    })
+
+    .sort({
+      createdAt:-1,
+    });
+
+    return res.status(200)
+    .json({
+
+      success:true,
+
+      users,
+    });
+
+  }
+
+  catch(error){
+
+    return res.status(500)
+    .json({
+
+      success:false,
+
+      message:error.message,
+    });
+  }
+};
+
+
+// UPDATE USER ROLE
+
+export const updateUserRole =
+async (req, res) => {
+
+  try {
+
+    const user =
+    await User.findById(
+      req.params.id
+    );
+
+    if (!user) {
+
+      return res.status(404)
+      .json({
+
+        success:false,
+
+        message:"User Not Found",
+      });
+    }
+
+    // SUPER ADMIN PROTECTION
+
+    if (
+      user.role ===
+      "superAdmin"
+    ) {
+
+      return res.status(403)
+      .json({
+
+        success:false,
+
+        message:
+        "Super Admin Cannot Be Changed",
+      });
+    }
+
+    user.role =
+    req.body.role;
+
+    await user.save();
+
+    return res.status(200).json({
+
+      success:true,
+
+      message:
+      "Role Updated Successfully",
+    });
+
+  }
+
+  catch(error){
+
+    return res.status(500).json({
+
+      success:false,
+
+      message:error.message,
+    });
+  }
+};

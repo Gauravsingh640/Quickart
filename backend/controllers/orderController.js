@@ -1,204 +1,286 @@
-// import { Order }
-// from "../models/orderModel.js";
-
-// export const createOrder =
-//   async (req, res) => {
-
-//     try {
-//       console.log("BODY:");
-//       console.log(req.body);
-
-//       console.log("REQ ID:");
-//       console.log(req.id); 
-//       const {
-
-//         items,
-//         totalPrice,
-
-//       } = req.body;
-
-//       const order =
-//         await Order.create({
-
-//           user: req.id,
-
-//           items,
-
-//           totalPrice,
-//         });
-
-//       return res.status(201).json({
-
-//         success: true,
-
-//         message:
-//           "Order placed successfully",
-
-//         order,
-//       });
-
-//     } catch (error) {
-
-//       return res.status(500).json({
-
-//         success: false,
-
-//         message: error.message,
-//       });
-//     }
-// };
-
-// export const getMyOrders =
-//   async (req, res) => {
-
-//     try {
-
-//       const orders =
-//         await Order.find({
-
-//           user: req.id,
-//         });
-
-//       return res.status(200).json({
-
-//         success: true,
-
-//         orders,
-//       });
-
-//     } catch (error) {
-
-//       return res.status(500).json({
-
-//         success: false,
-
-//         message: error.message,
-//       });
-//     }
-// };
-
-// orderController.js
-
-import { Order }
-from "../models/orderModel.js";
-
-import { User }
-from "../models/userModel.js";
-
 import {
-  sendOrderMail,
-} from "../utils/sendOrderMail.js";
+  Order,
+} from "../models/orderModel.js";
+
+
+// CREATE ORDER
 
 export const createOrder =
-  async (req, res) => {
+async (req, res) => {
 
-    try {
+  try {
 
-      console.log("BODY:");
-      console.log(req.body);
+    console.log("BODY:");
+    console.log(req.body);
 
-      console.log("REQ ID:");
-      console.log(req.id);
+    console.log("REQ ID:");
+    console.log(req.id);
 
-      const {
+    const {
 
-        items,
-        totalPrice,
-        address,
+      items,
 
-      } = req.body;
+      totalPrice,
 
-      // FIND USER
+      status,
 
-      const user =
-        await User.findById(
-          req.id
-        );
+    } = req.body;
 
-      // CREATE ORDER
+    // FORMAT ITEMS
+    console.log(items);
+    const formattedItems =
 
-      const order =
-        await Order.create({
+    items.map((item) => ({
 
-          user: req.id,
+      id:
+      item._id,
 
-          items,
+      title:
+      item.name,
 
-          totalPrice,
+      image:
 
-          address,
-        });
-      
-      sendOrderMail(
+      item.images &&
+      item.images.length > 0
 
-        user.email,
+      ?
 
-        items,
+      item.images[0].url
 
-        address,
+      :
 
-        totalPrice
-      );
+      "",
 
+      price:
+      item.price,
 
-      return res.status(201).json({
+      quantity:
+      item.quantity,
+    }));
 
-        success: true,
+    // CREATE ORDER
 
-        message:
-          "Order placed successfully",
+    const order =
 
-        order,
-      });
+    await Order.create({
 
-    } catch (error) {
+      user:req.id,
 
-      console.log(
-        "ORDER ERROR:"
-      );
+      items:
+      formattedItems,
 
-      console.log(error);
+      totalPrice,
 
-      return res.status(500).json({
+      status:
+      status || "Pending",
+    });
 
-        success: false,
+    return res.status(201)
+    .json({
 
-        message: error.message,
-      });
-    }
+      success:true,
+
+      message:
+      "Order placed successfully",
+
+      order,
+    });
+
+  }
+
+  catch(error){
+
+    console.log(error);
+
+    return res.status(500)
+    .json({
+
+      success:false,
+
+      message:error.message,
+    });
+  }
 };
 
+
+// GET MY ORDERS
+
 export const getMyOrders =
-  async (req, res) => {
+async (req, res) => {
 
-    try {
+  try {
 
-      const orders =
-        await Order.find({
+    const orders =
 
-          user: req.id,
-        });
+    await Order.find({
 
-      return res.status(200).json({
+      user:req.id,
+    })
 
-        success: true,
+    .populate({
 
-        orders,
-      });
+      path:"user",
 
-    } catch (error) {
+      match:{
+        isVerified:true,
+      },
+    })
 
-      console.log(
-        "ORDER ERROR:"
-      );
+    .sort({
+      createdAt:-1,
+    });
 
-      console.log(error);
+    // REMOVE NULL USER
 
-      return res.status(500).json({
+    const filteredOrders =
 
-        success: false,
+    orders.filter(
 
-        message: error.message,
-      });
-    }
+      (order) => order.user
+    );
+
+    return res.status(200)
+    .json({
+
+      success:true,
+
+      orders:
+      filteredOrders,
+    });
+
+  }
+
+  catch(error){
+
+    console.log(error);
+
+    return res.status(500)
+    .json({
+
+      success:false,
+
+      message:error.message,
+    });
+  }
+};
+
+
+// GET USER ORDERS
+
+export const getUserOrders =
+async (req, res) => {
+
+  try {
+
+    const orders =
+
+    await Order.find({
+
+      user:req.params.id,
+    })
+
+    .populate({
+
+      path:"user",
+
+      match:{
+        isVerified:true,
+      },
+    })
+
+    .sort({
+      createdAt:-1,
+    });
+
+    // REMOVE NULL USER
+
+    const filteredOrders =
+
+    orders.filter(
+
+      (order) => order.user
+    );
+
+    return res.status(200)
+    .json({
+
+      success:true,
+
+      orders:
+      filteredOrders,
+    });
+
+  }
+
+  catch(error){
+
+    console.log(error);
+
+    return res.status(500)
+    .json({
+
+      success:false,
+
+      message:error.message,
+    });
+  }
+};
+
+
+// GET ALL ORDERS
+
+export const getAllOrders =
+async (req, res) => {
+
+  try {
+
+    const orders =
+
+    await Order.find()
+
+    .populate({
+
+      path:"user",
+
+      match:{
+        isVerified:true,
+      },
+    })
+
+    .sort({
+      createdAt:-1,
+    });
+
+    // REMOVE NULL USERS
+
+    const filteredOrders =
+
+    orders.filter(
+
+      (order) => order.user
+    );
+
+    return res.status(200)
+    .json({
+
+      success:true,
+
+      orders:
+      filteredOrders,
+    });
+
+  }
+
+  catch(error){
+
+    console.log(error);
+
+    return res.status(500)
+    .json({
+
+      success:false,
+
+      message:error.message,
+    });
+  }
 };
