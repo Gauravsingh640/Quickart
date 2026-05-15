@@ -15,6 +15,9 @@ async (
     );
 
     console.log(email);
+    console.log(process.env.MAIL_USER);
+
+    console.log(process.env.MAIL_PASS);
 
     const transporter =
     nodemailer.createTransport({
