@@ -97,7 +97,7 @@ async (
 
         to:[
           {
-            email,
+            email:String(email),
           },
         ],
 
