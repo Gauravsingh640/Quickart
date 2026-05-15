@@ -432,7 +432,7 @@ function Checkout() {
                   total,
 
                 address: 
-                    selectedAddress ,
+                   addresses[selectedAddress] ,
 
                  status:"Paid",
               },
