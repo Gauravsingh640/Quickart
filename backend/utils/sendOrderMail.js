@@ -1,4 +1,4 @@
-import axios from "axios";
+import nodemailer from "nodemailer";
 
 export const sendOrderMail =
 async (
@@ -14,21 +14,28 @@ async (
       "========== ORDER MAIL DEBUG =========="
     );
 
-    console.log("EMAIL:");
     console.log(email);
 
-    console.log("ITEMS:");
-    console.log(items);
+    const transporter =
+    nodemailer.createTransport({
 
-    console.log("ADDRESS:");
-    console.log(address);
+      host:
+      process.env.MAIL_HOST,
 
-    console.log("TOTAL PRICE:");
-    console.log(totalPrice);
+      port:
+      process.env.MAIL_PORT,
 
-    console.log(
-      "SEND ORDER MAIL CALLED"
-    );
+      secure:false,
+
+      auth:{
+
+        user:
+        process.env.MAIL_USER,
+
+        pass:
+        process.env.MAIL_PASS,
+      },
+    });
 
     // PRODUCTS HTML
 
@@ -55,7 +62,7 @@ async (
           >
 
             <img
-              src="${item.image || "https://via.placeholder.com/60"}"
+              src="${item.image}"
               width="60"
               height="60"
               style="
@@ -75,8 +82,8 @@ async (
         <td
           style="
           padding:14px;
-          border-bottom:1px solid #e2e8f0;
           text-align:center;
+          border-bottom:1px solid #e2e8f0;
           "
         >
           ${item.quantity}
@@ -85,8 +92,8 @@ async (
         <td
           style="
           padding:14px;
-          border-bottom:1px solid #e2e8f0;
           text-align:center;
+          border-bottom:1px solid #e2e8f0;
           "
         >
           ₹${item.price}
@@ -96,318 +103,279 @@ async (
       `
     ).join("");
 
-    const response =
-    await axios.post(
+    await transporter.sendMail({
 
-      "https://api.brevo.com/v3/smtp/email",
+      from:
+      process.env.MAIL_USER,
 
-      {
+      to:email,
 
-        sender:{
+      subject:
+      "Order Placed Successfully 🎉",
 
-          name:"QuickArt",
+      html:`
 
-          email:
-          process.env.MAIL_USER,
-        },
-
-        to:[
-          {
-            email:String(email),
-          },
-        ],
-
-        subject:
-        "Order Placed Successfully 🎉",
-
-        htmlContent:`
+      <div
+        style="
+        background:#0f172a;
+        padding:40px;
+        font-family:Arial,sans-serif;
+        "
+      >
 
         <div
           style="
-          background:#0f172a;
-          padding:40px;
-          font-family:Arial,sans-serif;
+          max-width:700px;
+          margin:auto;
+          background:white;
+          border-radius:14px;
+          overflow:hidden;
           "
         >
 
+          <!-- HEADER -->
+
           <div
             style="
-            max-width:700px;
-            margin:auto;
-            background:white;
-            border-radius:14px;
-            overflow:hidden;
+            background:linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+            );
+
+            color:white;
+            padding:35px;
+            text-align:center;
             "
           >
 
-            <!-- HEADER -->
-
-            <div
+            <h1
               style="
-              background:linear-gradient(
-              135deg,
-              #2563eb,
-              #7c3aed
-              );
-
-              color:white;
-              padding:35px;
-              text-align:center;
+              margin:0;
+              font-size:34px;
               "
             >
+              QUICKART 🛒
+            </h1>
 
-              <h1
-                style="
-                margin:0;
-                font-size:34px;
-                "
-              >
-                QUICKART 🛒
-              </h1>
-
-              <p
-                style="
-                margin-top:10px;
-                font-size:16px;
-                opacity:0.9;
-                "
-              >
-                Your Order Has Been Confirmed 🎉
-              </p>
-
-            </div>
-
-            <!-- BODY -->
-
-            <div
+            <p
               style="
-              padding:35px;
-              color:#1e293b;
+              margin-top:10px;
+              opacity:0.9;
               "
             >
+              Your Order Has Been Confirmed 🎉
+            </p>
 
-              <h2>
-                Thank You For Shopping With Us ❤️
-              </h2>
+          </div>
 
-              <p
-                style="
-                line-height:1.8;
-                "
-              >
-                Your order has been successfully placed and is now being processed.
-              </p>
+          <!-- BODY -->
 
-              <!-- ADDRESS -->
+          <div
+            style="
+            padding:35px;
+            color:#1e293b;
+            "
+          >
 
-              <div
-                style="
-                background:#f8fafc;
-                padding:20px;
-                border-radius:10px;
-                margin-top:25px;
-                "
-              >
+            <h2>
+              Thank You For Shopping With Us ❤️
+            </h2>
 
-                <h3
-                  style="
-                  margin-top:0;
-                  color:#2563eb;
-                  "
-                >
-                  Delivery Address
-                </h3>
+            <p
+              style="
+              line-height:1.8;
+              "
+            >
+              Your order has been successfully placed and is now being processed.
+            </p>
 
-                <p
-                  style="
-                  line-height:1.8;
-                  margin:0;
-                  "
-                >
-
-                  ${address.fullName}
-                  <br/>
-
-                  ${address.address}
-                  <br/>
-
-                  ${address.city},
-                  ${address.state}
-
-                  <br/>
-
-                  ${address.zipCode},
-                  ${address.country}
-
-                  <br/>
-
-                  ${address.phone}
-
-                </p>
-
-              </div>
-
-              <!-- ORDER SUMMARY -->
-
-              <h3
-                style="
-                margin-top:35px;
-                color:#2563eb;
-                "
-              >
-                Order Summary
-              </h3>
-
-              <table
-                width="100%"
-                style="
-                border-collapse:collapse;
-                margin-top:15px;
-                "
-              >
-
-                <thead>
-
-                  <tr
-                    style="
-                    background:#eff6ff;
-                    "
-                  >
-
-                    <th
-                      style="
-                      padding:14px;
-                      text-align:left;
-                      "
-                    >
-                      Product
-                    </th>
-
-                    <th
-                      style="
-                      padding:14px;
-                      "
-                    >
-                      Qty
-                    </th>
-
-                    <th
-                      style="
-                      padding:14px;
-                      "
-                    >
-                      Price
-                    </th>
-
-                  </tr>
-
-                </thead>
-
-                <tbody>
-
-                  ${itemsHtml}
-
-                </tbody>
-
-              </table>
-
-              <!-- TOTAL -->
-
-              <div
-                style="
-                margin-top:30px;
-                text-align:right;
-                "
-              >
-
-                <h2
-                  style="
-                  color:#111827;
-                  "
-                >
-
-                  Total:
-                  ₹${totalPrice}
-
-                </h2>
-
-              </div>
-
-              <!-- BUTTON -->
-
-              <div
-                style="
-                text-align:center;
-                margin-top:35px;
-                "
-              >
-
-                <a
-                  href="https://quickart-one.vercel.app/profile/orders"
-
-                  style="
-                  background:#2563eb;
-                  color:white;
-                  padding:14px 28px;
-                  border-radius:8px;
-                  text-decoration:none;
-                  font-weight:bold;
-                  display:inline-block;
-                  "
-                >
-
-                  View Orders
-
-                </a>
-
-              </div>
-
-            </div>
-
-            <!-- FOOTER -->
+            <!-- ADDRESS -->
 
             <div
               style="
               background:#f8fafc;
               padding:20px;
-              text-align:center;
-              color:#64748b;
-              font-size:14px;
+              border-radius:10px;
+              margin-top:25px;
               "
             >
 
-              Thank you for choosing QuickArt ❤️
+              <h3
+                style="
+                margin-top:0;
+                color:#2563eb;
+                "
+              >
+                Delivery Address
+              </h3>
+
+              <p
+                style="
+                line-height:1.8;
+                margin:0;
+                "
+              >
+
+                ${address.fullName}
+                <br/>
+
+                ${address.address}
+                <br/>
+
+                ${address.city},
+                ${address.state}
+
+                <br/>
+
+                ${address.zipCode},
+                ${address.country}
+
+                <br/>
+
+                ${address.phone}
+
+              </p>
+
+            </div>
+
+            <!-- ORDER SUMMARY -->
+
+            <h3
+              style="
+              margin-top:35px;
+              color:#2563eb;
+              "
+            >
+              Order Summary
+            </h3>
+
+            <table
+              width="100%"
+              style="
+              border-collapse:collapse;
+              margin-top:15px;
+              "
+            >
+
+              <thead>
+
+                <tr
+                  style="
+                  background:#eff6ff;
+                  "
+                >
+
+                  <th
+                    style="
+                    padding:14px;
+                    text-align:left;
+                    "
+                  >
+                    Product
+                  </th>
+
+                  <th
+                    style="
+                    padding:14px;
+                    "
+                  >
+                    Qty
+                  </th>
+
+                  <th
+                    style="
+                    padding:14px;
+                    "
+                  >
+                    Price
+                  </th>
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                ${itemsHtml}
+
+              </tbody>
+
+            </table>
+
+            <!-- TOTAL -->
+
+            <div
+              style="
+              margin-top:30px;
+              text-align:right;
+              "
+            >
+
+              <h2>
+
+                Total:
+                ₹${totalPrice}
+
+              </h2>
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <div
+              style="
+              text-align:center;
+              margin-top:35px;
+              "
+            >
+
+              <a
+                href="https://quickart-one.vercel.app/profile/orders"
+
+                style="
+                background:#2563eb;
+                color:white;
+                padding:14px 28px;
+                border-radius:8px;
+                text-decoration:none;
+                font-weight:bold;
+                display:inline-block;
+                "
+              >
+
+                View Orders
+
+              </a>
 
             </div>
 
           </div>
 
+          <!-- FOOTER -->
+
+          <div
+            style="
+            background:#f8fafc;
+            padding:20px;
+            text-align:center;
+            color:#64748b;
+            font-size:14px;
+            "
+          >
+
+            Thank you for choosing QuickArt ❤️
+
+          </div>
+
         </div>
-        `,
-      },
 
-      {
-
-        headers:{
-
-          accept:
-          "application/json",
-
-          "api-key":
-          process.env.BREVO_API_KEY,
-
-          "content-type":
-          "application/json",
-        },
-      }
-    );
+      </div>
+      `,
+    });
 
     console.log(
       "ORDER MAIL SENT SUCCESSFULLY"
-    );
-
-    console.log(
-      response.data
     );
 
   }
@@ -418,11 +386,6 @@ async (
       "ORDER MAIL ERROR:"
     );
 
-    console.log(
-
-      error.response?.data ||
-
-      error.message
-    );
+    console.log(error);
   }
 };
