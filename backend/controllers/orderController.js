@@ -2,6 +2,10 @@ import {
   Order,
 } from "../models/orderModel.js";
 
+import {
+  sendOrderMail,
+} from "../utils/sendOrderMail.js";
+
 
 // CREATE ORDER
 
@@ -24,10 +28,12 @@ async (req, res) => {
 
       status,
 
+      address,
+
     } = req.body;
 
     // FORMAT ITEMS
-    console.log(items);
+
     const formattedItems =
 
     items.map((item) => ({
@@ -58,6 +64,10 @@ async (req, res) => {
       item.quantity,
     }));
 
+    console.log(
+      formattedItems
+    );
+
     // CREATE ORDER
 
     const order =
@@ -74,6 +84,19 @@ async (req, res) => {
       status:
       status || "Pending",
     });
+
+    // SEND ORDER MAIL
+
+    await sendOrderMail(
+
+      address.email,
+
+      formattedItems,
+
+      address,
+
+      totalPrice
+    );
 
     return res.status(201)
     .json({
@@ -283,4 +306,4 @@ async (req, res) => {
       message:error.message,
     });
   }
-};
+}; 

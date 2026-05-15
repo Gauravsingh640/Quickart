@@ -431,10 +431,8 @@ function Checkout() {
                 totalPrice:
                   total,
 
-                address:
-                  addresses[
-                    selectedAddress
-                  ],
+                address: 
+                    selectedAddress ,
 
                  status:"Paid",
               },

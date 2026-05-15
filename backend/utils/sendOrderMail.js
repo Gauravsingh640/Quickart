@@ -92,7 +92,7 @@ async (
           name:"QuickArt",
 
           email:
-          "gauravsingh71205@gmail.com",
+          process.env.MAIL_USER,
         },
 
         to:[
