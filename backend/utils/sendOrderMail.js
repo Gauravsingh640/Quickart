@@ -245,58 +245,76 @@ async (
                 Order Summary
               </h3>
 
-              <table
-                width="100%"
-                style="
-                border-collapse:collapse;
-                margin-top:15px;
-                "
-              >
+              
+                <table
+                  width="100%"
+                  style="
+                  border-collapse:separate;
+                  border-spacing:0;
+                  margin-top:20px;
+                  overflow:hidden;
+                  border-radius:14px;
+                  border:1px solid #e2e8f0;
+                  "
+                >
 
-                <thead>
+                  <thead>
 
-                  <tr
+                    <tr
+                      style="
+                      background:linear-gradient(
+                      135deg,
+                      #2563eb,
+                      #7c3aed
+                      );
+                      color:white;
+                      "
+                    >
+
+                      <th
+                        style="
+                        padding:18px;
+                        text-align:left;
+                        font-size:15px;
+                        "
+                      >
+                        Product
+                      </th>
+
+                      <th
+                        style="
+                        padding:18px;
+                        font-size:15px;
+                        "
+                      >
+                        Quantity
+                      </th>
+
+                      <th
+                        style="
+                        padding:18px;
+                        font-size:15px;
+                        "
+                      >
+                        Price
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+                  <tbody
                     style="
-                    background:#eff6ff;
+                    background:white;
                     "
                   >
 
-                    <th
-                      style="
-                      padding:14px;
-                      text-align:left;
-                      "
-                    >
-                      Product
-                    </th>
+                    ${itemsHtml}
 
-                    <th
-                      style="
-                      padding:14px;
-                      "
-                    >
-                      Qty
-                    </th>
+                  </tbody>
 
-                    <th
-                      style="
-                      padding:14px;
-                      "
-                    >
-                      Price
-                    </th>
+                </table>
 
-                  </tr>
-
-                </thead>
-
-                <tbody>
-
-                  ${itemsHtml}
-
-                </tbody>
-
-              </table>
 
               <!-- TOTAL -->
 

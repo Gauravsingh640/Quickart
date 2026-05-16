@@ -36,152 +36,276 @@ async (
         subject:
         "QuickArt Admin Access Granted 🚀",
 
+        
         htmlContent:`
 
         <div
-          style="
-          background:#0f172a;
-          padding:40px;
-          font-family:Arial,sans-serif;
-          "
+        style="
+        background:#020617;
+        padding:50px 20px;
+        font-family:Arial,sans-serif;
+        "
         >
 
-          <div
+        <div
             style="
-            max-width:600px;
+            max-width:650px;
             margin:auto;
             background:white;
-            border-radius:14px;
+            border-radius:20px;
             overflow:hidden;
+            box-shadow:0 10px 40px rgba(0,0,0,0.25);
             "
-          >
+        >
+
+            <!-- TOP BAR -->
+
+            <div
+            style="
+            height:6px;
+            background:linear-gradient(
+            90deg,
+            #2563eb,
+            #7c3aed,
+            #ec4899
+            );
+            "
+            >
+            </div>
 
             <!-- HEADER -->
 
             <div
-              style="
-              background:linear-gradient(
-              135deg,
-              #2563eb,
-              #7c3aed
-              );
+            style="
+            background:linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+            );
 
-              padding:35px;
-              text-align:center;
-              color:white;
-              "
+            padding:45px 30px;
+            text-align:center;
+            color:white;
+            "
             >
 
-              <h1
+            <div
+                style="
+                font-size:55px;
+                margin-bottom:12px;
+                "
+            >
+                🚀
+            </div>
+
+            <h1
                 style="
                 margin:0;
-                font-size:34px;
+                font-size:38px;
+                letter-spacing:1px;
                 "
-              >
-                QUICKART 🚀
-              </h1>
+            >
+                QUICKART
+            </h1>
 
-              <p
+            <p
                 style="
-                margin-top:10px;
-                opacity:0.9;
+                margin-top:12px;
+                font-size:17px;
+                opacity:0.92;
                 "
-              >
-                Admin Access Granted
-              </p>
+            >
+                Admin Access Successfully Granted
+            </p>
 
             </div>
 
             <!-- BODY -->
 
             <div
-              style="
-              padding:40px;
-              color:#1e293b;
-              "
+            style="
+            padding:45px 40px;
+            color:#1e293b;
+            "
             >
 
-              <h2
+            <h2
                 style="
                 margin-top:0;
-                color:#111827;
+                color:#0f172a;
+                font-size:30px;
                 "
-              >
+            >
                 Congratulations ${firstName} 🎉
-              </h2>
+            </h2>
 
-              <p
+            <p
                 style="
-                font-size:16px;
-                line-height:1.8;
+                font-size:17px;
+                line-height:1.9;
+                color:#475569;
                 "
-              >
+            >
                 Your QuickArt account has been upgraded to
-                <strong>
+                <strong
+                style="
+                color:#2563eb;
+                "
+                >
                 Admin Access
                 </strong>.
-              </p>
+            </p>
 
-              <p
+            <p
                 style="
                 font-size:16px;
-                line-height:1.8;
+                line-height:1.9;
+                color:#475569;
                 "
-              >
-                You can now manage products, orders and platform controls.
-              </p>
+            >
+                You now have complete access to platform management tools and administrative controls.
+            </p>
 
-              <!-- BUTTON -->
+            <!-- FEATURES -->
 
-              <div
+            <div
                 style="
-                text-align:center;
-                margin-top:35px;
+                margin-top:30px;
+                background:#f8fafc;
+                border-radius:14px;
+                padding:25px;
                 "
-              >
+            >
 
-                <a
-                  href="https://quickart-one.vercel.app"
+                <h3
+                style="
+                margin-top:0;
+                color:#0f172a;
+                "
+                >
+                Your New Permissions
+                </h3>
 
-                  style="
-                  background:#2563eb;
-                  color:white;
-                  padding:14px 28px;
-                  border-radius:8px;
-                  text-decoration:none;
-                  font-weight:bold;
-                  display:inline-block;
-                  "
+                <table
+                width="100%"
+                style="
+                margin-top:15px;
+                "
                 >
 
-                  Open Dashboard
+                <tr>
+
+                    <td
+                    style="
+                    padding:10px 0;
+                    color:#334155;
+                    "
+                    >
+                    ✅ Manage Products
+                    </td>
+
+                    <td
+                    style="
+                    padding:10px 0;
+                    color:#334155;
+                    "
+                    >
+                    ✅ Manage Orders
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td
+                    style="
+                    padding:10px 0;
+                    color:#334155;
+                    "
+                    >
+                    ✅ Access Dashboard
+                    </td>
+
+                    <td
+                    style="
+                    padding:10px 0;
+                    color:#334155;
+                    "
+                    >
+                    ✅ Platform Controls
+                    </td>
+
+                </tr>
+
+                </table>
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <div
+                style="
+                text-align:center;
+                margin-top:40px;
+                "
+            >
+
+                <a
+                href="https://quickart-one.vercel.app"
+
+                style="
+                background:linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed
+                );
+
+                color:white;
+                padding:16px 34px;
+                border-radius:12px;
+                text-decoration:none;
+                font-size:16px;
+                font-weight:bold;
+                display:inline-block;
+                box-shadow:0 8px 20px rgba(37,99,235,0.35);
+                "
+                >
+
+                Open Admin Dashboard
 
                 </a>
 
-              </div>
+            </div>
 
             </div>
 
             <!-- FOOTER -->
 
             <div
-              style="
-              background:#f8fafc;
-              padding:20px;
-              text-align:center;
-              color:#64748b;
-              font-size:14px;
-              "
+            style="
+            background:#f8fafc;
+            padding:25px;
+            text-align:center;
+            "
             >
 
-              Welcome to the QuickArt Admin Team 🚀
+            <p
+                style="
+                margin:0;
+                color:#64748b;
+                font-size:14px;
+                "
+            >
+                Welcome to the QuickArt Admin Team 🚀
+            </p>
 
             </div>
 
-          </div>
+        </div>
 
         </div>
-        `,
+        `
+
       },
 
       {
