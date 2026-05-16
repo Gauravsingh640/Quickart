@@ -6,6 +6,8 @@ import {
   sendOrderMail,
 } from "../utils/sendOrderMail.js";
 
+import { User }
+from "../models/userModel.js";
 
 // CREATE ORDER
 
@@ -91,22 +93,45 @@ async (req, res) => {
 
       status:
       status || "Pending",
-    });
+    }); 
 
-    // SEND ORDER MAIL
+    const user =
+    await User.findById(
+      req.id
+    );
 
-    await sendOrderMail(
+    // SEND TO LOGIN EMAIL
 
-      address.email,
+    sendOrderMail(
+
+      user.email,
 
       formattedItems,
 
       address,
 
       totalPrice
-    ); 
-     
+    );
 
+    // SEND TO CHECKOUT EMAIL
+    // ONLY IF DIFFERENT
+
+    if (
+      address.email !==
+      user.email
+    ) {
+
+      sendOrderMail(
+
+        address.email,
+
+        formattedItems,
+
+        address,
+
+        totalPrice
+      );
+    }
 
     return res.status(201)
     .json({
