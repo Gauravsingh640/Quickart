@@ -95,7 +95,7 @@ async (req, res) => {
 
     // SEND ORDER MAIL
 
-    sendOrderMail(
+    await sendOrderMail(
 
       address.email,
 
