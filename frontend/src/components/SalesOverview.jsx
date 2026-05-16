@@ -49,6 +49,8 @@ function SalesOverview() {
 
       orders.forEach((order) => {
 
+        if ( order.status !== "Paid" ) { return; }
+
         const rawDate =
         new Date(order.createdAt);
  
