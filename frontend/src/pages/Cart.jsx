@@ -204,7 +204,8 @@ function Cart() {
             type="text"
             placeholder="Promo code e.g. QUICK20"
             value={promoCode}
-            onChange={(e) => setPromoCode(e.target.value)}
+            onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+            style={{ textTransform:"uppercase" }}
           />
 
           <button onClick={applyPromo}>Apply</button>
