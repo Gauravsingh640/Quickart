@@ -359,7 +359,7 @@ function Checkout() {
       modal:{
 
         ondismiss: async function () {
-
+ 
           try {
 
             const token =

@@ -168,7 +168,7 @@ function Orders() {
 
                             ₹
                             {
-                              item.price
+                              item.price.toFixed(2)
                             }
 
                           </p>
@@ -186,7 +186,7 @@ function Orders() {
               <p>
 
                 ₹
-                {order.totalPrice}
+                {order.totalPrice.toFixed(2)}
 
               </p>
 

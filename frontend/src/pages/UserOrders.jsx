@@ -145,7 +145,7 @@ function UserOrders() {
                 <h3>
 
                   ₹
-                  {order.totalPrice}
+                  {order.totalPrice.toFixed(2)}
 
                 </h3>
 
@@ -205,7 +205,7 @@ function UserOrders() {
                         <p>
 
                           ₹
-                          {item.price}
+                          {item.price.toFixed(2)}
 
                           {" "}
                           x

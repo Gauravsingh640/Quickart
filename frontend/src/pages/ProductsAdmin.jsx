@@ -192,7 +192,7 @@ function ProductsAdmin() {
 
             key={item._id}
           >
-
+ 
             {/* IMAGE */}
 
             <img
@@ -229,7 +229,7 @@ function ProductsAdmin() {
 
             <div className="adminProductPrice">
 
-              ₹{item.price}
+              ₹{item.price.toFixed(2)}
 
             </div>
 
