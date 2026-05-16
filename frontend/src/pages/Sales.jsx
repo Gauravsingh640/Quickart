@@ -8,6 +8,7 @@ import axios from "axios";
 import { toast }
 from "react-toastify";
 
+import SalesOverview from "../components/SalesOverview";
 
 function Sales() {
 
@@ -139,16 +140,9 @@ function Sales() {
       {/* GRAPH */}
 
       <div className="graph">
-
-        <h2>
-          Sales Overview
-        </h2>
-
-        <div className="graph-box">
-
-          Graph Area
-
-        </div>
+        <h2>Sales Overview</h2>
+        <br />
+        <div> <SalesOverview /> </div>
 
       </div>
 
