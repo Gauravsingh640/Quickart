@@ -20,10 +20,7 @@ async (req, res) => {
     console.log("REQ ID:");
     console.log(req.id);
 
-    console.log(items);
-    console.log(address);
-    console.log(formattedItems);
-    console.log(address.email);
+    
 
     const {
 
@@ -40,11 +37,9 @@ async (req, res) => {
     console.log(
       address.email
     );
-
     console.log(items);
-
     console.log(address);
-
+    
     // FORMAT ITEMS
 
     const formattedItems =
@@ -109,7 +104,9 @@ async (req, res) => {
       address,
 
       totalPrice
-    );
+    ); 
+     
+
 
     return res.status(201)
     .json({
