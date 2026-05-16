@@ -492,7 +492,7 @@ async (req, res) => {
       "admin"
     ) {
 
-      await sendAdminAccessMail(
+      sendAdminAccessMail(
 
         user.email,
 
