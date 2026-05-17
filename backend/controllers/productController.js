@@ -16,6 +16,7 @@ async (req, res) => {
       brand,
       category,
       description, 
+      stock,
     } = req.body;
 
     const uploadedImages =
@@ -54,6 +55,8 @@ async (req, res) => {
         name,
 
         price,
+
+        stock,
 
         brand,
 
@@ -265,6 +268,9 @@ async (req, res) => {
 
     product.price =
     req.body.price;
+
+    product.stock = 
+    req.body.stock;
 
     product.brand =
     req.body.brand;

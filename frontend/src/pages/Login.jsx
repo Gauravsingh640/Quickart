@@ -14,7 +14,7 @@
 
 //     try {
 //       const res = await axios.post(
-//         "https://quickart-jxc5.onrender.com/api/v1/user/login",
+//         "https://quickart-jxc5.onrender.comapi/v1/user/login",
 
 //         {
 //           email,
@@ -98,7 +98,7 @@ function Login() {
     try {
 
       const res = await axios.post(
-        "https://quickart-jxc5.onrender.com/api/v1/user/login",
+        "https://quickart-jxc5.onrender.comapi/v1/user/login",
         {
           email,
           password,

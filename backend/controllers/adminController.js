@@ -35,7 +35,8 @@ async (req, res) => {
     const paidOrders =
     await Order.find({
 
-      status:"Paid",
+      status:"Pending"
+,
     });
 
     const totalSales =

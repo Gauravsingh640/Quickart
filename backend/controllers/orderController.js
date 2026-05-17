@@ -101,7 +101,8 @@ async (req, res) => {
     );
 
     // SEND TO LOGIN EMAIL
-    if(status === "Paid"){
+    if(status === "Pending"
+){
       sendOrderMail(
 
         user.email,

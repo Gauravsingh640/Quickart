@@ -31,6 +31,11 @@ function AddProduct() {
   const [images,
     setImages] =
     useState([]);
+ 
+  const [stock,
+    setStock] =
+    useState(0); 
+
 
   // HANDLE INPUT
 
@@ -96,6 +101,8 @@ function AddProduct() {
         formData.description
       );
 
+      data.append( "stock", stock );
+
       // IMAGES
 
       images.forEach((img) => {
@@ -111,7 +118,7 @@ function AddProduct() {
       const res =
       await axios.post(
 
-        "https://quickart-jxc5.onrender.com/api/v1/products/add-product",
+        "https://quickart-jxc5.onrender.comapi/v1/products/add-product",
 
         data,
 
@@ -193,28 +200,57 @@ function AddProduct() {
             }
           />
 
-          {/* PRICE */}
+          {/* PRICE + STOCK */}
+          <div className="row">
 
-          <label>
-            Price
-          </label>
+            <div className="input-group">
 
-          <input
+              <label>
+                Price
+              </label>
 
-            type="number"
+              <input
 
-            name="price"
+                type="number"
 
-            placeholder="0"
+                name="price"
 
-            value={
-              formData.price
-            }
+                placeholder="0"
 
-            onChange={
-              handleChange
-            }
-          />
+                value={
+                  formData.price
+                }
+
+                onChange={
+                  handleChange
+                }
+              />
+            </div>
+
+            <div className="input-group">
+
+              <label>
+                Stock
+              </label>
+
+              <input
+
+                type="number"
+
+                name="stock"
+
+                placeholder="0"
+
+                value={
+                  stock
+                }
+
+                onChange={
+                  (e) => setStock(e.target.value)
+                }
+              />
+            </div>
+          </div>
 
           {/* BRAND + CATEGORY */}
 

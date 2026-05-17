@@ -25,7 +25,7 @@ function Orders() {
       const res =
       await axios.get(
 
-        "https://quickart-jxc5.onrender.com/api/v1/order/all-orders"
+        "https://quickart-jxc5.onrender.comapi/v1/order/all-orders"
       );
 
       console.log(
@@ -70,7 +70,7 @@ function Orders() {
 
           <p>Order ID</p>
 
-          <p>User</p>
+          <p>Customer</p>
 
           <p>Products</p>
 
@@ -104,14 +104,33 @@ function Orders() {
               </p>
 
               {/* USER */}
+ 
+              <p className="orderUserInfo">
 
-              <p>
+                <img
 
-                {
-                  order.user?.email
-                }
+                  src={
+
+                    order.user?.profilePic ||
+
+                    "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                  }
+
+                  alt="Profile"
+
+                  width="35"
+
+                  height="35"
+                />
+
+                {order.user?.firstName}
+
+                {" "}
+
+                {order.user?.lastName}
 
               </p>
+
 
               {/* PRODUCTS */}
 

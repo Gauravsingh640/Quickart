@@ -12,6 +12,14 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
+    stock:{
+      type:Number,
+
+      required:true,
+
+      default:0,
+    } ,
+
     brand: {
       type: String,
     },
@@ -36,7 +44,8 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
 
       ref: "User",
-    },
+    }, 
+
   },
 
   {

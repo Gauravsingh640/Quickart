@@ -40,7 +40,7 @@ function Users() {
       const res =
       await axios.get(
 
-        "https://quickart-jxc5.onrender.com/api/v1/user/all-users"
+        "https://quickart-jxc5.onrender.comapi/v1/user/all-users"
       );
 
       setUsers(
@@ -75,7 +75,7 @@ function Users() {
         const res =
         await axios.put(
 
-        `https://quickart-jxc5.onrender.com/api/v1/user/update-role/${id}`,
+        `https://quickart-jxc5.onrender.comapi/v1/user/update-role/${id}`,
 
         { role }
         );

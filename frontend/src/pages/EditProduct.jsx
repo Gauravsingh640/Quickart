@@ -14,12 +14,14 @@ function EditProduct() {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
+    stock:0,
     brand: "",
     category: "",
     description: "",
   });
 
   const [images, setImages] = useState([]);
+  const [addedStock, setAddedStock] = useState(0);
 
   const [oldImages, setOldImages] = useState([]);
 
@@ -28,13 +30,15 @@ function EditProduct() {
   const getProduct = async () => {
     try {
       const res = await axios.get(
-        `https://quickart-jxc5.onrender.com/api/v1/products/${id}`,
+        `https://quickart-jxc5.onrender.comapi/v1/products/${id}`,
       );
 
       setFormData({
         name: res.data.product.name,
 
         price: res.data.product.price,
+
+        stock: res.data.product.stock,
 
         brand: res.data.product.brand,
 
@@ -76,12 +80,19 @@ function EditProduct() {
 
     try {
       // FORM DATA
+      const updatedStock = Number(formData.stock) + Number(addedStock);
 
+      if ( Number(addedStock) < 0 ){
+        toast.error( "Please enter number greater than 0" ); 
+        return; 
+      }
       const data = new FormData();
 
       data.append("name", formData.name);
 
       data.append("price", formData.price);
+
+      data.append("stock", updatedStock);
 
       data.append("brand", formData.brand);
 
@@ -98,7 +109,7 @@ function EditProduct() {
       // API
 
       const res = await axios.put(
-        `https://quickart-jxc5.onrender.com/api/v1/products/${id}`,
+        `https://quickart-jxc5.onrender.comapi/v1/products/${id}`,
 
         data,
 
@@ -168,6 +179,13 @@ function EditProduct() {
             value={formData.description}
             onChange={handleChange}
           ></textarea>
+
+          <h3>Current Stock: {" "} { formData.stock } </h3> 
+          <input 
+            type="number" 
+            placeholder="Add Stock" 
+            value={ addedStock } onChange={(e) => setAddedStock( e.target.value ) } 
+          />
 
           {/* IMAGE INPUT */}
 
