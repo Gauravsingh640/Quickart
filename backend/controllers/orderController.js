@@ -101,29 +101,10 @@ async (req, res) => {
     );
 
     // SEND TO LOGIN EMAIL
-
-    sendOrderMail(
-
-      user.email,
-
-      formattedItems,
-
-      address,
-
-      totalPrice
-    );
-
-    // SEND TO CHECKOUT EMAIL
-    // ONLY IF DIFFERENT
-
-    if (
-      address.email !==
-      user.email
-    ) {
-
+    if(status === "Paid"){
       sendOrderMail(
 
-        address.email,
+        user.email,
 
         formattedItems,
 
@@ -131,6 +112,26 @@ async (req, res) => {
 
         totalPrice
       );
+
+      // SEND TO CHECKOUT EMAIL
+      // ONLY IF DIFFERENT
+      
+      if (
+        address.email !==
+        user.email
+      ) {
+
+        sendOrderMail(
+
+          address.email,
+
+          formattedItems,
+
+          address,
+
+          totalPrice
+        );
+      }
     }
 
     return res.status(201)
