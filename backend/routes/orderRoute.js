@@ -1,5 +1,5 @@
 import express from "express";
-import { cancelOrder, confirmOrder, createOrder, getAllOrders, getMyOrders, getSingleOrder, getUserOrders } from "../controllers/orderController.js";
+import { cancelOrder, confirmOrder, createOrder, deliverOrder, getAllOrders, getMyOrders, getSingleOrder, getUserOrders, updateOrderStatus } from "../controllers/orderController.js";
 import { isAuthenticated } from "../middleware/isAuthenticated.js";
 const router = express.Router();
 router.post("/create", isAuthenticated, createOrder);
@@ -9,4 +9,6 @@ router.get("/all-orders", getAllOrders);
 router.get( "/:id", getSingleOrder );
 router.put( "/confirm/:id", confirmOrder ); 
 router.put( "/cancel/:id", cancelOrder );
+router.put( "/status/:id", updateOrderStatus );
+router.put( "/deliver/:id", deliverOrder );
 export default router;

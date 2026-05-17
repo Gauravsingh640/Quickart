@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const sendOrderMail =
+export const sendDeliveredMail =
 async (
   email,
   items,
@@ -12,7 +12,7 @@ async (
   try {
 
     console.log(
-      "SEND ORDER MAIL CALLED"
+      "SEND DELIVERED MAIL CALLED"
     );
 
     // PRODUCTS HTML
@@ -109,7 +109,7 @@ async (
         ],
 
         subject:
-        "Order Placed Successfully 🎉",
+        "Order Delivered Successfully 🎉",
 
         htmlContent:`
 
@@ -162,7 +162,7 @@ async (
                 opacity:0.9;
                 "
               >
-                Your Order Has Been Confirmed 🎉
+                Your Order Has Been Delivered 🎉
               </p>
 
             </div>
@@ -185,7 +185,7 @@ async (
                 line-height:1.8;
                 "
               >
-                Your order has been successfully placed and is now being processed.
+                Your order has been successfully delivered.
               </p>
 
               <!-- ADDRESS -->
@@ -335,62 +335,7 @@ async (
 
               </div>
  
-              <!-- DELIVERY CODE -->
-
-              <div
-                style="
-                margin-top:35px;
-                background:linear-gradient(
-                135deg,
-                #ec4899,
-                #7c3aed
-                );
-                padding:30px;
-                border-radius:18px;
-                text-align:center;
-                color:white;
-                "
-              >
-
-                <h2
-                  style="
-                  margin-top:0;
-                  font-size:30px;
-                  "
-                >
-
-                  Delivery Verification Code
-
-                </h2>
-
-                <h1
-                  style="
-                  letter-spacing:10px;
-                  font-size:52px;
-                  margin:20px 0;
-                  "
-                >
-
-                  ${deliveryCode}
-
-                </h1>
-
-                <p
-                  style="
-                  margin:0;
-                  line-height:1.8;
-                  opacity:0.95;
-                  "
-                >
-
-                  Please share this code with the delivery partner
-                  at the time of delivery to confirm your order.
-
-                </p>
-
-              </div> 
-
-
+              
               <!-- BUTTON -->
 
               <div

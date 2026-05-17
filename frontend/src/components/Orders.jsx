@@ -224,15 +224,26 @@ function Orders() {
                   }
 
                 </h3>
-
+  
                 <span
 
-                  className={`orderStatus ${order.status}`}
+                  className={`orderStatus ${
+                    order.status
+                    ?
+                    order.status.replaceAll(
+                      " ",
+                      "-"
+                    )
+                    :
+                    ""
+                  }`}
                 >
 
                   {order.status}
 
-                </span>
+                </span> 
+
+
 
               </div>
 

@@ -13,6 +13,12 @@ import {
 import {
   FaCheckCircle,
 } from "react-icons/fa";
+ 
+import {
+  FaRegCopy,
+} from "react-icons/fa";
+import { toast } from "react-toastify";
+
 
 function Success() {
 
@@ -104,7 +110,7 @@ function Success() {
           </p>
 
         </div>
-
+ 
         {/* DELIVERY CODE */}
 
         <div className="delivery-code-box">
@@ -115,13 +121,39 @@ function Success() {
 
           </h3>
 
-          <h1>
+          <div className="delivery-code-row">
 
-            {
-              order.deliveryCode
-            }
+            <h1>
 
-          </h1>
+              {
+                order.deliveryCode
+              }
+
+            </h1>
+
+            <button
+
+              className="copyCodeBtn"
+
+              onClick={() => {
+
+                navigator.clipboard.writeText(
+
+                  order.deliveryCode
+                );
+
+                toast.success(
+                  "Code Copied"
+                );
+              }}
+            >
+
+              <FaRegCopy />
+
+            </button>
+
+
+          </div>
 
           <p>
 
@@ -131,6 +163,8 @@ function Success() {
           </p>
 
         </div>
+
+
 
         {/* BUTTONS */}
 

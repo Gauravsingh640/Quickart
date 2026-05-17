@@ -216,16 +216,26 @@ function Orders() {
 
               {/* STATUS */}
 
-              <p>
+              <p> 
+              <span
 
-                <span
+                className={`adminOrderStatus ${
+                  order.status
+                  ?
+                  order.status.replaceAll(
+                    " ",
+                    "-"
+                  )
+                  :
+                  ""
+                }`}
+              >
 
-                  className={`adminOrderStatus ${order.status}`}
-                >
+                {order.status}
 
-                  {order.status}
+              </span> 
 
-                </span>
+
 
               </p>
 

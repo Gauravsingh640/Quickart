@@ -15,6 +15,13 @@ import {
 
 
 import {
+  sendDeliveredMail,
+}
+from "../utils/sendDeliveredMail.js";
+
+
+
+import {
   customAlphabet,
 } from "nanoid";
 
@@ -109,6 +116,7 @@ async (req, res) => {
       status || "Pending",
 
       deliveryCode,
+      address,
     }); 
 
     const user =
@@ -593,3 +601,178 @@ async (req,res) => {
     });
   }
 };
+
+
+// UPDATE ORDER STATUS
+
+
+export const updateOrderStatus =
+async (req,res) => {
+
+  try {
+
+    const order =
+
+    await Order.findById(
+
+      req.params.id
+    );
+
+    if(!order){
+
+      return res.status(404)
+      .json({
+
+        success:false,
+
+        message:
+        "Order Not Found",
+      });
+    }
+
+    order.status =
+    req.body.status;
+
+    await order.save();
+
+    return res.status(200)
+    .json({
+
+      success:true,
+
+      message:
+      "Status Updated",
+    });
+
+  }
+
+  catch(error){
+
+    return res.status(500)
+    .json({
+
+      success:false,
+
+      message:error.message,
+    });
+  }
+};
+
+
+// DELIVER ORDER
+
+
+export const deliverOrder =
+async (req,res) => {
+
+  try {
+
+    const order =
+
+    await Order.findById(
+
+      req.params.id
+    ).populate("user");
+
+    if(!order){
+
+      return res.status(404)
+      .json({
+
+        success:false,
+
+        message:
+        "Order Not Found",
+      });
+    }
+
+    // VERIFY CODE
+
+    if(
+
+      req.body.deliveryCode
+      !==
+      order.deliveryCode
+
+    ){
+
+      return res.status(400)
+      .json({
+
+        success:false,
+
+        message:
+        "Invalid Delivery Code",
+      });
+    }
+
+    // UPDATE STATUS
+
+    order.status =
+    "Delivered";
+
+    await order.save();
+ 
+    await sendDeliveredMail(
+
+      order.user.email,
+
+      order.items,
+
+      {
+
+        fullName:
+        order.address?.fullName ||
+
+        (
+          order.user.firstName +
+          " " +
+          order.user.lastName
+        ),
+
+        address:
+        order.address?.address,
+
+        city:
+        order.address?.city,
+
+        state:
+        order.address?.state,
+
+        zipCode:
+        order.address?.zipCode,
+
+        country:
+        order.address?.country,
+
+        phone:
+        order.address?.phone,
+      },
+
+
+      order.totalPrice
+    );
+
+
+    return res.status(200)
+    .json({
+
+      success:true,
+
+      message:
+      "Order Delivered Successfully",
+    });
+
+  }
+
+  catch(error){
+
+    return res.status(500)
+    .json({
+
+      success:false,
+
+      message:error.message,
+    });
+  }
+}; 

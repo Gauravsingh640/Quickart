@@ -8,6 +8,7 @@ import axios from "axios";
 import {
   useParams,
 } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function AdminSingleOrder(){
 
@@ -23,6 +24,8 @@ function AdminSingleOrder(){
     fetchOrder();
 
   }, []);
+
+  const [deliveryCode, setDeliveryCode] = useState("");
 
   const fetchOrder =
   async () => {
@@ -68,9 +71,7 @@ function AdminSingleOrder(){
         `https://quickart-jxc5.onrender.com/api/v1/order/confirm/${id}`
         );
 
-        alert(
-        res.data.message
-        );
+        toast.success("Order confirmed successfully");
 
         fetchOrder();
 
@@ -80,12 +81,8 @@ function AdminSingleOrder(){
 
         console.log(error);
 
-        alert(
-
-        error.response
-        ?.data
-        ?.message
-        );
+        toast.error("Failed to confirm order");
+        
     }
   };
 
@@ -101,9 +98,7 @@ function AdminSingleOrder(){
         `https://quickart-jxc5.onrender.com/api/v1/order/cancel/${id}`
         );
 
-        alert(
-        res.data.message
-        );
+        toast.success("Order cancelled successfully");
 
         fetchOrder();
 
@@ -112,8 +107,64 @@ function AdminSingleOrder(){
     catch(error){
 
         console.log(error);
+        toast.error("Failed to cancel order");
     }
   };
+   
+  const updateStatus =
+  async (status) => {
+
+    try {
+
+      const res =
+      await axios.put(
+
+        `https://quickart-jxc5.onrender.com/api/v1/order/status/${id}`,
+
+        { status }
+      );
+
+      toast.success("Status updated successfully");
+
+      fetchOrder();
+
+    }
+
+    catch(error){
+
+      toast.error("Failed to update status");
+
+      console.log(error);
+    }
+  };
+ 
+  const verifyDelivery =
+  async () => {
+
+    try {
+
+      const res =
+      await axios.put(
+
+        `https://quickart-jxc5.onrender.com/api/v1/order/deliver/${id}`,
+
+        {
+
+          deliveryCode,
+        }
+      );
+
+      toast.success("Delivery verified successfully");
+
+      fetchOrder();
+
+    }
+
+    catch(error){
+
+      toast.error("Failed to verify delivery");
+    }
+  }; 
 
 
   return (
@@ -301,47 +352,160 @@ function AdminSingleOrder(){
         </h3>
 
       </div>
-
+ 
       {/* ACTIONS */}
 
-      
-    {
+      <div className="orderActions">
+
+        {
+
+          order.status ===
+          "Pending"
+
+          &&
+
+          <>
+
+            <button
+
+              className="confirmBtn"
+
+              onClick={
+                confirmOrder
+              }
+            >
+
+              Confirm Order
+
+            </button>
+
+            <button
+
+              className="cancelBtn"
+
+              onClick={
+                cancelOrder
+              }
+            >
+
+              Cancel Order
+
+            </button>
+
+          </>
+        }
+
+        {
+
+          order.status ===
+          "Confirmed"
+
+          &&
+
+          <button
+
+            className="confirmBtn"
+
+            onClick={() =>
+              updateStatus(
+                "Packed"
+              )
+            }
+          >
+
+            Mark As Packed
+
+          </button>
+        }
+
+        {
+
+          order.status ===
+          "Packed"
+
+          &&
+
+          <button
+
+            className="confirmBtn"
+
+            onClick={() =>
+              updateStatus(
+                "Shipped"
+              )
+            }
+          >
+
+            Mark As Shipped
+
+          </button>
+        }
+
+        {
+
+          order.status ===
+          "Shipped"
+
+          &&
+
+          <button
+
+            className="confirmBtn"
+
+            onClick={() =>
+              updateStatus(
+                "Out For Delivery"
+              )
+            }
+          >
+
+            Out For Delivery
+
+          </button>
+        }
+ 
+      {
 
         order.status ===
-        "Pending"
+        "Out For Delivery"
 
         &&
 
-        <div className="orderActions">
+        <div className="deliveryVerifyBox">
 
-            <button
+          <input
+
+            type="text"
+
+            placeholder="Enter Delivery Code"
+
+            value={deliveryCode}
+
+            onChange={(e) =>
+              setDeliveryCode(
+                e.target.value.toUpperCase()
+              )
+            }
+          />
+
+          <button
 
             className="confirmBtn"
 
             onClick={
-                confirmOrder
+              verifyDelivery
             }
-            >
+          >
 
-            Confirm Order
+            Verify & Deliver
 
-            </button>
-
-            <button
-
-            className="cancelBtn"
-
-            onClick={
-                cancelOrder
-            }
-            >
-
-            Cancel Order
-
-            </button>
+          </button>
 
         </div>
-    }
+      } 
+
+
+      </div>
 
 
     </div>

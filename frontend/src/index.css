@@ -1762,15 +1762,6 @@ body {
     text-align: right;
 }
 
-.order-right span{
-    display: inline-block;
-    background: green;
-    color: white;
-    padding: 8px 18px;
-    border-radius: 5px;
-    margin-top: 20px;
-}
-
 .products-heading{
     margin-bottom: 20px;
 }
@@ -2837,6 +2828,8 @@ input[type="checkbox"]{
 
   color:white;
 
+  background: #ec4899;
+
   font-weight:700;
 
   /* font-size:16px; */
@@ -3034,4 +3027,253 @@ input[type="checkbox"]{
   transform:translateY(-2px);
 
   background:#dc2626;
+}
+
+
+
+/* STATUS */
+
+.orderStatus,
+.adminOrderStatus{
+
+  padding:10px 16px;
+
+  border-radius:10px;
+
+  font-weight:700;
+
+  display:inline-block;
+
+  min-width:120px;
+
+  text-align:center;
+
+  font-size:14px;
+}
+
+/* PENDING */
+
+.Pending{
+
+  background:#facc15;
+
+  color:#ffffff;
+}
+
+/* CONFIRMED */
+
+.Confirmed{
+
+  background:#3b82f6;
+
+  color:white;
+}
+
+/* PACKED */
+
+.Packed{
+
+  background:#8b5cf6;
+
+  color:white;
+}
+
+/* SHIPPED */
+
+.Shipped{
+
+  background:#f97316;
+
+  color:white;
+}
+
+/* OUT FOR DELIVERY */
+
+.Out-For-Delivery{
+
+  background:#ec4899;
+
+  color:white;
+}
+
+/* DELIVERED */
+
+.Delivered{
+
+  background:#22c55e;
+
+  color:white;
+}
+
+/* FAILED */
+
+.Failed{
+
+  background:#ef4444;
+
+  color:white;
+}
+
+/* CANCELLED */
+
+.Cancelled{
+
+  background:#7f1d1d;
+
+  color:white;
+}
+
+ 
+.deliveryVerifyBox{
+
+  display:flex;
+
+  gap:18px;
+
+  align-items:center;
+
+  margin-top:30px;
+
+  flex-wrap:wrap;
+}
+
+.deliveryVerifyBox input{
+
+  padding:16px 20px;
+
+  border:2px solid #d1d5db;
+
+  border-radius:14px;
+
+  font-size:18px;
+
+  outline:none;
+
+  min-width:320px;
+
+  transition:0.3s;
+}
+
+.deliveryVerifyBox input:focus{
+
+  border-color:#2563eb;
+
+  box-shadow:
+  0 0 0 4px rgba(
+    37,
+    99,
+    235,
+    0.15
+  );
+} 
+
+
+.delivery-code-box{
+
+  margin-top:40px;
+
+  background:
+  linear-gradient(
+    135deg,
+    #ec4899,
+    #8b5cf6
+  );
+
+  border-radius:28px;
+
+  padding:50px 40px;
+
+  text-align:center;
+
+  color:white;
+}
+
+.delivery-code-box h3{
+
+  font-size:28px;
+
+  margin-bottom:28px;
+
+  font-weight:700;
+}
+
+.delivery-code-row{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:24px;
+
+  margin-bottom:25px;
+}
+
+.delivery-code-row h1{
+
+  /* font-size:96px; */
+
+  letter-spacing:10px;
+
+  margin:0;
+
+  line-height:1;
+
+  font-weight:800;
+}
+
+.copyCodeBtn{
+
+  border:none;
+
+  background:rgba(
+    255,
+    255,
+    255,
+    0.15
+  );
+
+  backdrop-filter:blur(10px);
+
+  color:white;
+
+  width:72px;
+
+  height:72px;
+
+  border-radius:22px;
+
+  cursor:pointer;
+
+  font-size:32px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  transition:0.3s;
+}
+
+.copyCodeBtn:hover{
+
+  transform:scale(1.08);
+
+  background:rgba(
+    255,
+    255,
+    255,
+    0.25
+  );
+}
+
+.delivery-code-box p{
+
+  font-size:22px;
+
+  opacity:0.95;
+
+  margin-top:10px;
 }

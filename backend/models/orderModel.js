@@ -13,6 +13,18 @@ const orderSchema = new mongoose.Schema(
     ],
     totalPrice: { type: Number, required: true },
     deliveryCode: { type: String },
+ 
+    address:{
+      fullName:String,
+      phone:String,
+      email:String,
+      address:String,
+      city:String,
+      state:String,
+      zipCode:String,
+      country:String,
+    },
+
     status: {
       type: String,
       enum: [
