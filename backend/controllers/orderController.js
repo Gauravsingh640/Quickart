@@ -510,8 +510,7 @@ async (req,res) => {
         item.id
       );
 
-      product.stock -=
-      item.quantity;
+      product.stock = Number(product.stock) - Number(item.quantity);
 
       await product.save();
     }
