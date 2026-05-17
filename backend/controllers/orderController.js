@@ -8,6 +8,20 @@ import {
 
 import { User }
 from "../models/userModel.js";
+ 
+import {
+  Product,
+} from "../models/productModel.js";
+
+
+import {
+  customAlphabet,
+} from "nanoid";
+
+
+const generateCode = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 6);
+
+
 
 // CREATE ORDER
 
@@ -79,7 +93,7 @@ async (req, res) => {
     );
 
     // CREATE ORDER
-
+    const deliveryCode = generateCode();
     const order =
 
     await Order.create({
@@ -93,6 +107,8 @@ async (req, res) => {
 
       status:
       status || "Pending",
+
+      deliveryCode,
     }); 
 
     const user =
@@ -111,7 +127,9 @@ async (req, res) => {
 
         address,
 
-        totalPrice
+        totalPrice,
+
+        deliveryCode
       );
 
       // SEND TO CHECKOUT EMAIL
@@ -130,7 +148,9 @@ async (req, res) => {
 
           address,
 
-          totalPrice
+          totalPrice,
+
+          deliveryCode
         );
       }
     }
@@ -334,6 +354,235 @@ async (req, res) => {
   catch(error){
 
     console.log(error);
+
+    return res.status(500)
+    .json({
+
+      success:false,
+
+      message:error.message,
+    });
+  }
+};
+
+
+// GET SINGLE ORDER
+
+export const getSingleOrder =
+async (req,res) => {
+
+  try {
+
+    const order =
+
+    await Order.findById(
+
+      req.params.id
+    )
+
+    .populate("user");
+
+    if(!order){
+
+      return res.status(404)
+      .json({
+
+        success:false,
+
+        message:
+        "Order Not Found",
+      });
+    }
+
+    return res.status(200)
+    .json({
+
+      success:true,
+
+      order,
+    });
+
+  }
+
+  catch(error){
+
+    return res.status(500)
+    .json({
+
+      success:false,
+
+      message:error.message,
+    });
+  }
+};
+ 
+
+// CONFIRM ORDER
+
+
+export const confirmOrder =
+async (req,res) => {
+
+  try {
+
+    const order =
+
+    await Order.findById(
+
+      req.params.id
+    );
+
+    if(!order){
+
+      return res.status(404)
+      .json({
+
+        success:false,
+
+        message:
+        "Order Not Found",
+      });
+    }
+
+    // CHECK STOCK
+
+    for(
+
+      const item
+      of
+      order.items
+
+    ){
+
+      const product =
+
+      await Product.findById(
+
+        item.id
+      );
+
+      if(
+
+        item.quantity
+        >
+        product.stock
+
+      ){
+
+        order.status =
+        "Cancelled";
+
+        await order.save();
+
+        return res.status(400)
+        .json({
+
+          success:false,
+
+          message:
+          `${item.title} Out Of Stock`,
+        });
+      }
+    }
+
+    // REDUCE STOCK
+
+    for(
+
+      const item
+      of
+      order.items
+
+    ){
+
+      const product =
+
+      await Product.findById(
+
+        item.id
+      );
+
+      product.stock -=
+      item.quantity;
+
+      await product.save();
+    }
+
+    // CONFIRM ORDER
+
+    order.status =
+    "Confirmed";
+
+    await order.save();
+
+    return res.status(200)
+    .json({
+
+      success:true,
+
+      message:
+      "Order Confirmed",
+    });
+
+  }
+
+  catch(error){
+
+    return res.status(500)
+    .json({
+
+      success:false,
+
+      message:error.message,
+    });
+  }
+};
+
+
+// CANCEL ORDER
+ 
+
+export const cancelOrder =
+async (req,res) => {
+
+  try {
+
+    const order =
+
+    await Order.findById(
+
+      req.params.id
+    );
+
+    if(!order){
+
+      return res.status(404)
+      .json({
+
+        success:false,
+
+        message:
+        "Order Not Found",
+      });
+    }
+
+    order.status =
+    "Cancelled";
+
+    await order.save();
+
+    return res.status(200)
+    .json({
+
+      success:true,
+
+      message:
+      "Order Cancelled",
+    });
+
+  }
+
+  catch(error){
 
     return res.status(500)
     .json({

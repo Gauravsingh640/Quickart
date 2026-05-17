@@ -421,31 +421,35 @@ function Checkout() {
               sessionStorage.getItem(
                 "token"
               );
-
+ 
+            const res =
             await axios.post(
 
-              "https://quickart-jxc5.onrender.com/api/v1/order/create",  
+              "https://quickart-jxc5.onrender.com/api/v1/order/create",
+
               {
+
                 items: cart,
 
                 totalPrice:
-                  total,
+                total,
 
-                address: 
-                   addresses[selectedAddress] ,
+                address:
+                addresses[selectedAddress],
 
-                 status:"Pending"
-,
+                status:"Pending",
               },
 
               {
+
                 headers: {
 
                   Authorization:
-                    `Bearer ${token}`,
+                  `Bearer ${token}`,
                 },
               }
-            );
+            ); 
+
 
             setCart([]);
 
@@ -453,9 +457,7 @@ function Checkout() {
               "userCart"
             );
 
-            navigate(
-              "/success"
-            );
+            navigate( `/success/${res.data.order._id}` );
 
           } catch (error) {
 

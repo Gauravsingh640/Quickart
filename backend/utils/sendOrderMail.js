@@ -5,7 +5,8 @@ async (
   email,
   items,
   address,
-  totalPrice
+  totalPrice,
+  deliveryCode
 ) => {
 
   try {
@@ -333,6 +334,62 @@ async (
                 </h2>
 
               </div>
+ 
+              <!-- DELIVERY CODE -->
+
+              <div
+                style="
+                margin-top:35px;
+                background:linear-gradient(
+                135deg,
+                #ec4899,
+                #7c3aed
+                );
+                padding:30px;
+                border-radius:18px;
+                text-align:center;
+                color:white;
+                "
+              >
+
+                <h2
+                  style="
+                  margin-top:0;
+                  font-size:30px;
+                  "
+                >
+
+                  Delivery Verification Code
+
+                </h2>
+
+                <h1
+                  style="
+                  letter-spacing:10px;
+                  font-size:52px;
+                  margin:20px 0;
+                  "
+                >
+
+                  ${deliveryCode}
+
+                </h1>
+
+                <p
+                  style="
+                  margin:0;
+                  line-height:1.8;
+                  opacity:0.95;
+                  "
+                >
+
+                  Please share this code with the delivery partner
+                  at the time of delivery to confirm your order.
+
+                </p>
+
+              </div> 
+
 
               <!-- BUTTON -->
 

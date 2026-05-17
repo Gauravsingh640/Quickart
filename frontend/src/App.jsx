@@ -20,6 +20,7 @@ import Users from "./pages/Users";
 import Order from "./pages/Order";
 import EditProduct from "./pages/EditProduct";
 import UserOrders from "./pages/UserOrders";
+import AdminSingleOrder from "./pages/AdminSingleOrder";
 
 function App() {
   return (
@@ -40,7 +41,7 @@ function App() {
           <Route path="orders" element={<Orders />} />
         </Route>
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/success" element={<Success />} />
+        <Route path="/success/:id" element={<Success />} />
         <Route path="/dashboard" element={<Dashboard />}>
           <Route index element={<Sales />}/>
           <Route path="sales" element={<Sales />} />
@@ -50,6 +51,7 @@ function App() {
           <Route path="users" element={<Users />} />
           <Route path="/dashboard/users/:id/orders" element={<UserOrders />}/>
           <Route path="orders" element={<Order />} />
+          <Route path="/dashboard/order/:id" element={ <AdminSingleOrder /> } />
         </Route>
       </Routes>
     </>
