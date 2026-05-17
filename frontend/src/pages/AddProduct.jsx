@@ -118,7 +118,7 @@ function AddProduct() {
       const res =
       await axios.post(
 
-        "https://quickart-jxc5.onrender.comapi/v1/products/add-product",
+        "https://quickart-jxc5.onrender.com/api/v1/products/add-product",
 
         data,
 

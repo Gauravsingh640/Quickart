@@ -369,7 +369,7 @@ function Checkout() {
 
             await axios.post(
 
-              "https://quickart-jxc5.onrender.comapi/v1/order/create",
+              "https://quickart-jxc5.onrender.com/api/v1/order/create",
 
               {
 
@@ -424,7 +424,7 @@ function Checkout() {
 
             await axios.post(
 
-              "https://quickart-jxc5.onrender.comapi/v1/order/create",  
+              "https://quickart-jxc5.onrender.com/api/v1/order/create",  
               {
                 items: cart,
 
