@@ -1,6 +1,7 @@
 # QUICKART 🛒
 
-A modern Full-Stack MERN E-Commerce Application featuring secure authentication, Razorpay payments, Cloudinary image uploads, MongoDB order management, email verification, guest cart system, and responsive admin dashboard.
+A modern Full-Stack MERN E-Commerce Application featuring secure authentication, Razorpay payments, Cloudinary image uploads, MongoDB order management, delivery verification system, stock management, email verification, guest cart system, and responsive admin dashboard.
+
 
 # 🚀 Features
 
@@ -19,8 +20,9 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * Multiple Address Management
 * Address Selection During Checkout
 * Order Confirmation Email
+* Delivery Success Email
 * Responsive Checkout UI
- 
+
 
 ## 👤 User Features
 
@@ -35,8 +37,10 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * Checkout Flow
 * Razorpay Payment Gateway Integration
 * Order History
+* Delivery Verification Code System
+* Copy Delivery Code Feature
 * MongoDB Order Storage
- 
+
 
 ## 🛍️ Product Features
 
@@ -44,13 +48,16 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * Add Product (Admin)
 * Edit Product (Admin)
 * Delete Product (Admin)
+* Dynamic Stock Management
+* Auto Stock Reduction on Order Confirm
+* Out Of Stock Detection
 * Multiple Product Image Upload
 * Category Filtering
 * Brand Filtering
 * Price Filtering
 * Sorting (Low to High / High to Low)
 * Product Detail View
- 
+
 
 ## 📦 Order Management
 
@@ -58,14 +65,24 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * Fetch Logged-In User Orders
 * Display Ordered Products
 * Admin Order Dashboard
-* Order Status Support
+* Dynamic Order Status Workflow
 
   * Pending
-  * Paid
+  * Confirmed
+  * Packed
+  * Shipped
+  * Out For Delivery
+  * Delivered
+  * Cancelled
   * Failed
+
+* Automatic Order Cancellation on Insufficient Stock
+* Delivery Verification Code Validation
 * Selected Address Storage
 * Order Confirmation Email
- 
+* Delivery Success Email
+* Admin Delivery Verification System
+
 
 ## 💳 Payment System
 
@@ -76,7 +93,8 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * Cart Clearing After Successful Payment
 * Delivery Address Selection
 * Brevo Email Integration
- 
+* Transactional Email Support
+
 
 ## 📊 Admin Dashboard
 
@@ -85,8 +103,10 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * User Order Tracking
 * Product Image Management
 * Dynamic Order Status Display
+* Real-Time Stock Updates
 * Sales Dashboard UI
- 
+* Delivery Workflow Management
+
 
 # 🛠️ Tech Stack
 
@@ -98,7 +118,7 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * Axios
 * React Toastify
 * React Icons
- 
+
 
 ## Backend
 
@@ -110,7 +130,7 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * Bcrypt.js
 * Nodemailer
 * Multer
- 
+
 
 ## Cloud & Services
 
@@ -118,9 +138,10 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * Razorpay
 * Render
 * Vercel
+* MongoDB Atlas
 * Brevo SMTP
 * Brevo Transactional Email API
- 
+
 
 # 📁 Project Structure
 
@@ -144,7 +165,7 @@ QUICKART/
 │   └── server.js
 │
 └── README.md
-```
+````
  
 
 # ⚙️ Installation
@@ -181,6 +202,8 @@ CLOUDINARY_API_SECRET=your_api_secret
 
 RAZORPAY_KEY_ID=your_key
 RAZORPAY_SECRET=your_secret
+
+BREVO_API_KEY=your_brevo_api_key
 ```
  
 
@@ -194,7 +217,6 @@ npm run dev
 npm run dev
 ```
  
-
 # ✨ Advanced Features
 
 * Guest users can add items to cart
@@ -204,6 +226,11 @@ npm run dev
 * Dynamic address selection during checkout
 * Email verification system
 * Order confirmation emails
+* Delivery success emails
+* Dynamic stock management
+* Automatic stock deduction
+* Delivery verification code workflow
+* Admin order lifecycle management
 * Cloudinary multiple image uploads
 * Responsive modern UI
 * Secure payment integration
@@ -222,3 +249,6 @@ Database : MongoDB Atlas
 # 👨‍💻 Author
 
 Gaurav Singh
+
+```
+```
