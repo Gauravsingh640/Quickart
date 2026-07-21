@@ -37,7 +37,7 @@ function SalesOverview() {
       const res =
       await axios.get(
 
-        "http://localhost:8000/api/v1/order/all-orders"
+        "https://quickart-jxc5.onrender.com/api/v1/order/all-orders"
       );
 
       const orders =

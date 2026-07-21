@@ -163,7 +163,7 @@ function Products() {
   // FETCH PRODUCTS
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/products");
+      const res = await axios.get("https://quickart-jxc5.onrender.com/api/v1/products");
       setProducts(res.data.products);
     } catch (error) {
       console.log(error);
