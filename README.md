@@ -277,7 +277,7 @@ AI Model : Google Gemini
 
 ```bash
 Frontend : https://quickart-one.vercel.app
-Backend : https://quickart-jxc5.onrender.com
+Backend : http://localhost:8000
 ```
 
 # 👨‍💻 Author

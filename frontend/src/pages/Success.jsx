@@ -46,7 +46,7 @@ function Success() {
       const res =
       await axios.get(
 
-        `https://quickart-jxc5.onrender.com/api/v1/order/${id}`
+        `http://localhost:8000/api/v1/order/${id}`
       );
 
       setOrder(

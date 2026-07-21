@@ -1863,9 +1863,9 @@ body {
 /* MAIN */
 
 .main-content {
-  margin: 5px 25px 25px 25px;
-  width: calc(100% - 250px); /* navbar ki height ke hisab se adjust karo */
-  overflow: hidden;
+  flex: 1;
+  margin: 20px;
+  overflow-y: auto;
 }
 
 /* CARDS */

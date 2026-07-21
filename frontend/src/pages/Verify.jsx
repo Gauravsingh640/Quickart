@@ -16,7 +16,7 @@ function Verify() {
   const verifyEmail = async () => {
     try {
       const res = await axios.get(
-        `https://quickart-jxc5.onrender.com/api/v1/user/verify/${token}`,
+        `http://localhost:8000/api/v1/user/verify/${token}`,
       );
       setMessage(res.data.message);
     } catch (err) {

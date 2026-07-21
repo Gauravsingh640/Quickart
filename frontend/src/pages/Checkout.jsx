@@ -369,7 +369,7 @@ function Checkout() {
 
             await axios.post(
 
-              "https://quickart-jxc5.onrender.com/api/v1/order/create",
+              "http://localhost:8000/api/v1/order/create",
 
               {
 
@@ -425,7 +425,7 @@ function Checkout() {
             const res =
             await axios.post(
 
-              "https://quickart-jxc5.onrender.com/api/v1/order/create",
+              "http://localhost:8000/api/v1/order/create",
 
               {
 
