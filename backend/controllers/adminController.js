@@ -33,11 +33,7 @@ async (req, res) => {
     // SALES
 
     const paidOrders =
-    await Order.find({
-
-      status:"Pending"
-,
-    });
+    await Order.find();
 
     const totalSales =
     paidOrders.reduce(

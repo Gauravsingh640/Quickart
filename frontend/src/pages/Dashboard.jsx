@@ -3,7 +3,8 @@ import {
   FaUsers,
   FaShoppingCart,
   FaClipboardList,
-  FaThLarge
+  FaThLarge,
+  FaRobot
 } from "react-icons/fa";
  
 import { useNavigate, Outlet,  } from "react-router-dom"; 
@@ -51,6 +52,10 @@ function Dashboard() {
             }>
             <FaClipboardList />
             Orders
+          </li>
+          <li onClick={() => navigate("/dashboard/ai")}>
+            <FaRobot />
+            AI Assistant
           </li>
 
         </ul>

@@ -21,6 +21,7 @@ import Order from "./pages/Order";
 import EditProduct from "./pages/EditProduct";
 import UserOrders from "./pages/UserOrders";
 import AdminSingleOrder from "./pages/AdminSingleOrder";
+import AIChat from "./components/AIChat";
 
 function App() {
   return (
@@ -52,7 +53,8 @@ function App() {
           <Route path="/dashboard/users/:id/orders" element={<UserOrders />}/>
           <Route path="orders" element={<Order />} />
           <Route path="/dashboard/order/:id" element={ <AdminSingleOrder /> } />
-        </Route>
+          <Route path="ai" element={<AIChat />} />
+        </Route> 
       </Routes>
     </>
   );

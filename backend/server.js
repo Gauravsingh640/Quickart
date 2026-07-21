@@ -8,13 +8,17 @@ import orderRoute from "./routes/orderRoute.js";
 import productRoutes from "./routes/productRoute.js";
 import adminRoutes from "./routes/adminRoute.js";
 import cors from "cors";
- 
+import analyticsRoutes from "./routes/analytics.routes.js";
+import aiRoutes from "./routes/ai.routes.js";
+
+
+
 const app = express();
  
 // CORS
 app.use(
   cors({
-    origin:"https://quickart-one.vercel.app",
+    origin:["https://quickart-one.vercel.app", "http://localhost:5173"],
     credentials: true,
   })
 );
@@ -38,6 +42,9 @@ app.use("/api/v1/user", userRoute);
 app.use("/api/v1/order",orderRoute);
 app.use("/api/v1/products",productRoutes);
 app.use("/api/v1/admin",adminRoutes);
+app.use("/api/admin/analytics", analyticsRoutes);
+app.use("/api/admin/ai", aiRoutes);
+
 // PORT
 const PORT = process.env.PORT || 3000;
 
