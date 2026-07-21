@@ -150,8 +150,9 @@ The platform includes an intelligent AI-powered Sales Assistant built using Goog
 * JWT Authentication
 * Bcrypt.js
 * Nodemailer
-* Multer
 * Gemini API
+* Multer
+
 
 
 ## Cloud & Services
