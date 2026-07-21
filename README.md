@@ -1,7 +1,6 @@
-# QUICKART 🛒
+# QUICKART 🛒🤖
 
-A modern Full-Stack MERN E-Commerce Application featuring secure authentication, Razorpay payments, Cloudinary image uploads, MongoDB order management, delivery verification system, stock management, email verification, guest cart system, and responsive admin dashboard.
-
+A Full-Stack AI Powered MERN E-Commerce Platform featuring secure authentication, AI Sales Assistant, Razorpay payments, Cloudinary image uploads, MongoDB order management, delivery verification, intelligent business analytics, stock management, and responsive admin dashboard.
 
 # 🚀 Features
 
@@ -104,8 +103,30 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * Product Image Management
 * Dynamic Order Status Display
 * Real-Time Stock Updates
-* Sales Dashboard UI
+* Sales Dashboard
+* Business Analytics
+* AI Sales Assistant
+* Inventory Insights
+* Monthly Sales Reports
 * Delivery Workflow Management
+
+# 🤖 AI Sales Assistant
+
+The platform includes an intelligent AI-powered Sales Assistant built using Google's Gemini API.
+
+### Features
+
+* AI-powered business assistant
+* Natural language business queries
+* Agentic AI architecture
+* Intelligent tool selection
+* Business overview analytics
+* Monthly sales analysis
+* Top selling product insights
+* Low stock recommendations
+* AI-generated business recommendations
+* ChatGPT-style conversational interface
+* Real-time analytics from MongoDB
 
 
 # 🛠️ Tech Stack
@@ -130,6 +151,7 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * Bcrypt.js
 * Nodemailer
 * Multer
+* Gemini API
 
 
 ## Cloud & Services
@@ -142,30 +164,29 @@ A modern Full-Stack MERN E-Commerce Application featuring secure authentication,
 * Brevo SMTP
 * Brevo Transactional Email API
 
-
-# 📁 Project Structure
+# 🧠 AI Architecture
 
 ```bash
-QUICKART/
-│
-├── frontend/
-│   ├── components/
-│   ├── pages/
-│   ├── context/
-│   ├── assets/
-│   ├── styles/
-│   └── App.jsx
-│
-├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   ├── utils/
-│   └── server.js
-│
-└── README.md
-````
+User Question
+      │
+      ▼
+AI Planner (Gemini)
+      │
+      ▼
+Tool Selection
+      │
+      ▼
+Analytics Tool
+      │
+      ▼
+MongoDB
+      │
+      ▼
+Gemini Response
+      │
+      ▼
+AI Sales Assistant
+```
  
 
 # ⚙️ Installation
@@ -204,6 +225,7 @@ RAZORPAY_KEY_ID=your_key
 RAZORPAY_SECRET=your_secret
 
 BREVO_API_KEY=your_brevo_api_key
+GEMINI_API_KEY=your_gemini_api_key
 ```
  
 
@@ -235,6 +257,12 @@ npm run dev
 * Responsive modern UI
 * Secure payment integration
 * MongoDB-based order tracking
+* AI-powered Sales Assistant
+* Business analytics chatbot
+* Monthly sales insights
+* Inventory intelligence
+* Agentic AI workflow
+* Real-time analytics from MongoDB
  
 
 # 🌐 Deployment
@@ -243,8 +271,12 @@ npm run dev
 Frontend : Vercel
 Backend  : Render
 Database : MongoDB Atlas
+AI Model : Google Gemini
 ```
- 
+# 🌐 Live Demo
+
+Frontend : https://quickart-one.vercel.app
+Backend : https://quickart-jxc5.onrender.com
 
 # 👨‍💻 Author
 ```bash
