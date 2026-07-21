@@ -275,8 +275,10 @@ AI Model : Google Gemini
 ```
 # 🌐 Live Demo
 
+```bash
 Frontend : https://quickart-one.vercel.app
 Backend : https://quickart-jxc5.onrender.com
+```
 
 # 👨‍💻 Author
 ```bash
