@@ -1,4 +1,4 @@
-import { getAI } from "./gemini.service.js";
+import { getAI } from "./groq.service.js";
 
 import { SALES_PROMPT } from "../prompts/sales.prompt.js";
 import { CHAT_PROMPT } from "../prompts/chat.prompt.js";
@@ -10,7 +10,7 @@ import {
   getMonthlySales,
 } from "./analytics.service.js";
 
-const ai = getAI();
+const groq = getAI();
 
 export const generateSalesInsights = async () => {
   try {
@@ -41,16 +41,18 @@ Analytics Data:
 ${JSON.stringify(analytics, null, 2)}
 `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-flash-latest",
-      contents: prompt,
-      config: {
-        temperature: 0.3,
-        responseMimeType: "application/json",
+    const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      {
+        role: "user",
+        content: prompt,
       },
-    });
+    ],
+    temperature: 0.3,
+  });
 
-    return JSON.parse(response.text);
+  return JSON.parse(completion.choices[0].message.content);
   } catch (error) {
     console.error(error);
     throw error;
@@ -118,15 +120,18 @@ Rules:
 5. Return only plain text.
 `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-flash-latest",
-      contents: prompt,
-      config: {
-        temperature: 0.3,
-      },
-    });
+    const completion = await groq.chat.completions.create({
+  model: "llama-3.3-70b-versatile",
+  messages: [
+    {
+      role: "user",
+      content: prompt,
+    },
+  ],
+  temperature: 0.3,
+});
 
-    return response.text.trim();
+return completion.choices[0].message.content.trim();
   } catch (error) {
     console.error(error);
     throw error;

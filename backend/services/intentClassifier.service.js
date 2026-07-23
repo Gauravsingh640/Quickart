@@ -1,4 +1,4 @@
-import { generateResponse } from "./gemini.service.js";
+import { generateResponse } from "./groq.service.js";
 
 export const classifyIntent = async (message) => {
   const prompt = `
@@ -21,6 +21,10 @@ Return ONLY the intent.
 `;
 
   const intent = await generateResponse(prompt);
+  const cleaned = intent
+  .toUpperCase()
+  .replace(/[^A-Z_]/g, "")
+  .trim();
 
-  return intent.trim().toUpperCase();
+  return cleaned; 
 };

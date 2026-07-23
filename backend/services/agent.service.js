@@ -1,4 +1,4 @@
-import { getAI } from "./gemini.service.js";
+import { getAI } from "./groq.service.js";
 import { toolDefinitions } from "../tools/toolDefinitions.js";
 import { analyticsTools } from "../tools/analytics.tools.js";
 const ai=getAI();

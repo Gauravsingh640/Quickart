@@ -1,4 +1,4 @@
-import { generateResponse } from "./gemini.service.js";
+import { generateResponse } from "./groq.service.js";
 
 export const decideTool = async (message) => {
   const prompt = `
