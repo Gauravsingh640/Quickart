@@ -22,6 +22,9 @@ import EditProduct from "./pages/EditProduct";
 import UserOrders from "./pages/UserOrders";
 import AdminSingleOrder from "./pages/AdminSingleOrder";
 import AIChat from "./components/AIChat";
+import { ShoppingBagIcon } from "lucide-react";
+import ShoppingAI from "./pages/ShoppingAI";
+import FloatingAIButton from "./components/FloatingAIButton";
 
 function App() {
   return (
@@ -31,6 +34,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/products/ai-chat" element={<ShoppingAI />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify/:token" element={<Verify />} />

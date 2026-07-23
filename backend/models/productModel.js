@@ -32,6 +32,11 @@ const productSchema = new mongoose.Schema(
       type: String,
     },
 
+    embedding: {
+      type: [Number],
+      default: [], 
+    },
+
     images: [
       {
         url: String,

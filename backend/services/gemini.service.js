@@ -1,12 +1,6 @@
-// import { GoogleGenAI } from "@google/genai";
-
-// export const ai = new GoogleGenAI({
-//     apiKey: process.env.GEMINI_API_KEY,
-// });
-
 import { GoogleGenAI } from "@google/genai";
 
-let ai;
+let ai=null;
 
 export function getAI() {
   if (!ai) {
@@ -16,3 +10,18 @@ export function getAI() {
   }
   return ai;
 }
+
+export const generateResponse = async (prompt) => {
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-flash-latest",
+      contents: prompt,
+    });
+
+    return response.text;
+  } catch (error) {
+    console.error("Gemini Error:", error);
+
+    throw new Error("Failed to generate AI response.");
+  }
+};

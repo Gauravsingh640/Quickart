@@ -3756,3 +3756,138 @@ input[type="checkbox"]{
   }
 
 }
+
+/* Product List */
+
+.product-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    margin-top:18px;
+}
+
+/* Existing Product Card ko AI chat ke andar bhi sahi size dene ke liye */
+
+.product-list .card{
+    width:250px;
+    flex-shrink:0;
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+    .product-list{
+        justify-content:center;
+    }
+
+    .product-list .card{
+        width:100%;
+        max-width:320px;
+    }
+
+}
+
+.floating-ai {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.ai-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: all .3s ease;
+}
+
+.ai-button:hover {
+    transform: scale(1.08);
+}
+
+.ai-tooltip {
+    margin-right: 12px;
+    background: white;
+    color: #333;
+    padding: 10px 16px;
+    border-radius: 25px;
+    box-shadow: 0 6px 15px rgba(0,0,0,.2);
+
+    font-size: 15px;
+    font-weight: 500;
+
+    opacity: 0;
+    transform: translateX(15px);
+    transition: all .3s ease;
+
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.floating-ai:hover .ai-tooltip {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ===========================
+   SHOPPING AI PRODUCTS
+=========================== */
+
+.ai-products{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    margin-top:18px;
+}
+
+.ai-products .card{
+    width:250px;
+    flex-shrink:0;
+    cursor:pointer;
+}
+@media(max-width:768px){
+
+    .ai-products{
+        justify-content:center;
+    }
+
+    .ai-products .card{
+        width:100%;
+        max-width:320px;
+    }
+
+}
+.ai-products .card img{
+    height:180px;
+    object-fit:contain;
+}
+
+.ai-products .card h3{
+    font-size:16px;
+}
+
+.ai-products .card p{
+    font-size:14px;
+}
+
+.ai-products .card h2{
+    font-size:20px;
+}
+.message-content .ai-products{
+    margin-top:20px;
+}
+.ai-products .card{
+    margin:0;
+}
