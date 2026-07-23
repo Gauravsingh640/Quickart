@@ -9,7 +9,9 @@ import {
   getLowStockProducts,
   getMonthlySales,
 } from "./analytics.service.js";
-const ai=getAI();
+
+const ai = getAI();
+
 export const generateSalesInsights = async () => {
   try {
     const [
@@ -48,17 +50,17 @@ ${JSON.stringify(analytics, null, 2)}
       },
     });
 
-    const text = response.text;
-
-    return JSON.parse(text);
-
+    return JSON.parse(response.text);
   } catch (error) {
-    console.error("AI Service Error:", error);
+    console.error(error);
     throw error;
   }
 };
 
-export const generateChatResponse = async (question) => {
+export const generateChatResponse = async (
+  question,
+  memories = {}
+) => {
   try {
     const [
       overview,
@@ -79,16 +81,41 @@ export const generateChatResponse = async (question) => {
       monthlySales,
     };
 
+    const memoryContext =
+      Object.keys(memories).length > 0
+        ? Object.entries(memories)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join("\n")
+        : "No saved admin preferences.";
+
     const prompt = `
 ${CHAT_PROMPT}
 
-Analytics Data:
+=========================
+KNOWN ADMIN INFORMATION
+=========================
+
+${memoryContext}
+
+=========================
+ANALYTICS DATA
+=========================
+
 ${JSON.stringify(analytics, null, 2)}
 
-User Question:
+=========================
+QUESTION
+=========================
+
 ${question}
 
-Return ONLY plain text.
+Rules:
+
+1. Use analytics only.
+2. Use remembered admin preferences whenever relevant.
+3. If reportFormat exists, use it.
+4. If dashboardPreference exists, prioritize it.
+5. Return only plain text.
 `;
 
     const response = await ai.models.generateContent({
@@ -100,9 +127,8 @@ Return ONLY plain text.
     });
 
     return response.text.trim();
-
   } catch (error) {
-    console.error("AI Chat Error:", error);
+    console.error(error);
     throw error;
   }
 };

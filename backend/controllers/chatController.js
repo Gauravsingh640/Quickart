@@ -3,6 +3,10 @@ import { createPlan } from "../services/planner.service.js";
 import { executeTool } from "../services/toolExecutor.service.js";
 import { buildShoppingPrompt } from "../services/prompt.service.js";
 import { generateResponse } from "../services/gemini.service.js";
+
+import { extractMemory } from "../services/userMemoryExtractor.service.js";
+import { recallAll } from "../services/userMemory.service.js";
+
 import {
   saveConversation,
   saveAIResponse,
@@ -20,16 +24,23 @@ export const chatWithAI = async (req, res) => {
       });
     }
 
+    // Step 0: Extract & Save Long-Term Memory
+    console.log("Logged User:", req.user);
+    console.log("User ID:", req.user?._id);
+    if (req.user?._id) {
+      await extractMemory(req.user._id, message);
+    }
+
     // Step 1: Detect Intent
     const intent = await classifyIntent(message);
     console.log("Intent:", intent);
 
-    // Step 2: Create Plan
+    // Step 2: Create Execution Plan
     const plan = createPlan(intent, message);
 
     let toolResult = {};
 
-    // Step 3: Execute Plan
+    // Step 3: Execute Required Tools
     for (const step of plan) {
       toolResult = await executeTool(
         step.tool,
@@ -41,7 +52,7 @@ export const chatWithAI = async (req, res) => {
     const products = toolResult.products || [];
     const order = toolResult.order || null;
 
-    // Step 4: Save User Message
+    // Step 4: Save Current Conversation (Short-Term Memory)
     if (req.user?._id) {
       await saveConversation(
         req.user._id,
@@ -51,14 +62,21 @@ export const chatWithAI = async (req, res) => {
       );
     }
 
-    // Step 5: Get Previous History
+    // Step 5: Load Recent Conversation History
     let history = [];
 
     if (req.user?._id) {
       history = await getRecentHistory(req.user._id);
     }
 
-    // Step 6: Handle No Products
+    // Step 6: Load Long-Term Memory
+    let memories = {};
+
+    if (req.user?._id) {
+      memories = await recallAll(req.user._id);
+    }
+
+    // Step 7: Handle No Product Found
     if (
       ["SEARCH_PRODUCT", "COMPARE", "BUY_NOW", "PRODUCT_DETAILS"].includes(
         intent
@@ -73,19 +91,20 @@ export const chatWithAI = async (req, res) => {
       });
     }
 
-    // Step 7: Build Prompt
+    // Step 8: Build Prompt
     const prompt = buildShoppingPrompt(
       message,
       products,
       order,
       intent,
-      history
+      history,
+      memories
     );
 
-    // Step 8: Generate AI Response
+    // Step 9: Generate AI Response
     const answer = await generateResponse(prompt);
 
-    // Step 9: Save AI Response
+    // Step 10: Save AI Response in Conversation History
     if (req.user?._id) {
       await saveAIResponse(req.user._id, answer);
     }

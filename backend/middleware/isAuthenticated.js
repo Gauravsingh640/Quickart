@@ -3,7 +3,6 @@ import { User } from "../models/userModel.js";
 
 export const isAuthenticated = async (req, res, next) => {
   try {
-
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -19,9 +18,7 @@ export const isAuthenticated = async (req, res, next) => {
 
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } 
-    catch (error) {
-
+    } catch (error) {
       if (error.name === "TokenExpiredError") {
         return res.status(400).json({
           success: false,
@@ -44,11 +41,12 @@ export const isAuthenticated = async (req, res, next) => {
       });
     }
 
-    req.id = user._id ;
-    next();
+    // ✅ Important
+    req.user = user;
+    req.id = user._id;
 
-  } 
-  catch (error) {
+    next();
+  } catch (error) {
     return res.status(500).json({
       success: false,
       message: error.message,
