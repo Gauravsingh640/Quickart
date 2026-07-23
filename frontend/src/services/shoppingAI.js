@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://quickart-jxc5.onrender.com/api/v1/chat";
+const BASE_URL = "http://localhost:8000/api/v1/chat";
 
 export const askShoppingAI = async (message) => {
   try {

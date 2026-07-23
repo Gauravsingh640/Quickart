@@ -4,6 +4,7 @@ import { User } from "../models/userModel.js";
 export const isAuthenticated = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    console.log("Authorization Header:", req.headers.authorization);
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(400).json({
@@ -13,7 +14,7 @@ export const isAuthenticated = async (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
-
+    console.log("Token:", token);
     let decoded;
 
     try {

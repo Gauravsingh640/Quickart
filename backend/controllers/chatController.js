@@ -2,7 +2,7 @@ import { classifyIntent } from "../services/intentClassifier.service.js";
 import { createPlan } from "../services/planner.service.js";
 import { executeTool } from "../services/toolExecutor.service.js";
 import { buildShoppingPrompt } from "../services/prompt.service.js";
-import { generateResponse } from "../services/gemini.service.js";
+import { generateResponse } from "../services/groq.service.js";
 
 import { extractMemory } from "../services/userMemoryExtractor.service.js";
 import { recallAll } from "../services/userMemory.service.js";

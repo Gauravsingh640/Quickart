@@ -1,7 +1,9 @@
 import { getAI } from "./groq.service.js";
 import { toolDefinitions } from "../tools/toolDefinitions.js";
 import { analyticsTools } from "../tools/analytics.tools.js";
-const ai=getAI();
+
+const groq = getAI();
+
 export const decideTool = async (question) => {
   const prompt = `
 You are an AI Router.
@@ -19,32 +21,30 @@ Return ONLY the tool name.
 Example:
 
 overview
-
 topProducts
-
 lowStock
-
 monthlySales
 `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-flash-latest",
-    contents: prompt,
-    config: {
-      temperature: 0,
-    },
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      {
+        role: "user",
+        content: prompt,
+      },
+    ],
+    temperature: 0,
   });
 
-  return response.text.trim();
+  return completion.choices[0].message.content.trim();
 };
 
 export const executeTool = async (question) => {
-  // Step 1: Decide tool
   const toolName = await decideTool(question);
 
   console.log("Selected Tool:", toolName);
 
-  // Step 2: Execute tool
   const tool = analyticsTools[toolName];
 
   if (!tool) {
@@ -79,13 +79,16 @@ Only use the tool output.
 Do not make up any information.
 `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-flash-latest",
-    contents: prompt,
-    config: {
-      temperature: 0.3,
-    },
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      {
+        role: "user",
+        content: prompt,
+      },
+    ],
+    temperature: 0.3,
   });
 
-  return response.text;
+  return completion.choices[0].message.content;
 };
