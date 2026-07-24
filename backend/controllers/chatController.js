@@ -11,6 +11,8 @@ import {
   saveConversation,
   saveAIResponse,
   getRecentHistory,
+  getFullChatHistory,
+  clearChatHistory,
 } from "../services/memory.service.js";
 
 export const chatWithAI = async (req, res) => {
@@ -106,7 +108,7 @@ export const chatWithAI = async (req, res) => {
 
     // Step 10: Save AI Response in Conversation History
     if (req.user?._id) {
-      await saveAIResponse(req.user._id, answer);
+      await saveAIResponse(req.user._id, answer, products);
     }
 
     return res.status(200).json({
@@ -121,6 +123,42 @@ export const chatWithAI = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: error.message || "Internal Server Error",
+    });
+  }
+};
+
+export const getChatHistory = async (req, res) => {
+  try {
+    const history = await getFullChatHistory(req.user._id);
+
+    return res.status(200).json({
+      success: true,
+      history,
+    });
+  } catch (error) {
+    console.error("Get Chat History Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to load chat history",
+    });
+  }
+};
+
+export const clearChat = async (req, res) => {
+  try {
+    await clearChatHistory(req.user._id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Chat cleared successfully",
+    });
+  } catch (error) {
+    console.error("Clear Chat Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to clear chat",
     });
   }
 };

@@ -1,9 +1,25 @@
 export const createPlan = (intent, message) => {
   switch (intent) {
+    case "GENERAL_CHAT":
+      return [
+        {
+          tool: "GENERAL_CHAT",
+          input: message,
+        },
+      ];
+
     case "SEARCH_PRODUCT":
       return [
         {
           tool: "SEARCH_PRODUCT",
+          input: message,
+        },
+      ];
+
+    case "PRODUCT_DETAILS":
+      return [
+        {
+          tool: "PRODUCT_DETAILS",
           input: message,
         },
       ];
@@ -19,11 +35,8 @@ export const createPlan = (intent, message) => {
     case "BUY_NOW":
       return [
         {
-          tool: "SEARCH_PRODUCT",
-          input: message,
-        },
-        {
           tool: "BUY_NOW",
+          input: message,
         },
       ];
 
@@ -31,6 +44,7 @@ export const createPlan = (intent, message) => {
       return [
         {
           tool: "TRACK_ORDER",
+          input: message,
         },
       ];
 
@@ -38,6 +52,7 @@ export const createPlan = (intent, message) => {
       return [
         {
           tool: "ORDER_HISTORY",
+          input: message,
         },
       ];
 
@@ -45,13 +60,14 @@ export const createPlan = (intent, message) => {
       return [
         {
           tool: "CANCEL_ORDER",
+          input: message,
         },
       ];
 
     default:
       return [
         {
-          tool: "SEARCH_PRODUCT",
+          tool: "GENERAL_CHAT",
           input: message,
         },
       ];

@@ -25,16 +25,31 @@ const sessionSchema = new mongoose.Schema(
       },
     ],
 
-    chatHistory: [
+    searchProducts: [
       {
-        role: String,
-        message: String,
-        createdAt: {
-          type: Date,
-          default: Date.now,
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
       },
     ],
+
+    chatHistory: [
+  {
+    role: String,
+    message: String,
+
+    products: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
+
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+],
   },
   {
     timestamps: true,

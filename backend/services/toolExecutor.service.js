@@ -5,44 +5,81 @@ import {
   getProductDetails,
 } from "./product.service.js";
 
-export const executeTool = async (intent, message) => {
+export const executeTool = async (
+  intent,
+  message,
+  userId
+) => {
   let products = [];
 
   switch (intent) {
-    case "SEARCH_PRODUCT":
-      products = await searchProducts(message);
-      break;
+    case "GENERAL_CHAT":
+      return {
+        tool: "GENERAL_CHAT",
+        products: [],
+        order: null,
+      };
 
-    case "ADD_TO_CART":
-      products = await searchProducts(message);
+    case "SEARCH_PRODUCT":
+      products = await searchProducts(
+        message,
+        userId
+      );
       break;
 
     case "BUY_NOW":
-      products = await recommendProducts(message);
+      products = await recommendProducts(
+        message,
+        userId
+      );
       break;
 
     case "COMPARE":
-      products = await compareProducts(message);
+      products = await compareProducts(
+        message,
+        userId
+      );
       break;
 
     case "PRODUCT_DETAILS":
-      products = await getProductDetails(message);
+      products = await getProductDetails(
+        message,
+        userId
+      );
       break;
 
-    case "REMOVE_FROM_CART":
+    case "TRACK_ORDER":
       return {
-        tool: "REMOVE_FROM_CART",
+        tool: "TRACK_ORDER",
         products: [],
+        order: null,
+      };
+
+    case "ORDER_HISTORY":
+      return {
+        tool: "ORDER_HISTORY",
+        products: [],
+        order: null,
+      };
+
+    case "CANCEL_ORDER":
+      return {
+        tool: "CANCEL_ORDER",
+        products: [],
+        order: null,
       };
 
     default:
-      products = await searchProducts(message);
-      intent = "SEARCH_PRODUCT";
-      break;
+      return {
+        tool: "GENERAL_CHAT",
+        products: [],
+        order: null,
+      };
   }
 
   return {
     tool: intent,
     products,
+    order: null,
   };
 };

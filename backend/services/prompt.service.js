@@ -59,6 +59,28 @@ Delivery Code: ${order.deliveryCode || "N/A"}
   let instructions = "";
 
   switch (intent) {
+    case "GENERAL_CHAT":
+    instructions = `
+        Reply naturally to the user's message.
+
+        This is a conversational message, not a product search.
+
+        If the user shares:
+        - their name
+        - likes
+        - dislikes
+        - favourite brand
+        - preferences
+        - budget
+        - personal shopping preferences
+
+        acknowledge it naturally.
+
+        Do NOT recommend products unless the user explicitly asks for a recommendation, suggestion, search, or product details.
+
+        Do NOT mention product cards.
+        `;
+    break;
     case "SEARCH_PRODUCT":
       instructions =
         "Recommend the best matching products and explain why they match the user's requirements.";
