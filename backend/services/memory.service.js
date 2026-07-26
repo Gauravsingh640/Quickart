@@ -2,90 +2,173 @@ import { Session } from "../models/sessionModel.js";
 
 /**
  * ==========================================
- * GET USER SESSION
+ * CREATE NEW CHAT
  * ==========================================
  */
-export const getSession = async (userId) => {
-  return await Session.findOne({ userId });
-};
-
-/**
- * ==========================================
- * CREATE SESSION
- * ==========================================
- */
-export const createSession = async (userId) => {
-  let session = await Session.findOne({ userId });
-
-  if (!session) {
-    session = await Session.create({
-      userId,
-      lastIntent: "",
-      lastQuery: "",
-      lastProducts: [],
-      searchProducts: [],
-      chatHistory: [],
-    });
-  }
+export const createSession = async (
+  userId,
+  title = "New Chat"
+) => {
+  const session = await Session.create({
+    userId,
+    title,
+    lastIntent: "",
+    lastQuery: "",
+    lastProducts: [],
+    searchProducts: [],
+    chatHistory: [],
+  });
 
   return session;
 };
 
 /**
  * ==========================================
- * SAVE USER MESSAGE
+ * GET ONE CHAT
+ * ==========================================
+ */
+export const getSession = async (
+  userId,
+  chatId
+) => {
+  if (!chatId) {
+    return null;
+  }
+
+  return await Session.findOne({
+    _id: chatId,
+    userId,
+  });
+};
+
+/**
+ * ==========================================
+ * GET ALL USER CHATS
  * ==========================================
  *
- * Saves:
- * - current intent
- * - current query
- * - currently displayed products
- * - original search products
- * - user chat message
+ * Used for sidebar:
+ *
+ * Today
+ * Samsung vs Sony
+ * Best laptops
+ *
+ * Yesterday
+ * iPhone options
+ */
+export const getUserChats = async (userId) => {
+  return await Session.find({
+    userId,
+  })
+    .select(
+      "_id title createdAt updatedAt"
+    )
+    .sort({
+      updatedAt: -1,
+    });
+};
+
+/**
+ * ==========================================
+ * GENERATE CHAT TITLE
+ * ==========================================
+ *
+ * For now title is generated from first
+ * user message.
+ *
+ * Later we can use AI title generation
+ * if needed.
+ */
+export const generateChatTitle = (message) => {
+  if (!message) {
+    return "New Chat";
+  }
+
+  let title = message
+    .trim()
+    .replace(/\s+/g, " ");
+
+  // Special comparison title
+  const compareMatch = title.match(
+    /compare\s+(.+?)\s+(?:and|vs|versus)\s+(.+)/i
+  );
+
+  if (compareMatch) {
+    const first = compareMatch[1].trim();
+    const second = compareMatch[2].trim();
+
+    title = `${first} vs ${second}`;
+  }
+
+  // Keep sidebar title short
+  if (title.length > 45) {
+    title =
+      title.substring(0, 42).trim() +
+      "...";
+  }
+
+  return title;
+};
+
+/**
+ * ==========================================
+ * SAVE USER MESSAGE
+ * ==========================================
  */
 export const saveConversation = async (
   userId,
+  chatId,
   intent,
   query,
   products = []
 ) => {
-  const session = await createSession(userId);
+  const session = await getSession(
+    userId,
+    chatId
+  );
+
+  if (!session) {
+    throw new Error("Chat session not found");
+  }
 
   session.lastIntent = intent;
   session.lastQuery = query;
 
-  // Products returned for current request
+  // ==========================================
+  // CURRENTLY DISPLAYED PRODUCTS
+  // ==========================================
+
   session.lastProducts = products
     .filter((product) => product?._id)
     .map((product) => product._id);
 
-  /**
-   * Preserve original/main search results.
-   *
-   * Example:
-   *
-   * User:
-   * "Best laptops"
-   *
-   * searchProducts:
-   * [Dell, HP, Asus, Acer]
-   *
-   * User:
-   * "Tell me about Dell"
-   *
-   * lastProducts:
-   * [Dell]
-   *
-   * searchProducts remains:
-   * [Dell, HP, Asus, Acer]
-   */
-  if (intent === "SEARCH_PRODUCT") {
+  // ==========================================
+  // ORIGINAL SEARCH PRODUCTS
+  // ==========================================
+
+  if (["SEARCH_PRODUCT", "COMPARE"].includes(intent) && products.length > 0) {
     session.searchProducts = products
-      .filter((product) => product?._id)
-      .map((product) => product._id);
+        .filter((product) => product?._id)
+        .map((product) => product._id);
   }
 
-  // Save user message
+  // ==========================================
+  // FIRST MESSAGE → CHAT TITLE
+  // ==========================================
+
+  const hasUserMessage =
+    session.chatHistory.some(
+      (item) => item.role === "user"
+    );
+
+  if (!hasUserMessage) {
+    session.title =
+      generateChatTitle(query);
+  }
+
+  // ==========================================
+  // SAVE USER MESSAGE
+  // ==========================================
+
   session.chatHistory.push({
     role: "user",
     message: query,
@@ -101,21 +184,21 @@ export const saveConversation = async (
  * ==========================================
  * SAVE AI RESPONSE
  * ==========================================
- *
- * Products are stored with the AI message
- * so they can be restored after:
- *
- * - page refresh
- * - navigating to cart
- * - navigating to another page
- * - coming back to Shopping AI
  */
 export const saveAIResponse = async (
   userId,
+  chatId,
   answer,
   products = []
 ) => {
-  const session = await createSession(userId);
+  const session = await getSession(
+    userId,
+    chatId
+  );
+
+  if (!session) {
+    throw new Error("Chat session not found");
+  }
 
   session.chatHistory.push({
     role: "assistant",
@@ -133,40 +216,46 @@ export const saveAIResponse = async (
 
 /**
  * ==========================================
- * GET RECENT CHAT HISTORY
+ * GET RECENT HISTORY
  * ==========================================
  *
- * Used by AI prompt for conversation context.
+ * AI gets context ONLY from currently
+ * selected chat.
  */
 export const getRecentHistory = async (
   userId,
+  chatId,
   limit = 6
 ) => {
-  const session = await Session.findOne({
+  const session = await getSession(
     userId,
-  });
+    chatId
+  );
 
   if (!session) {
     return [];
   }
 
-  return session.chatHistory.slice(-limit);
+  return session.chatHistory.slice(
+    -limit
+  );
 };
 
 /**
  * ==========================================
  * GET LAST DISPLAYED PRODUCTS
  * ==========================================
- *
- * Example:
- *
- * AI displayed:
- * Dell G15
- *
- * lastProducts = [Dell G15]
  */
-export const getLastProducts = async (userId) => {
+export const getLastProducts = async (
+  userId,
+  chatId
+) => {
+  if (!chatId) {
+    return [];
+  }
+
   const session = await Session.findOne({
+    _id: chatId,
     userId,
   }).populate("lastProducts");
 
@@ -181,23 +270,17 @@ export const getLastProducts = async (userId) => {
  * ==========================================
  * GET ORIGINAL SEARCH PRODUCTS
  * ==========================================
- *
- * Example:
- *
- * User:
- * "Best laptops"
- *
- * searchProducts:
- * Dell
- * HP
- * Asus
- * Acer
- *
- * Even if user asks about Dell afterwards,
- * original results remain available.
  */
-export const getSearchProducts = async (userId) => {
+export const getSearchProducts = async (
+  userId,
+  chatId
+) => {
+  if (!chatId) {
+    return [];
+  }
+
   const session = await Session.findOne({
+    _id: chatId,
     userId,
   }).populate("searchProducts");
 
@@ -213,13 +296,19 @@ export const getSearchProducts = async (userId) => {
  * GET COMPLETE CHAT HISTORY
  * ==========================================
  *
- * Used by frontend when ShoppingAI mounts.
- *
- * Product references are populated so old
- * ProductCards can also be rendered again.
+ * Used when user clicks an old chat
+ * from sidebar.
  */
-export const getFullChatHistory = async (userId) => {
+export const getFullChatHistory = async (
+  userId,
+  chatId
+) => {
+  if (!chatId) {
+    return [];
+  }
+
   const session = await Session.findOne({
+    _id: chatId,
     userId,
   }).populate("chatHistory.products");
 
@@ -232,37 +321,54 @@ export const getFullChatHistory = async (userId) => {
 
 /**
  * ==========================================
- * CLEAR CURRENT CHAT
+ * DELETE ONE CHAT
  * ==========================================
  *
- * Used when:
- * - User clicks "New Chat"
- * - optionally when user logs out
- *
- * IMPORTANT:
- * Long-term UserMemory is NOT deleted.
- *
- * Name, favourite brand, budget, city etc.
- * can remain remembered.
+ * We are NOT deleting every chat anymore.
  */
-export const clearChatHistory = async (userId) => {
-  const session = await Session.findOne({
+export const deleteChat = async (
+  userId,
+  chatId
+) => {
+  if (!chatId) {
+    return null;
+  }
+
+  return await Session.findOneAndDelete({
+    _id: chatId,
     userId,
   });
+};
+
+/**
+ * ==========================================
+ * CLEAR ONE CHAT'S MESSAGES
+ * ==========================================
+ *
+ * Optional utility.
+ *
+ * Keeps the chat itself but removes
+ * conversation.
+ */
+export const clearChatHistory = async (
+  userId,
+  chatId
+) => {
+  const session = await getSession(
+    userId,
+    chatId
+  );
 
   if (!session) {
     return null;
   }
 
   session.chatHistory = [];
-
   session.lastProducts = [];
-
   session.searchProducts = [];
-
   session.lastIntent = "";
-
   session.lastQuery = "";
+  session.title = "New Chat";
 
   await session.save();
 

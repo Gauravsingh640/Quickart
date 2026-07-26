@@ -27,7 +27,8 @@ import {
  */
 export const searchProducts = async (
   message,
-  userId = null
+  userId = null,
+  chatId = null
 ) => {
   return await retrieveRelevantProducts(
     message,
@@ -55,7 +56,8 @@ export const searchProducts = async (
  */
 export const compareProducts = async (
   message,
-  userId = null
+  userId = null,
+  chatId = null
 ) => {
   // ==========================================
   // NO USER / SESSION
@@ -73,10 +75,10 @@ export const compareProducts = async (
   // ==========================================
 
   const lastProducts =
-    await getLastProducts(userId);
+    await getLastProducts(userId,chatId);
 
   const searchProducts =
-    await getSearchProducts(userId);
+    await getSearchProducts(userId, chatId);
 
   const text = message
     .toLowerCase()
@@ -546,7 +548,8 @@ export const compareProducts = async (
  */
 export const recommendProducts = async (
   message,
-  userId = null
+  userId = null,
+  chatId = null
 ) => {
   return await retrieveRelevantProducts(
     message,
@@ -574,7 +577,8 @@ export const recommendProducts = async (
  */
 export const getProductDetails = async (
   message,
-  userId = null
+  userId = null,
+  chatId = null
 ) => {
   // ==========================================
   // No authenticated user
@@ -592,10 +596,10 @@ export const getProductDetails = async (
   // ==========================================
 
   const lastProducts =
-    await getLastProducts(userId);
+    await getLastProducts(userId, chatId);
 
   const originalSearchProducts =
-    await getSearchProducts(userId);
+    await getSearchProducts(userId, chatId);
 
   const text = message
     .toLowerCase()

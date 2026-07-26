@@ -1,41 +1,17 @@
 import mongoose from "mongoose";
 
-const sessionSchema = new mongoose.Schema(
+const messageSchema = new mongoose.Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      unique: true,
-    },
-
-    lastIntent: {
+    role: {
       type: String,
-      default: "",
+      enum: ["user", "assistant"],
+      required: true,
     },
 
-    lastQuery: {
+    message: {
       type: String,
-      default: "",
+      required: true,
     },
-
-    lastProducts: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-      },
-    ],
-
-    searchProducts: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-      },
-    ],
-
-    chatHistory: [
-  {
-    role: String,
-    message: String,
 
     products: [
       {
@@ -49,11 +25,98 @@ const sessionSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-],
+  {
+    _id: false,
+  }
+);
+
+const sessionSchema = new mongoose.Schema(
+  {
+    // ==========================================
+    // USER
+    // ==========================================
+
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+
+    // ==========================================
+    // CHAT TITLE
+    // ==========================================
+
+    title: {
+      type: String,
+      default: "New Chat",
+      trim: true,
+    },
+
+    // ==========================================
+    // CURRENT CHAT CONTEXT
+    // ==========================================
+
+    lastIntent: {
+      type: String,
+      default: "",
+    },
+
+    lastQuery: {
+      type: String,
+      default: "",
+    },
+
+    // Products from immediately previous response
+    lastProducts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
+
+    // Original/main search products
+    searchProducts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
+
+    // ==========================================
+    // CHAT MESSAGES
+    // ==========================================
+
+    chatHistory: [messageSchema],
   },
   {
     timestamps: true,
   }
 );
 
-export const Session = mongoose.model("Session", sessionSchema);
+// ==========================================
+// INDEX
+// ==========================================
+//
+// IMPORTANT:
+// userId is NOT unique anymore.
+//
+// One user can now have:
+//
+// User
+//  ├── Chat 1
+//  ├── Chat 2
+//  ├── Chat 3
+//  └── ...
+//
+// ==========================================
+
+sessionSchema.index({
+  userId: 1,
+  updatedAt: -1,
+});
+
+export const Session = mongoose.model(
+  "Session",
+  sessionSchema
+);

@@ -8,11 +8,16 @@ import {
 export const executeTool = async (
   intent,
   message,
-  userId
+  userId,
+  chatId = null
 ) => {
   let products = [];
 
   switch (intent) {
+    // ==========================================
+    // GENERAL CHAT
+    // ==========================================
+
     case "GENERAL_CHAT":
       return {
         tool: "GENERAL_CHAT",
@@ -20,33 +25,57 @@ export const executeTool = async (
         order: null,
       };
 
+    // ==========================================
+    // SEARCH PRODUCT
+    // ==========================================
+
     case "SEARCH_PRODUCT":
       products = await searchProducts(
         message,
-        userId
+        userId,
+        chatId
       );
       break;
+
+    // ==========================================
+    // BUY NOW
+    // ==========================================
 
     case "BUY_NOW":
       products = await recommendProducts(
         message,
-        userId
+        userId,
+        chatId
       );
       break;
+
+    // ==========================================
+    // COMPARE
+    // ==========================================
 
     case "COMPARE":
       products = await compareProducts(
         message,
-        userId
+        userId,
+        chatId
       );
       break;
+
+    // ==========================================
+    // PRODUCT DETAILS
+    // ==========================================
 
     case "PRODUCT_DETAILS":
       products = await getProductDetails(
         message,
-        userId
+        userId,
+        chatId
       );
       break;
+
+    // ==========================================
+    // TRACK ORDER
+    // ==========================================
 
     case "TRACK_ORDER":
       return {
@@ -55,6 +84,10 @@ export const executeTool = async (
         order: null,
       };
 
+    // ==========================================
+    // ORDER HISTORY
+    // ==========================================
+
     case "ORDER_HISTORY":
       return {
         tool: "ORDER_HISTORY",
@@ -62,12 +95,20 @@ export const executeTool = async (
         order: null,
       };
 
+    // ==========================================
+    // CANCEL ORDER
+    // ==========================================
+
     case "CANCEL_ORDER":
       return {
         tool: "CANCEL_ORDER",
         products: [],
         order: null,
       };
+
+    // ==========================================
+    // FALLBACK
+    // ==========================================
 
     default:
       return {
