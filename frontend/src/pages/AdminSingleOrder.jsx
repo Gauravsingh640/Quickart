@@ -35,7 +35,7 @@ function AdminSingleOrder(){
       const res =
       await axios.get(
 
-        `http://localhost:8000/${id}`
+        `https://quickart-jxc5.onrender.com/${id}`
       );
 
       setOrder(
@@ -68,7 +68,7 @@ function AdminSingleOrder(){
         const res =
         await axios.put(
 
-        `http://localhost:8000/confirm/${id}`
+        `https://quickart-jxc5.onrender.com/confirm/${id}`
         );
 
         toast.success("Order confirmed successfully");
@@ -95,7 +95,7 @@ function AdminSingleOrder(){
         const res =
         await axios.put(
 
-        `http://localhost:8000/cancel/${id}`
+        `https://quickart-jxc5.onrender.com/cancel/${id}`
         );
 
         toast.success("Order cancelled successfully");
@@ -119,7 +119,7 @@ function AdminSingleOrder(){
       const res =
       await axios.put(
 
-        `http://localhost:8000/status/${id}`,
+        `https://quickart-jxc5.onrender.com/status/${id}`,
 
         { status }
       );
@@ -146,7 +146,7 @@ function AdminSingleOrder(){
       const res =
       await axios.put(
 
-        `http://localhost:8000/deliver/${id}`,
+        `https://quickart-jxc5.onrender.com/deliver/${id}`,
 
         {
 
