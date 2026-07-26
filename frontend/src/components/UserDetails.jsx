@@ -168,7 +168,7 @@ function UserDetails() {
         const res =
           await axios.put(
 
-            "https://quickart-jxc5.onrender.com/api/v1/user/profile/update",
+            "http://localhost:8000/api/v1/user/profile/update",
 
             form,
 

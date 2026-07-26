@@ -3,6 +3,7 @@ import {
   Bot,
   User,
   Send,
+  Square,
   Sparkles,
   Plus,
 } from "lucide-react";
@@ -64,6 +65,7 @@ function ShoppingAI() {
     useState(true);
 
   const chatRef = useRef(null);
+  const abortControllerRef = useRef(null);
 
   // ==========================================
   // LOAD OLD CHAT HISTORY
@@ -185,10 +187,13 @@ function ShoppingAI() {
     setInput("");
 
     setLoading(true);
+    const controller = new AbortController();
+
+    abortControllerRef.current = controller;
 
     try {
       const data =
-        await askShoppingAI(trimmedText);
+        await askShoppingAI(trimmedText,controller.signal);
 
       if (!data.success) {
         throw new Error(
@@ -221,36 +226,51 @@ function ShoppingAI() {
         aiMessage,
       ]);
     } catch (error) {
-      console.error(
-        "Shopping AI Error:",
-        error
-      );
+  // User clicked Stop
+  if (
+    error.code === "ERR_CANCELED" ||
+    error.name === "CanceledError"
+  ) {
+    console.log("AI generation stopped by user");
+    return;
+  }
 
-      const errorMessage = {
-        sender: "ai",
+  console.error(
+    "Shopping AI Error:",
+    error
+  );
 
-        text:
-          "Something went wrong. Please try again.",
-
-        products: [],
-
-        time: new Date().toLocaleTimeString(
-          [],
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-        ),
-      };
-
-      setMessages((prev) => [
-        ...prev,
-        errorMessage,
-      ]);
-    } finally {
-      setLoading(false);
-    }
+  const errorMessage = {
+    sender: "ai",
+    text: "Something went wrong. Please try again.",
+    products: [],
+    time: new Date().toLocaleTimeString(
+      [],
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    ),
   };
+
+  setMessages((prev) => [
+    ...prev,
+    errorMessage,
+  ]);
+} finally {
+  abortControllerRef.current = null;
+  setLoading(false);
+}
+  };
+
+  const handleStop = () => {
+  if (abortControllerRef.current) {
+    abortControllerRef.current.abort();
+    abortControllerRef.current = null;
+  }
+
+  setLoading(false);
+};
 
   // ==========================================
   // NEW CHAT
@@ -334,6 +354,7 @@ function ShoppingAI() {
 
             New Chat
           </button>
+          
         </div>
 
         {/* ================================= */}
@@ -577,7 +598,7 @@ function ShoppingAI() {
             }}
           />
 
-          <button
+          {/* <button
             onClick={() =>
               handleSend()
             }
@@ -588,7 +609,27 @@ function ShoppingAI() {
             }
           >
             <Send size={20} />
-          </button>
+          </button> */}
+          <button
+  onClick={
+    loading
+      ? handleStop
+      : () => handleSend()
+  }
+  disabled={
+    historyLoading ||
+    (!loading && !input.trim())
+  }
+  className={
+    loading ? "stop-generation-btn" : ""
+  }
+>
+  {loading ? (
+    <Square size={18} fill="currentColor" />
+  ) : (
+    <Send size={20} />
+  )}
+</button>
 
         </div>
 

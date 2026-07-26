@@ -87,9 +87,27 @@ Delivery Code: ${order.deliveryCode || "N/A"}
       break;
 
     case "COMPARE":
-      instructions =
-        "Compare all relevant products. Mention their pros, cons, price differences, and recommend the best choice.";
-      break;
+  instructions = `
+Compare ALL provided products fairly.
+
+For each product:
+- Explain the important specifications.
+- Mention price.
+- Mention stock availability.
+- Mention strengths and weaknesses.
+- Clearly explain the differences between the products.
+
+IMPORTANT:
+- Do NOT select a winner.
+- Do NOT recommend one product over another.
+- Do NOT say "best", "better choice", "recommended", or "winner"
+  unless the user explicitly asks which product is best/better
+  or asks you to recommend/pick one.
+- Every product provided in PRODUCT INFORMATION must be included
+  in the comparison.
+- Do not silently remove a product from the comparison.
+`;
+  break;
 
     case "BUY_NOW":
       instructions =
@@ -186,5 +204,8 @@ RULES
 7. Use previous conversation for follow-up questions.
 8. Use known user information whenever it improves the response.
 9. Keep responses concise, friendly, and professional.
+10. For COMPARE intent, compare every product supplied in PRODUCT INFORMATION.
+11. Never choose a comparison winner unless the CURRENT USER QUESTION explicitly asks for the best, better, recommended, or preferred option.
+12. A normal comparison must remain neutral and must not reduce the returned product set.
 `;
 };

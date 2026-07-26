@@ -25,7 +25,7 @@ Use GENERAL_CHAT when the user is only:
 - sharing preferences
 - sharing likes/dislikes
 - sharing favourite brands
-- sharing budget as personal preference
+- sharing budget as a personal preference
 - making normal conversation
 - talking about liking/disliking a product
 
@@ -65,8 +65,12 @@ GENERAL_CHAT must NOT return product recommendations/cards.
 SEARCH_PRODUCT
 =========================================
 
-Use when user wants products to be discovered,
-recommended, suggested, searched, or shown.
+Use SEARCH_PRODUCT when the user wants to:
+- discover products
+- search products
+- see products
+- get recommendations without referring to previously compared products
+- find the best product from the catalog/category generally
 
 Examples:
 
@@ -91,12 +95,31 @@ Examples:
 "any other iPhone?"
 → SEARCH_PRODUCT
 
+"show best laptop under 60000"
+→ SEARCH_PRODUCT
+
+"recommend me a Samsung phone"
+→ SEARCH_PRODUCT
+
+IMPORTANT:
+
+A general request for the best product in a category
+is SEARCH_PRODUCT.
+
+Example:
+
+"best laptop under 50000"
+→ SEARCH_PRODUCT
+
+But asking which is best/better BETWEEN previously
+shown or compared products is COMPARE.
+
 =========================================
 PRODUCT_DETAILS
 =========================================
 
-Use when user wants information about a
-specific product or a product shown previously.
+Use PRODUCT_DETAILS when the user wants information
+about a specific product or a product shown previously.
 
 Examples:
 
@@ -136,24 +159,129 @@ IMPORTANT DIFFERENCE:
 COMPARE
 =========================================
 
-User explicitly wants comparison.
+Use COMPARE whenever the user is comparing two or more
+products OR asking for a winner/recommendation among
+products that were already being compared or shown.
+
+This includes:
+
+- direct comparison
+- differences
+- versus / vs
+- compare previous products
+- asking which of two/multiple products is better
+- asking which one should be selected
+- asking which one you recommend
+- asking for the best among previous products
 
 Examples:
 
-"compare iPhone and Samsung"
+"compare Samsung and Sony"
+→ COMPARE
+
+"compare them"
+→ COMPARE
+
+"compare both"
+→ COMPARE
+
+"compare these two"
+→ COMPARE
+
+"difference between these two"
+→ COMPARE
+
+"Samsung vs Sony"
 → COMPARE
 
 "compare first and second"
 → COMPARE
 
-"which is better Dell or HP?"
+"which one is best between these two?"
 → COMPARE
+
+"which one is better?"
+→ COMPARE
+
+"which one is best according to you?"
+→ COMPARE
+
+"which one is best between two according to you?"
+→ COMPARE
+
+"which should I choose?"
+→ COMPARE
+
+"which one should I buy?"
+→ COMPARE
+
+"which one would you recommend?"
+→ COMPARE
+
+"pick one between these two"
+→ COMPARE
+
+"recommend one from these"
+→ COMPARE
+
+"which is better among them?"
+→ COMPARE
+
+"which one has better specifications?"
+→ COMPARE
+
+"which one is cheaper between them?"
+→ COMPARE
+
+IMPORTANT:
+
+If the user refers to TWO OR MORE existing/shown/compared
+products and asks which is best/better/recommended,
+the intent MUST remain COMPARE.
+
+Do NOT change it to SEARCH_PRODUCT.
+
+Example conversation:
+
+User:
+"compare Sony Wireless Ear Headphone and Samsung Galaxy Buds4 Pro"
+→ COMPARE
+
+Then user:
+"which one is best according to you?"
+→ COMPARE
+
+Then user:
+"which one should I choose?"
+→ COMPARE
+
+This allows the comparison system to continue using
+the same previously compared products.
+
+A normal comparison does NOT automatically mean the
+assistant should declare a winner.
+
+Example:
+
+"compare Sony and Samsung"
+→ COMPARE
+
+The response should compare both neutrally.
+
+Only when the user explicitly asks:
+"which is best?"
+"which is better?"
+"which should I choose?"
+"which do you recommend?"
+
+then the assistant may select/recommend a winner.
 
 =========================================
 BUY_NOW
 =========================================
 
-User explicitly wants to purchase/buy.
+Use BUY_NOW only when the user explicitly wants to
+perform a purchase action.
 
 Examples:
 
@@ -163,18 +291,52 @@ Examples:
 "buy OnePlus 13"
 → BUY_NOW
 
+"purchase this phone"
+→ BUY_NOW
+
+IMPORTANT:
+
+"which one should I buy?"
+→ COMPARE
+
+because the user is asking for advice between products.
+
+But:
+
+"I want to buy Samsung Galaxy Buds4 Pro"
+→ BUY_NOW
+
+because the user has made the purchase decision.
+
 =========================================
 ORDER INTENTS
 =========================================
 
 TRACK_ORDER:
+
 "track my order"
+→ TRACK_ORDER
+
+"where is my order?"
+→ TRACK_ORDER
+
 
 ORDER_HISTORY:
+
 "show my previous orders"
+→ ORDER_HISTORY
+
+"show my orders"
+→ ORDER_HISTORY
+
 
 CANCEL_ORDER:
+
 "cancel my order"
+→ CANCEL_ORDER
+
+"I want to cancel my order"
+→ CANCEL_ORDER
 
 =========================================
 

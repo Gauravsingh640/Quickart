@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://quickart-jxc5.onrender.com/api",
+  baseURL: "http://localhost:8000/api",
 });
 
 export const askAI = async (question) => {
