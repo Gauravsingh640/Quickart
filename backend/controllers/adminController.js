@@ -72,3 +72,45 @@ async (req, res) => {
     });
   }
 };
+
+export const addProductStock = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+    const { quantity } = req.body;
+
+    if (!quantity || quantity <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Quantity must be greater than 0",
+      });
+    }
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    product.stock += Number(quantity);
+
+    await product.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Stock updated successfully",
+      product,
+    });
+
+  } catch (error) {
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};

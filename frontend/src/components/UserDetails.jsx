@@ -13,6 +13,7 @@ import {
   toast,
 } from "react-toastify";
 
+import "./UserDetails.css";
 function UserDetails() {
 
   const {

@@ -13,6 +13,7 @@ import {
   toast,
 } from "react-toastify";
 
+import "./UserOrders.css";
 function UserOrders() {
 
   const { id } =

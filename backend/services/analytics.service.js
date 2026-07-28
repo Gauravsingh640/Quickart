@@ -1,252 +1,918 @@
-// import { Order } from "../models/orderModel.js";
-// import { Product } from "../models/productModel.js";
-// import { User } from "../models/userModel.js";
-
-// export const getOverviewAnalytics = async () => {
-//   const [orders, products, users] = await Promise.all([
-//     Order.find({ status: "Delivered" }),
-//     Product.countDocuments(),
-//     User.countDocuments(),
-//   ]);
-
-//   const totalRevenue = orders.reduce(
-//     (sum, order) => sum + order.totalPrice,
-//     0
-//   );
-
-//   return {
-//     totalRevenue,
-//     totalOrders: orders.length,
-//     totalProducts: products,
-//     totalUsers: users,
-//   };
-// };
-
+// services/analytics.service.js
 
 import { Order } from "../models/orderModel.js";
 import { Product } from "../models/productModel.js";
-import { User } from "../models/userModel.js"; 
+import { User } from "../models/userModel.js";
+
+// ==========================================
+// CONSTANTS
+// ==========================================
+
+const LOW_STOCK_THRESHOLD = 9;
+
+const ORDER_STATUS = {
+  PENDING: "Pending",
+  CONFIRMED: "Confirmed",
+  PACKED: "Packed",
+  SHIPPED: "Shipped",
+  OUT_FOR_DELIVERY: "Out For Delivery",
+  DELIVERED: "Delivered",
+  CANCELLED: "Cancelled",
+};
+
+// ==========================================
+// BUSINESS OVERVIEW
+// ==========================================
 
 export const getOverviewAnalytics = async () => {
   try {
-    const orders = await Order.find({}).select("totalPrice status items");
+    const [
+      totalOrders,
 
-    console.log("\n========== ORDERS ==========\n");
+      deliveredAnalytics,
 
-    console.table(
-      orders.map((order) => ({
-        totalPrice: order.totalPrice,
-        status: order.status,
-      }))
-    );
+      pendingOrders,
+      confirmedOrders,
+      packedOrders,
+      shippedOrders,
+      outForDeliveryOrders,
+      cancelledOrders,
 
-    console.log("\n========== ITEMS ==========\n");
+      totalProducts,
+      totalUsers,
+    ] = await Promise.all([
+      // --------------------------------------
+      // TOTAL ORDERS
+      // --------------------------------------
 
-    orders.forEach((order, index) => {
-      console.log(`Order ${index + 1}`);
+      Order.countDocuments(),
 
-      order.items.forEach((item) => {
-        console.log({
-          title: item.title,
-          price: item.price,
-          quantity: item.quantity,
-        });
-      });
+      // --------------------------------------
+      // DELIVERED REVENUE + COUNT
+      // --------------------------------------
 
-      console.log("----------------------------");
-    });
+      Order.aggregate([
+        {
+          $match: {
+            status: ORDER_STATUS.DELIVERED,
+          },
+        },
 
-    const totalRevenue = orders.reduce(
-      (sum, order) => sum + order.totalPrice,
-      0
-    );
+        {
+          $group: {
+            _id: null,
 
-    const totalProducts = await Product.countDocuments();
-    const totalUsers = await User.countDocuments({
-        isVerified:true
-    });
+            totalRevenue: {
+              $sum: "$totalPrice",
+            },
+
+            deliveredOrders: {
+              $sum: 1,
+            },
+          },
+        },
+      ]),
+
+      // --------------------------------------
+      // ORDER STATUS COUNTS
+      // --------------------------------------
+
+      Order.countDocuments({
+        status: ORDER_STATUS.PENDING,
+      }),
+
+      Order.countDocuments({
+        status: ORDER_STATUS.CONFIRMED,
+      }),
+
+      Order.countDocuments({
+        status: ORDER_STATUS.PACKED,
+      }),
+
+      Order.countDocuments({
+        status: ORDER_STATUS.SHIPPED,
+      }),
+
+      Order.countDocuments({
+        status: ORDER_STATUS.OUT_FOR_DELIVERY,
+      }),
+
+      Order.countDocuments({
+        status: ORDER_STATUS.CANCELLED,
+      }),
+
+      // --------------------------------------
+      // PRODUCTS
+      // --------------------------------------
+
+      Product.countDocuments(),
+
+      // --------------------------------------
+      // VERIFIED USERS
+      // --------------------------------------
+
+      User.countDocuments({
+        isVerified: true,
+      }),
+    ]);
+
+    // ========================================
+    // DELIVERED ANALYTICS
+    // ========================================
+
+    const deliveredData = deliveredAnalytics[0] || {
+      totalRevenue: 0,
+      deliveredOrders: 0,
+    };
+
+    // ========================================
+    // RETURN
+    // ========================================
 
     return {
-      totalRevenue: Number(totalRevenue.toFixed(2)),
-      totalOrders: orders.length,
+      totalRevenue: Number(Number(deliveredData.totalRevenue || 0).toFixed(2)),
+
+      totalOrders,
+
+      deliveredOrders: deliveredData.deliveredOrders || 0,
+
+      pendingOrders,
+
+      confirmedOrders,
+
+      packedOrders,
+
+      shippedOrders,
+
+      outForDeliveryOrders,
+
+      cancelledOrders,
+
       totalProducts,
+
       totalUsers,
     };
   } catch (error) {
-    console.log(error);
+    console.error("Overview Analytics Error:", error);
+
     throw error;
   }
 };
 
+// ==========================================
+// TOP SELLING PRODUCTS
+// ==========================================
+
 export const getTopSellingProducts = async () => {
-  const topProducts = await Order.aggregate([
-    {
-      $match: {
-        status: "Delivered",
+  try {
+    const topProducts = await Order.aggregate([
+      // --------------------------------------
+      // ONLY DELIVERED ORDERS
+      // --------------------------------------
+
+      {
+        $match: {
+          status: ORDER_STATUS.DELIVERED,
+        },
       },
-    },
 
-    {
-      $unwind: "$items",
-    },
+      // --------------------------------------
+      // EXPAND ORDER ITEMS
+      // --------------------------------------
 
-    {
-      $group: {
-        _id: "$items.id",
-        name: { $first: "$items.title" },
-        image: { $first: "$items.image" },
-        totalSold: { $sum: "$items.quantity" },
-        revenue: {
-          $sum: {
-            $multiply: ["$items.price", "$items.quantity"],
+      {
+        $unwind: "$items",
+      },
+
+      // --------------------------------------
+      // GROUP BY PRODUCT
+      // --------------------------------------
+
+      {
+        $group: {
+          _id: "$items.id",
+
+          name: {
+            $first: "$items.title",
+          },
+
+          image: {
+            $first: "$items.image",
+          },
+
+          totalSold: {
+            $sum: "$items.quantity",
+          },
+
+          revenue: {
+            $sum: {
+              $multiply: ["$items.price", "$items.quantity"],
+            },
           },
         },
       },
-    },
 
-    {
-      $sort: {
-        totalSold: -1,
-      },
-    },
+      // --------------------------------------
+      // RANK BY UNITS SOLD
+      // --------------------------------------
 
-    {
-      $limit: 5,
-    },
-
-    {
-      $project: {
-        _id: 0,
-        productId: "$_id",
-        name: 1,
-        image: 1,
-        totalSold: 1,
-        revenue: {
-          $round: ["$revenue", 2],
+      {
+        $sort: {
+          totalSold: -1,
+          revenue: -1,
+          _id: 1,
         },
       },
-    },
-  ]);
 
-  return topProducts;
-}; 
+      // --------------------------------------
+      // TOP 5
+      // --------------------------------------
+
+      {
+        $limit: 5,
+      },
+
+      // --------------------------------------
+      // CLEAN OUTPUT
+      // --------------------------------------
+
+      {
+        $project: {
+          _id: 0,
+
+          productId: "$_id",
+
+          name: 1,
+
+          image: 1,
+
+          totalSold: 1,
+
+          revenue: {
+            $round: ["$revenue", 2],
+          },
+        },
+      },
+    ]);
+
+    return topProducts;
+  } catch (error) {
+    console.error("Top Products Analytics Error:", error);
+
+    throw error;
+  }
+};
+
+// ==========================================
+// LEAST SELLING PRODUCTS
+// ==========================================
+
+export const getLeastSellingProducts = async () => {
+  try {
+    const leastProducts = await Order.aggregate([
+      // --------------------------------------
+      // ONLY DELIVERED ORDERS
+      // --------------------------------------
+
+      {
+        $match: {
+          status: ORDER_STATUS.DELIVERED,
+        },
+      },
+
+      // --------------------------------------
+      // EXPAND ORDER ITEMS
+      // --------------------------------------
+
+      {
+        $unwind: "$items",
+      },
+
+      // --------------------------------------
+      // GROUP BY PRODUCT
+      // --------------------------------------
+
+      {
+        $group: {
+          _id: "$items.id",
+
+          name: {
+            $first: "$items.title",
+          },
+
+          image: {
+            $first: "$items.image",
+          },
+
+          totalSold: {
+            $sum: "$items.quantity",
+          },
+
+          revenue: {
+            $sum: {
+              $multiply: ["$items.price", "$items.quantity"],
+            },
+          },
+        },
+      },
+
+      // --------------------------------------
+      // LEAST SOLD FIRST
+      // --------------------------------------
+
+      {
+        $sort: {
+          totalSold: 1,
+          revenue: 1,
+          _id: 1,
+        },
+      },
+
+      // --------------------------------------
+      // BOTTOM 5
+      // --------------------------------------
+
+      {
+        $limit: 5,
+      },
+
+      // --------------------------------------
+      // CLEAN OUTPUT
+      // --------------------------------------
+
+      {
+        $project: {
+          _id: 0,
+
+          productId: "$_id",
+
+          name: 1,
+
+          image: 1,
+
+          totalSold: 1,
+
+          revenue: {
+            $round: ["$revenue", 2],
+          },
+        },
+      },
+    ]);
+
+    return leastProducts;
+  } catch (error) {
+    console.error("Least Products Analytics Error:", error);
+
+    throw error;
+  }
+};
+
+// ==========================================
+// LOW STOCK PRODUCTS
+// ==========================================
 
 export const getLowStockProducts = async () => {
-  const products = await Product.find({
-    stock: { $lte: 5 }, // 5 ya usse kam stock
-  })
-    .select("name stock price images category")
-    .sort({ stock: 1 });
+  try {
+    // ========================================
+    // RUN QUERIES IN PARALLEL
+    // ========================================
 
-  return products;
+    const [lowStockProducts, leastStockProducts, totalProducts] =
+      await Promise.all([
+        // --------------------------------------
+        // PRODUCTS REQUIRING RESTOCK
+        // stock <= threshold
+        // --------------------------------------
+
+        Product.find({
+          stock: {
+            $lte: LOW_STOCK_THRESHOLD,
+          },
+        })
+          .select("_id name brand category stock price images")
+          .sort({
+            stock: 1,
+            name: 1,
+          })
+          .lean(),
+
+        // --------------------------------------
+        // 5 PRODUCTS WITH LEAST STOCK
+        // --------------------------------------
+
+        Product.find({})
+          .select("_idname brand category stock price images")
+          .sort({
+            stock: 1,
+            name: 1,
+          })
+          .limit(5)
+          .lean(),
+
+        // --------------------------------------
+        // TOTAL PRODUCTS
+        // --------------------------------------
+
+        Product.countDocuments(),
+      ]);
+
+    // ========================================
+    // RETURN
+    // ========================================
+
+    return {
+      threshold: LOW_STOCK_THRESHOLD,
+
+      lowStockProducts,
+
+      leastStockProducts,
+
+      lowStockCount: lowStockProducts.length,
+
+      totalProducts,
+    };
+  } catch (error) {
+    console.error("Low Stock Analytics Error:", error);
+
+    throw error;
+  }
 };
+
+// ==========================================
+// WEEKLY SALES
+// ==========================================
+
+export const getWeeklySales = async () => {
+  try {
+    const end = new Date();
+
+    const start = new Date();
+
+    start.setDate(start.getDate() - 7);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+
+    const analytics = await Order.aggregate([
+      {
+        $match: {
+          status: ORDER_STATUS.DELIVERED,
+          createdAt: {
+            $gte: start,
+            $lte: end,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          revenue: {
+            $sum: "$totalPrice",
+          },
+          orders: {
+            $sum: 1,
+          },
+        },
+      },
+    ]);
+
+    const data = analytics[0] || {
+      revenue: 0,
+      orders: 0,
+    };
+
+    return {
+      revenue: Number(Number(data.revenue).toFixed(2)),
+      orders: data.orders,
+};
+  } catch (error) {
+    console.error("Weekly Sales Error:", error);
+    throw error;
+  }
+};
+
+// ==========================================
+// TODAY SALES
+// ==========================================
+
+export const getTodaySales = async () => {
+  try {
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const analytics = await Order.aggregate([
+      {
+        $match: {
+          status: ORDER_STATUS.DELIVERED,
+          createdAt: {
+            $gte: today,
+            $lt: tomorrow,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          revenue: {
+            $sum: "$totalPrice",
+          },
+          orders: {
+            $sum: 1,
+          },
+        },
+      },
+    ]);
+
+    const data = analytics[0] || {
+      revenue: 0,
+      orders: 0,
+    };
+
+    return {
+      revenue: Number(Number(data.revenue).toFixed(2)),
+      orders: data.orders,
+    };
+  } catch (error) {
+    console.error("Today Sales Error:", error);
+    throw error;
+  }
+};
+
+// ==========================================
+// MONTHLY SALES
+// ==========================================
 
 export const getMonthlySales = async () => {
-  const monthlySales = await Order.aggregate([
-    {
-      $match: {
-        status: "Delivered",
-      },
-    },
-    {
-      $group: {
-        _id: {
-          year: { $year: "$createdAt" },
-          month: { $month: "$createdAt" },
-        },
-        revenue: {
-          $sum: "$totalPrice",
-        },
-        orders: {
-          $sum: 1,
-        },
-      },
-    },
-    {
-      $sort: {
-        "_id.year": 1,
-        "_id.month": 1,
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        year: "$_id.year",
-        monthNumber: "$_id.month",
-        month: {
-          $arrayElemAt: [
-            [
-              "",
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ],
-            "$_id.month",
-          ],
-        },
-        revenue: {
-          $round: ["$revenue", 2],
-        },
-        orders: 1,
-      },
-    },
-  ]);
+  try {
+    const monthlySales = await Order.aggregate([
+      // --------------------------------------
+      // DELIVERED ORDERS ONLY
+      // --------------------------------------
 
-  return monthlySales;
-};
- 
-export const getCategorySales = async () => {
-  const categorySales = await Order.aggregate([
-    {
-      $match: {
-        status: "Delivered",
-      },
-    },
-    {
-      $unwind: "$items",
-    },
-    {
-      $lookup: {
-        from: "products",
-        localField: "items.id",
-        foreignField: "_id",
-        as: "product",
-      },
-    },
-    {
-      $unwind: "$product",
-    },
-    {
-      $group: {
-        _id: "$product.category",
-        sold: {
-          $sum: "$items.quantity",
+      {
+        $match: {
+          status: ORDER_STATUS.DELIVERED,
         },
-        revenue: {
-          $sum: {
-            $multiply: [
-              "$items.price",
-              "$items.quantity"
-            ]
-          }
-        }
-      }
-    },
-    {
-      $sort: {
-        revenue: -1
+      },
+
+      // --------------------------------------
+      // GROUP BY YEAR + MONTH
+      // --------------------------------------
+
+      {
+        $group: {
+          _id: {
+            year: {
+              $year: "$createdAt",
+            },
+
+            month: {
+              $month: "$createdAt",
+            },
+          },
+
+          revenue: {
+            $sum: "$totalPrice",
+          },
+
+          orders: {
+            $sum: 1,
+          },
+        },
+      },
+
+      // --------------------------------------
+      // CHRONOLOGICAL ORDER
+      // --------------------------------------
+
+      {
+        $sort: {
+          "_id.year": 1,
+          "_id.month": 1,
+        },
+      },
+
+      // --------------------------------------
+      // CLEAN OUTPUT
+      // --------------------------------------
+
+      {
+        $project: {
+          _id: 0,
+
+          year: "$_id.year",
+
+          monthNumber: "$_id.month",
+
+          month: {
+            $arrayElemAt: [
+              [
+                "",
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+              ],
+
+              "$_id.month",
+            ],
+          },
+
+          revenue: {
+            $round: ["$revenue", 2],
+          },
+
+          orders: 1,
+        },
+      },
+    ]);
+
+    return monthlySales;
+  } catch (error) {
+    console.error("Monthly Sales Analytics Error:", error);
+
+    throw error;
+  }
+};
+
+// ==========================================
+// CATEGORY SALES
+// ==========================================
+
+export const getCategorySales = async () => {
+  try {
+    const categorySales = await Order.aggregate([
+      // --------------------------------------
+      // DELIVERED ORDERS ONLY
+      // --------------------------------------
+
+      {
+        $match: {
+          status: ORDER_STATUS.DELIVERED,
+        },
+      },
+
+      // --------------------------------------
+      // EXPAND ITEMS
+      // --------------------------------------
+
+      {
+        $unwind: "$items",
+      },
+
+      // --------------------------------------
+      // GET PRODUCT CATEGORY
+      // --------------------------------------
+
+      
+
+      // --------------------------------------
+      // GROUP BY CATEGORY
+      // --------------------------------------
+
+      {
+        $group: {
+          _id: "$items.category",
+
+          sold: {
+            $sum: "$items.quantity",
+          },
+
+          revenue: {
+            $sum: {
+              $multiply: ["$items.price", "$items.quantity"],
+            },
+          },
+        },
+      },
+
+      // --------------------------------------
+      // HIGHEST REVENUE FIRST
+      // --------------------------------------
+
+      {
+        $sort: {
+          revenue: -1,
+          sold: -1,
+          _id: 1,
+        },
+      },
+
+      // --------------------------------------
+      // CLEAN OUTPUT
+      // --------------------------------------
+
+      {
+        $project: {
+          _id: 0,
+
+          category: "$_id",
+
+          sold: 1,
+
+          revenue: {
+            $round: ["$revenue", 2],
+          },
+        },
+      },
+    ]);
+    console.log("Category Sales Analytics:",JSON.stringify(categorySales, null, 2));
+
+    return categorySales;
+  } catch (error) {
+    console.error("Category Sales Analytics Error:", error);
+
+    throw error;
+  }
+};
+
+// ==========================================
+// ORDER ANALYTICS
+// ==========================================
+
+export const getOrderAnalytics = async () => {
+  try {
+    const statusData = await Order.aggregate([
+      // --------------------------------------
+      // GROUP BY STATUS
+      // --------------------------------------
+
+      // --------------------------------------
+      // ONLY FULFILLMENT STATUSES
+      // --------------------------------------
+
+      {
+        $match: {
+          status: {
+            $in: [
+              ORDER_STATUS.PENDING,
+              ORDER_STATUS.CONFIRMED,
+              ORDER_STATUS.PACKED,
+              ORDER_STATUS.SHIPPED,
+              ORDER_STATUS.OUT_FOR_DELIVERY,
+              ORDER_STATUS.DELIVERED,
+              ORDER_STATUS.CANCELLED,
+            ],
+          },
+        },
+      },
+
+      {
+        $group: {
+          _id: "$status",
+
+          count: {
+            $sum: 1,
+          },
+
+          value: {
+            $sum: "$totalPrice",
+          },
+        },
+      },
+
+      // --------------------------------------
+      // SORT
+      // --------------------------------------
+
+      {
+        $sort: {
+          count: -1,
+          _id: 1,
+        },
+      },
+
+      // --------------------------------------
+      // CLEAN OUTPUT
+      // --------------------------------------
+
+      {
+        $project: {
+          _id: 0,
+
+          status: "$_id",
+
+          count: 1,
+
+          value: {
+            $round: ["$value", 2],
+          },
+        },
+      },
+    ]);
+
+    return statusData;
+  } catch (error) {
+    console.error("Order Analytics Error:", error);
+
+    throw error;
+  }
+};
+
+// ==========================================
+// INVENTORY ANALYTICS
+// ==========================================
+
+export const getInventoryAnalytics = async () => {
+  try {
+    const products = await Product.find({})
+      .select("name brand category price stock")
+      .sort({
+        stock: 1,
+        name: 1,
+      })
+      .lean();
+
+    // ========================================
+    // INVENTORY GROUPS
+    // ========================================
+
+    const outOfStock = [];
+
+    const lowStock = [];
+
+    const healthyStock = [];
+
+    let inventoryValue = 0;
+
+    // ========================================
+    // PROCESS PRODUCTS ONCE
+    // ========================================
+
+    for (const product of products) {
+      const stock = Number(product.stock) || 0;
+
+      const price = Number(product.price) || 0;
+
+      // --------------------------------------
+      // INVENTORY VALUE
+      // --------------------------------------
+
+      inventoryValue += price * stock;
+
+      // --------------------------------------
+      // STOCK CLASSIFICATION
+      // --------------------------------------
+
+      if (stock === 0) {
+        outOfStock.push(product);
+      } else if (stock <= LOW_STOCK_THRESHOLD) {
+        lowStock.push(product);
+      } else {
+        healthyStock.push(product);
       }
     }
-  ]);
 
-  return categorySales;
+    // ========================================
+    // FORMAT PRODUCT
+    // ========================================
+
+    const formatInventoryProduct = (product) => ({
+      name: product.name,
+
+      brand: product.brand,
+
+      category: product.category,
+
+      stock: product.stock,
+    });
+
+    // ========================================
+    // RETURN
+    // ========================================
+
+    return {
+      threshold: LOW_STOCK_THRESHOLD,
+
+      totalProducts: products.length,
+
+      outOfStockCount: outOfStock.length,
+
+      lowStockCount: lowStock.length,
+
+      healthyStockCount: healthyStock.length,
+
+      inventoryValue: Number(inventoryValue.toFixed(2)),
+
+      outOfStockProducts: outOfStock.map(formatInventoryProduct),
+
+      lowStockProducts: lowStock.map(formatInventoryProduct),
+    };
+  } catch (error) {
+    console.error("Inventory Analytics Error:", error);
+
+    throw error;
+  }
 };

@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 import { FaTrash } from "react-icons/fa";
 
 import { toast } from "react-toastify";
-
+import "./Cart.css";
 function Cart() {
   const navigate = useNavigate();
 

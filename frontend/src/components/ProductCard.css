@@ -1,0 +1,79 @@
+
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+}
+
+.card h3 {
+  margin: 10px 0;
+}
+
+.card button {
+  width: 100%;
+  padding: 10px;
+  background: #e6007e;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+
+.qty-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+ 
+.qty-box button {
+  width: 35px;
+  height: 35px;
+  border: none;
+  background: #ddd; 
+  cursor: pointer;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty-box span {
+  font-size: 18px;
+  font-weight: bold;
+} 
+
+
+.card {
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.card h2 {
+  color: #7c3aed;
+  margin: 10px 0;
+  font-size: 22px;
+}
+
+.card p {
+  color: gray;
+  margin-bottom: 10px;
+}
+
+.card button:hover {
+  background: #7c3aed;
+}

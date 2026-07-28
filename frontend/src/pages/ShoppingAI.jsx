@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 import ProductCard from "../components/ProductCard";
-
+import "./ShoppingAI.css";
 import {
   askShoppingAI,
   getShoppingChats,

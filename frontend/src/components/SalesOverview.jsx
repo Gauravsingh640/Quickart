@@ -6,7 +6,6 @@ import {
 import axios from "axios";
 
 import {
-
   LineChart,
   Line,
   XAxis,
@@ -14,14 +13,43 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-
 } from "recharts";
+
+import "./SalesOverview.css";
 
 function SalesOverview() {
 
-  const [salesData,
-    setSalesData] =
-    useState([]);
+  const [allOrders, setAllOrders] = useState([]);
+
+  const [salesData, setSalesData] = useState([]);
+
+  // CURRENT MONTH
+  const currentDate = new Date();
+
+  const [selectedMonth, setSelectedMonth] = useState(
+    `${currentDate.getFullYear()}-${String(
+      currentDate.getMonth() + 1
+    ).padStart(2, "0")}`
+  );
+
+  // FETCH ORDERS
+
+  const fetchSales = async () => {
+
+    try {
+
+      const res = await axios.get(
+        "https://quickart-jxc5.onrender.com/api/v1/order/all-orders"
+      );
+
+      setAllOrders(res.data.orders || []);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
 
   useEffect(() => {
 
@@ -29,138 +57,186 @@ function SalesOverview() {
 
   }, []);
 
-  const fetchSales =
-  async () => {
+  // CREATE GRAPH WHEN MONTH / ORDERS CHANGE
 
-    try {
+  useEffect(() => {
 
-      const res =
-      await axios.get(
+    if (!selectedMonth) return;
 
-        "https://quickart-jxc5.onrender.com/api/v1/order/all-orders"
-      );
+    const [year, month] =
+      selectedMonth.split("-").map(Number);
 
-      const orders =
-      res.data.orders;
+    // NUMBER OF DAYS IN SELECTED MONTH
 
-      // GROUP SALES BY DATE
+    const daysInMonth =
+      new Date(year, month, 0).getDate();
 
-      const groupedData = {};
+    const groupedData = {};
 
-      orders.forEach((order) => {
+    // INIT ALL DAYS WITH 0
 
-        if ( order.status !== "Pending"
- ) { return; }
+    for (let day = 1; day <= daysInMonth; day++) {
 
-        const rawDate =
+      groupedData[day] = 0;
+
+    }
+
+    // ADD SALES
+
+    allOrders.forEach((order) => {
+
+      // DON'T COUNT CANCELLED ORDERS
+
+      if (order.status === "Cancelled") {
+        return;
+      }
+
+      const orderDate =
         new Date(order.createdAt);
- 
-        // YYYY-MM-DD 
-        const formattedDate =
 
-        rawDate.toLocaleDateString(
-        "en-CA"
-        ); 
+      const orderYear =
+        orderDate.getFullYear();
 
+      const orderMonth =
+        orderDate.getMonth() + 1;
 
-        if (
-          groupedData[
-            formattedDate
-          ]
-        ) {
+      // ONLY SELECTED MONTH
 
-          groupedData[
-            formattedDate
-          ] += order.totalPrice;
-        }
+      if (
+        orderYear === year &&
+        orderMonth === month
+      ) {
 
-        else {
+        const day =
+          orderDate.getDate();
 
-          groupedData[
-            formattedDate
-          ] = order.totalPrice;
-        }
-      });
+        groupedData[day] +=
+          Number(order.totalPrice) || 0;
 
-      // CONVERT TO ARRAY
-      // SORT IN INCREASING DATE
+      }
 
-      const formattedData =
+    });
 
-      Object.keys(
-        groupedData
-      )
+    // CONVERT INTO ARRAY
 
-      .sort()
+    const formattedData =
+      Object.keys(groupedData).map((day) => ({
 
-      .map((date) => ({
+        date: Number(day),
 
-        date,
+        sales: groupedData[day],
 
-        sales:
-        groupedData[date],
       }));
 
-      setSalesData(
-        formattedData
-      );
+    setSalesData(formattedData);
 
-    }
+  }, [allOrders, selectedMonth]);
 
-    catch(error){
+  // FORMAT MONTH NAME
 
-      console.log(error);
-    }
-  };
+  const monthName = new Date(
+    `${selectedMonth}-01T00:00:00`
+  ).toLocaleDateString("en-IN", {
+    month: "long",
+    year: "numeric",
+  });
 
   return (
 
-    <div
-      className="salesOverview"
-    >
+    <div className="salesOverview">
+
+      {/* TOP */}
+
+      <div className="salesOverviewTop">
+
+        <h2>
+          Sales Overview
+        </h2>
+
+        <div className="monthSelector">
+
+          <span>
+            Month:
+          </span>
+
+          <input
+            type="month"
+            value={selectedMonth}
+            onChange={(e) =>
+              setSelectedMonth(e.target.value)
+            }
+          />
+
+        </div>
+
+      </div>
+
+      {/* SELECTED MONTH */}
+
+      <p className="selectedMonthText">
+        {monthName}
+      </p>
+
+      {/* GRAPH */}
 
       <ResponsiveContainer
         width="100%"
         height={350}
       >
- 
+
         <LineChart
-        data={salesData}
-        margin={{
-            top:20,
-            right:30,
-            left:10,
-            bottom:10,
-        }}
-        > 
+          data={salesData}
+          margin={{
+            top: 20,
+            right: 30,
+            left: 20,
+            bottom: 10,
+          }}
+        >
+
           <CartesianGrid
             strokeDasharray="3 3"
           />
 
           <XAxis
             dataKey="date"
+            tickFormatter={(day) =>
+              `${day}`
+            }
           />
 
-          <YAxis />
+          <YAxis
+            tickFormatter={(value) =>
+              `₹${value.toLocaleString("en-IN")}`
+            }
+          />
 
           <Tooltip
-
-            formatter={(value) =>
-
-              `₹${value.toFixed(2)}`
+            labelFormatter={(day) =>
+              `${day} ${monthName}`
             }
-
+            formatter={(value) => [
+              `₹${Number(value).toLocaleString(
+                "en-IN",
+                {
+                  maximumFractionDigits: 2,
+                }
+              )}`,
+              "Sales",
+            ]}
           />
 
           <Line
-
             type="monotone"
-
             dataKey="sales"
-
             stroke="#e32f92"
-
             strokeWidth={4}
+            dot={{
+              r: 3,
+            }}
+            activeDot={{
+              r: 6,
+            }}
           />
 
         </LineChart>

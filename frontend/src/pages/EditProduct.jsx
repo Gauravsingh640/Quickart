@@ -5,6 +5,8 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { toast } from "react-toastify";
+import "./AddProduct.css";
+import "./EditProduct.css";
 
 function EditProduct() {
   const { id } = useParams();

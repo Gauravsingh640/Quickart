@@ -6,6 +6,8 @@ import { AuthContext } from "../context/AuthContext";
 
 import { toast } from "react-toastify";
 
+import "./ProductCard.css";
+
 function ProductCard({ item }) {
   const navigate = useNavigate();
 

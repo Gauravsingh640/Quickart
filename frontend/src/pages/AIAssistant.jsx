@@ -1,5 +1,5 @@
 import React from "react";
-import AIChat from "../components/AIChat";
+import AIChat from "./AIChat";
 import "./AIAssistant.css";
 
 const AIAssistant = () => {

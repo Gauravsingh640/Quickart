@@ -1,0 +1,46 @@
+/* LOGIN */
+
+.auth-container {
+  min-height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-box {
+  width: 400px;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.auth-box h2 {
+  margin-bottom: 20px;
+}
+
+.auth-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+}
+
+.auth-box button {
+  width: 100%;
+  padding: 12px;
+  background: #e6007e;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.auth-box p {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.name-fields {
+  display: flex;
+  gap: 10px;
+}
+

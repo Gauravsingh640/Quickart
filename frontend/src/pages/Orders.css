@@ -1,0 +1,264 @@
+
+/* /dashboard/orders */
+.adminOrdersContainer{
+
+  padding:30px;
+}
+
+.adminOrdersContainer h1{
+
+  margin-bottom:30px;
+}
+
+.adminOrdersTable{
+
+  background:white;
+
+  border-radius:14px;
+
+  overflow:hidden;
+
+  box-shadow:
+  0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* HEADER */
+
+.adminOrdersHeader{
+
+  display:grid;
+
+  grid-template-columns:
+  2fr 2fr 1fr 1fr 1fr 1fr;
+
+  padding:18px;
+
+  background:#f5f5f5;
+
+  font-weight:bold;
+
+  border-bottom:
+  1px solid #ddd;
+}
+
+/* ROW */
+
+.adminOrdersRow{
+
+  display:grid;
+
+  grid-template-columns:
+  2fr 2fr 1fr 1fr 1fr 1fr;
+
+  padding:18px;
+
+  align-items:center;
+
+  border-bottom:
+  1px solid #eee;
+
+  font-size:14px;
+  gap: 12px;
+}
+
+.adminOrdersRow:last-child{
+
+  border-bottom:none;
+}
+
+/* STATUS */
+
+.adminOrderStatus{
+
+  padding:7px 12px;
+
+  border-radius:8px;
+
+  color:white;
+
+  font-size:13px;
+
+  font-weight:bold;
+}
+
+.adminOrderStatus.Pending{
+
+  background:#eab308;
+}
+
+.adminOrderStatus.Paid{
+
+  background:#22c55e;
+}
+
+.adminOrderStatus.Failed{
+
+  background:#ef4444;
+}
+
+.adminOrdersContainer{
+
+  padding:30px;
+}
+
+.adminOrdersContainer h1{
+
+  margin-bottom:30px;
+}
+
+.adminOrdersTable{
+
+  background:white;
+
+  border-radius:14px;
+
+  overflow:hidden;
+
+  box-shadow:
+  0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* HEADER */
+
+.adminOrdersHeader{
+
+  display:grid;
+
+  grid-template-columns:
+  2fr 2fr 3fr 1fr 1fr 1fr;
+
+  padding:18px;
+
+  background:#f5f5f5;
+
+  font-weight:bold;
+
+  border-bottom:
+  1px solid #ddd;
+}
+
+/* ROW */
+
+.adminOrdersRow{
+
+  display:grid;
+
+  grid-template-columns:
+  2fr 2fr 3fr 1fr 1fr 1fr;
+
+  padding:18px;
+
+  align-items:center;
+
+  border-bottom:
+  1px solid #eee;
+
+  font-size:14px;
+}
+
+.adminOrdersRow:last-child{
+
+  border-bottom:none;
+}
+
+/* ORDER ID */
+
+.orderIdText{
+
+  font-size:13px;
+
+  word-break:break-all;
+}
+
+/* STATUS */
+
+.adminOrderStatus{
+
+  padding:7px 12px;
+
+  border-radius:8px;
+
+  color:white;
+
+  font-size:13px;
+
+  font-weight:bold;
+}
+
+.adminOrderStatus.Pending{
+
+  background:#eab308;
+}
+
+.adminOrderStatus.Paid{
+
+  background:#22c55e;
+}
+
+.adminOrderStatus.Failed{
+
+  background:#ef4444;
+}
+
+/* PRODUCTS */
+
+.adminProductsList{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:12px;
+}
+
+.adminSingleOrderedProduct{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:12px;
+}
+
+.adminSingleOrderedProduct img{
+
+  width:55px;
+
+  height:55px;
+
+  object-fit:contain;
+
+  border-radius:8px;
+
+  background:#f5f5f5;
+}
+
+.adminSingleOrderedProduct h4{
+
+  font-size:14px;
+
+  margin-bottom:5px;
+}
+
+.adminSingleOrderedProduct p{
+
+  font-size:13px;
+
+  color:gray;
+}
+ 
+.orderUserInfo{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+}
+
+.orderUserInfo img{
+
+  border-radius:50%;
+
+  object-fit:cover;
+} 

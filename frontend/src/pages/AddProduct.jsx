@@ -10,7 +10,7 @@ import {
 
 import { toast }
 from "react-toastify";
-
+import "./AddProduct.css";
 
 function AddProduct() {
 
@@ -287,22 +287,20 @@ function AddProduct() {
                 Category
               </label>
 
-              <input
-
-                type="text"
-
+              <select
                 name="category"
-
-                placeholder="Ex-Mobile"
-
-                value={
-                  formData.category
-                }
-
-                onChange={
-                  handleChange
-                }
-              />
+                value={formData.category}
+                onChange={handleChange}
+              >
+                <option value="">Select Category</option>
+                <option value="Mobile">Mobile</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Headphone">Headphone</option>
+                <option value="Smartwatch">Smartwatch</option>
+                <option value="Tablet">Tablet</option>
+                <option value="Camera">Camera</option>
+                <option value="Accessories">Accessories</option>
+              </select>
 
             </div>
 

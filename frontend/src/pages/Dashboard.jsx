@@ -6,6 +6,8 @@ import {
   FaThLarge,
   FaRobot
 } from "react-icons/fa";
+
+import "./Dashboard.css";
  
 import { useNavigate, Outlet,  } from "react-router-dom"; 
 function Dashboard() {

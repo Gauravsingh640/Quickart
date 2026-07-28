@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "../components/ProductCard";
 import { toast } from "react-toastify";
-import AIChat from "../components/AIChat";
+import AIChat from "./AIChat";
 import FloatingAIButton from "../components/FloatingAIButton"; 
-
+import "./Products.css";
 import { useNavigate, Outlet,  } from "react-router-dom"; 
 function Products() {
   const [products, setProducts] = useState([]);

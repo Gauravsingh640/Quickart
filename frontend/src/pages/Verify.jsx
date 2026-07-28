@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 
 import { useEffect, useState } from "react";
+import "./Auth.css";
 
 function Verify() {
   const { token } = useParams();

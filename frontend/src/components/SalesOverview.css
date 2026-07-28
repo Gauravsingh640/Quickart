@@ -1,0 +1,63 @@
+.salesOverview {
+  width: 100%;
+}
+
+/* TOP */
+
+.salesOverviewTop {
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 5px;
+}
+
+.salesOverviewTop h2 {
+  margin: 0;
+  font-size: 25px;
+}
+
+/* MONTH SELECTOR */
+
+.monthSelector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.monthSelector span {
+  font-size: 15px;
+  font-weight: 600;
+  color: #555;
+}
+
+.monthSelector input {
+  padding: 9px 12px;
+
+  border: 1px solid #ddd;
+  border-radius: 7px;
+
+  background: white;
+
+  font-size: 14px;
+
+  cursor: pointer;
+
+  outline: none;
+}
+
+.monthSelector input:focus {
+  border-color: #e32f92;
+}
+
+/* MONTH TEXT */
+
+.selectedMonthText {
+  margin: 5px 0 15px;
+
+  color: #777;
+
+  font-size: 14px;
+}

@@ -17,6 +17,8 @@ import {
 import { toast }
 from "react-toastify";
 
+import "./ProductsAdmin.css";
+
 function ProductsAdmin() {
 
   const navigate =

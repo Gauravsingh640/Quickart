@@ -23,6 +23,8 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 
+import "./ProductDetails.css";
+
 function ProductDetails() {
 
   const { id } =

@@ -1,0 +1,39 @@
+
+/* HERO */
+
+.hero {
+  min-height: 90vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 50px;
+  background: linear-gradient(to right, #2563eb, #9333ea);
+  color: white;
+}
+
+.hero-left h1 {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.hero-left p {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 15px;
+}
+
+.hero-btns button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.hero-right img {
+  width: 450px;
+  border-radius: 20px;
+}

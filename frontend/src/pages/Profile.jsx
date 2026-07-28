@@ -10,6 +10,8 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+import "./Profile.css";
+
 function Profile() {
 
   const navigate =

@@ -9,6 +9,8 @@ import {
   toast,
 } from "react-toastify";
 
+import "./Orders.css";
+
 import { useNavigate } from "react-router-dom";
 
 function Orders() {

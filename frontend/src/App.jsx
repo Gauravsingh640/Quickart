@@ -21,7 +21,7 @@ import Order from "./pages/Order";
 import EditProduct from "./pages/EditProduct";
 import UserOrders from "./pages/UserOrders";
 import AdminSingleOrder from "./pages/AdminSingleOrder";
-import AIChat from "./components/AIChat";
+import AIChat from "./pages/AIChat";
 import { ShoppingBagIcon } from "lucide-react";
 import ShoppingAI from "./pages/ShoppingAI";
 import FloatingAIButton from "./components/FloatingAIButton";
@@ -57,8 +57,8 @@ function App() {
           <Route path="/dashboard/users/:id/orders" element={<UserOrders />}/>
           <Route path="orders" element={<Order />} />
           <Route path="/dashboard/order/:id" element={ <AdminSingleOrder /> } />
-          <Route path="ai" element={<AIChat />} />
         </Route> 
+        <Route path="/dashboard/ai" element={<AIChat />} />
       </Routes>
     </>
   );

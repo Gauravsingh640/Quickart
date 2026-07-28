@@ -8,170 +8,353 @@ import axios from "axios";
 import {
   useParams,
 } from "react-router-dom";
-import { toast } from "react-toastify";
 
-function AdminSingleOrder(){
+import {
+  toast,
+} from "react-toastify";
+
+import "./AdminSingleOrder.css";
+
+
+function AdminSingleOrder() {
 
   const { id } =
-  useParams();
+    useParams();
 
   const [order,
     setOrder] =
     useState(null);
 
-  useEffect(() => {
+  const [loading,
+    setLoading] =
+    useState(true);
 
-    fetchOrder();
+  const [deliveryCode,
+    setDeliveryCode] =
+    useState("");
 
-  }, []);
 
-  const [deliveryCode, setDeliveryCode] = useState("");
+  // =========================================
+  // BASE URL
+  // =========================================
+
+  const BASE_URL =
+    "https://quickart-jxc5.onrender.com/api/v1/order";
+
+
+  // =========================================
+  // FETCH SINGLE ORDER
+  // =========================================
 
   const fetchOrder =
-  async () => {
+    async () => {
 
-    try {
+      try {
 
-      const res =
-      await axios.get(
-
-        `https://quickart-jxc5.onrender.com/${id}`
-      );
-
-      setOrder(
-        res.data.order
-      );
-
-    }
-
-    catch(error){
-
-      console.log(error);
-    }
-  };
-
-  if(!order){
-
-    return(
-
-      <h1>
-        Loading...
-      </h1>
-    );
-  }
- 
-  const confirmOrder =
-  async () => {
-
-    try {
+        // setLoading(true);
 
         const res =
-        await axios.put(
+          await axios.get(
 
-        `https://quickart-jxc5.onrender.com/confirm/${id}`
+            `${BASE_URL}/${id}`
+
+          );
+
+        console.log(
+          "Single Order Response:",
+          res.data
         );
 
-        toast.success("Order confirmed successfully");
+        setOrder(
+          res.data.order
+        );
 
-        fetchOrder();
+      }
+
+      catch (error) {
+
+        console.error(
+          "Fetch Order Error:",
+          error
+        );
+
+        console.error(
+          "Backend Response:",
+          error.response?.data
+        );
+
+        setOrder(null);
+
+        toast.error(
+
+          error.response?.data?.message ||
+
+          "Failed to fetch order"
+        );
+
+      }
+
+      finally {
+
+        setLoading(false);
+
+      }
+    };
+
+
+  // =========================================
+  // LOAD ORDER
+  // =========================================
+
+  useEffect(() => {
+
+    if (id) {
+
+      fetchOrder();
 
     }
 
-    catch(error){
+  }, [id]);
 
-        console.log(error);
 
-        toast.error("Failed to confirm order");
-        
-    }
-  };
+  // =========================================
+  // CONFIRM ORDER
+  // =========================================
 
-  
+  const confirmOrder =
+    async () => {
+
+      try {
+
+        await axios.put(
+
+          `${BASE_URL}/confirm/${id}`
+
+        );
+
+        toast.success(
+          "Order confirmed successfully"
+        );
+
+        await fetchOrder();
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Confirm Order Error:",
+          error
+        );
+
+        toast.error(
+
+          error.response?.data?.message ||
+
+          "Failed to confirm order"
+        );
+
+      }
+    };
+
+
+  // =========================================
+  // CANCEL ORDER
+  // =========================================
+
   const cancelOrder =
     async () => {
 
-    try {
+      try {
 
-        const res =
         await axios.put(
 
-        `https://quickart-jxc5.onrender.com/cancel/${id}`
+          `${BASE_URL}/cancel/${id}`
+
         );
 
-        toast.success("Order cancelled successfully");
+        toast.success(
+          "Order cancelled successfully"
+        );
 
-        fetchOrder();
+        await fetchOrder();
 
-    }
+      }
 
-    catch(error){
+      catch (error) {
 
-        console.log(error);
-        toast.error("Failed to cancel order");
-    }
-  };
-   
+        console.error(
+          "Cancel Order Error:",
+          error
+        );
+
+        toast.error(
+
+          error.response?.data?.message ||
+
+          "Failed to cancel order"
+        );
+
+      }
+    };
+
+
+  // =========================================
+  // UPDATE ORDER STATUS
+  // =========================================
+
   const updateStatus =
-  async (status) => {
+    async (status) => {
 
-    try {
+      try {
 
-      const res =
-      await axios.put(
+        await axios.put(
 
-        `https://quickart-jxc5.onrender.com/status/${id}`,
+          `${BASE_URL}/status/${id}`,
 
-        { status }
-      );
+          {
+            status,
+          }
 
-      toast.success("Status updated successfully");
+        );
 
-      fetchOrder();
+        toast.success(
+          "Status updated successfully"
+        );
 
-    }
+        await fetchOrder();
 
-    catch(error){
+      }
 
-      toast.error("Failed to update status");
+      catch (error) {
 
-      console.log(error);
-    }
-  };
- 
+        console.error(
+          "Update Status Error:",
+          error
+        );
+
+        toast.error(
+
+          error.response?.data?.message ||
+
+          "Failed to update status"
+        );
+
+      }
+    };
+
+
+  // =========================================
+  // VERIFY DELIVERY
+  // =========================================
+
   const verifyDelivery =
-  async () => {
+    async () => {
 
-    try {
+      if (
+        !deliveryCode.trim()
+      ) {
 
-      const res =
-      await axios.put(
+        toast.error(
+          "Please enter delivery code"
+        );
 
-        `https://quickart-jxc5.onrender.com/deliver/${id}`,
+        return;
+      }
 
-        {
+      try {
 
-          deliveryCode,
-        }
-      );
+        await axios.put(
 
-      toast.success("Delivery verified successfully");
+          `${BASE_URL}/deliver/${id}`,
 
-      fetchOrder();
+          {
+            deliveryCode:
+              deliveryCode.trim(),
+          }
 
-    }
+        );
 
-    catch(error){
+        toast.success(
+          "Delivery verified successfully"
+        );
 
-      toast.error("Failed to verify delivery");
-    }
-  }; 
+        setDeliveryCode("");
+
+        await fetchOrder();
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Verify Delivery Error:",
+          error
+        );
+
+        toast.error(
+
+          error.response?.data?.message ||
+
+          "Failed to verify delivery"
+        );
+
+      }
+    };
+
+
+  // =========================================
+  // LOADING
+  // =========================================
+
+  if (loading) {
+
+    return (
+
+      <div className="adminSingleOrderPage">
+
+        <h1>
+          Loading...
+        </h1>
+
+      </div>
+
+    );
+  }
+
+
+  // =========================================
+  // ORDER NOT FOUND
+  // =========================================
+
+  if (!order) {
+
+    return (
+
+      <div className="adminSingleOrderPage">
+
+        <h1>
+          Order Not Found
+        </h1>
+
+        <p>
+          Unable to load this order.
+        </p>
+
+      </div>
+
+    );
+  }
 
 
   return (
 
     <div className="adminSingleOrderPage">
 
-      {/* TOP */}
+
+      {/* =====================================
+          TOP
+      ===================================== */}
 
       <div className="singleOrderTop">
 
@@ -185,7 +368,6 @@ function AdminSingleOrder(){
 
             Order ID:
             {" "}
-
             {order._id}
 
           </p>
@@ -196,23 +378,34 @@ function AdminSingleOrder(){
             {" "}
 
             {
-
-              new Date(
-
-                order.createdAt
-
-              ).toLocaleDateString()
+              order.createdAt
+                ?
+                new Date(
+                  order.createdAt
+                ).toLocaleDateString()
+                :
+                "N/A"
             }
 
           </p>
 
         </div>
 
+
         <div>
 
           <span
 
-            className={`singleOrderStatus ${order.status}`}
+            className={`singleOrderStatus ${
+              order.status
+                ?
+                order.status.replaceAll(
+                  " ",
+                  "-"
+                )
+                :
+                ""
+            }`}
           >
 
             {order.status}
@@ -223,13 +416,17 @@ function AdminSingleOrder(){
 
       </div>
 
-      {/* CUSTOMER */}
+
+      {/* =====================================
+          CUSTOMER
+      ===================================== */}
 
       <div className="singleOrderBox">
 
         <h2>
           Customer Details
         </h2>
+
 
         <div className="customerInfo">
 
@@ -240,31 +437,37 @@ function AdminSingleOrder(){
               order.user?.profilePic ||
 
               "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+
             }
 
-            alt=""
+            alt="Customer"
           />
+
 
           <div>
 
             <h3>
 
               {
-                order.user?.firstName
+                order.user?.firstName ||
+                "Unknown"
               }
 
               {" "}
 
               {
-                order.user?.lastName
+                order.user?.lastName ||
+                ""
               }
 
             </h3>
 
+
             <p>
 
               {
-                order.user?.email
+                order.user?.email ||
+                "Email not available"
               }
 
             </p>
@@ -275,7 +478,10 @@ function AdminSingleOrder(){
 
       </div>
 
-      {/* PRODUCTS */}
+
+      {/* =====================================
+          PRODUCTS
+      ===================================== */}
 
       <div className="singleOrderBox">
 
@@ -283,57 +489,103 @@ function AdminSingleOrder(){
           Ordered Products
         </h2>
 
+
         {
+
+          order.items?.length > 0
+
+          ?
 
           order.items.map(
 
-            (item,index) => (
+            (item, index) => (
 
               <div
 
                 className="singleOrderedItem"
 
-                key={index}
+                key={
+                  item._id ||
+                  index
+                }
               >
 
                 <img
 
-                  src={item.image}
+                  src={
+                    item.image ||
+                    "https://via.placeholder.com/100"
+                  }
 
-                  alt=""
+                  alt={
+                    item.title ||
+                    "Product"
+                  }
+
                 />
+
 
                 <div>
 
                   <h3>
-                    {item.title}
+
+                    {
+                      item.title ||
+                      "Product"
+                    }
+
                   </h3>
+
 
                   <p>
 
                     Quantity:
                     {" "}
 
-                    {item.quantity}
+                    {
+                      item.quantity ||
+                      0
+                    }
 
                   </p>
+
 
                   <p>
 
                     ₹
-                    {item.price.toFixed(2)}
+
+                    {
+                      Number(
+                        item.price || 0
+                      ).toFixed(2)
+                    }
 
                   </p>
 
                 </div>
 
               </div>
-            ))
+
+            )
+          )
+
+          :
+
+          (
+
+            <p>
+              No products found.
+            </p>
+          )
+
         }
 
       </div>
 
-      {/* PAYMENT */}
+
+      {/* =====================================
+          PAYMENT
+      ===================================== */}
 
       <div className="singleOrderBox">
 
@@ -347,15 +599,26 @@ function AdminSingleOrder(){
           {" "}
 
           ₹
-          {order.totalPrice.toFixed(2)}
+
+          {
+            Number(
+              order.totalPrice || 0
+            ).toFixed(2)
+          }
 
         </h3>
 
       </div>
- 
-      {/* ACTIONS */}
+
+
+      {/* =====================================
+          ACTIONS
+      ===================================== */}
 
       <div className="orderActions">
+
+
+        {/* PENDING */}
 
         {
 
@@ -379,6 +642,7 @@ function AdminSingleOrder(){
 
             </button>
 
+
             <button
 
               className="cancelBtn"
@@ -393,7 +657,11 @@ function AdminSingleOrder(){
             </button>
 
           </>
+
         }
+
+
+        {/* CONFIRMED */}
 
         {
 
@@ -416,7 +684,11 @@ function AdminSingleOrder(){
             Mark As Packed
 
           </button>
+
         }
+
+
+        {/* PACKED */}
 
         {
 
@@ -439,7 +711,11 @@ function AdminSingleOrder(){
             Mark As Shipped
 
           </button>
+
         }
+
+
+        {/* SHIPPED */}
 
         {
 
@@ -462,54 +738,100 @@ function AdminSingleOrder(){
             Out For Delivery
 
           </button>
+
         }
- 
-      {
 
-        order.status ===
-        "Out For Delivery"
 
-        &&
+        {/* OUT FOR DELIVERY */}
 
-        <div className="deliveryVerifyBox">
+        {
 
-          <input
+          order.status ===
+          "Out For Delivery"
 
-            type="text"
+          &&
 
-            placeholder="Enter Delivery Code"
+          <div className="deliveryVerifyBox">
 
-            value={deliveryCode}
+            <input
 
-            onChange={(e) =>
-              setDeliveryCode(
-                e.target.value.toUpperCase()
-              )
-            }
-          />
+              type="text"
 
-          <button
+              placeholder=
+                "Enter Delivery Code"
 
-            className="confirmBtn"
+              value={
+                deliveryCode
+              }
 
-            onClick={
-              verifyDelivery
-            }
-          >
+              onChange={(e) =>
 
-            Verify & Deliver
+                setDeliveryCode(
 
-          </button>
+                  e.target.value
+                    .toUpperCase()
 
-        </div>
-      } 
+                )
+              }
 
+            />
+
+
+            <button
+
+              className="confirmBtn"
+
+              onClick={
+                verifyDelivery
+              }
+            >
+
+              Verify & Deliver
+
+            </button>
+
+          </div>
+
+        }
+
+
+        {/* DELIVERED */}
+
+        {
+
+          order.status ===
+          "Delivered"
+
+          &&
+
+          <p>
+            Order Delivered Successfully
+          </p>
+
+        }
+
+
+        {/* CANCELLED */}
+
+        {
+
+          order.status ===
+          "Cancelled"
+
+          &&
+
+          <p>
+            Order Cancelled
+          </p>
+
+        }
 
       </div>
 
-
     </div>
+
   );
 }
+
 
 export default AdminSingleOrder;

@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Bot } from "lucide-react";
-
-
+ 
 function FloatingAIButton() {
   const navigate = useNavigate();
 

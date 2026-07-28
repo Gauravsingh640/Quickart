@@ -1,0 +1,175 @@
+
+/* /dashboard/product */
+
+/* MAIN CONTAINER */
+
+.adminProductsMainContainer{
+  padding: 30px;
+  background-color: #f5f7fb;
+  min-height: 100vh;
+}
+
+/* TOP BAR */
+
+.adminProductsTopBar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+/* SEARCH INPUT */
+
+.adminProductsSearchInput{
+  flex: 1;
+  min-width: 250px;
+  padding: 14px 18px;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  background-color: white;
+  transition: 0.3s;
+}
+
+.adminProductsSearchInput:focus{
+  border-color: #111827;
+}
+
+/* SORT SELECT */
+
+.adminProductsSortSelect{
+  padding: 14px 18px;
+  border-radius: 10px;
+  border: 1px solid #dcdcdc;
+  background-color: white;
+  font-size: 15px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* GRID */
+
+.adminProductsGrid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+/* PRODUCT CARD */
+
+.adminSingleProductCard{
+  background-color: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.adminSingleProductCard:hover{
+  transform: translateY(-4px);
+}
+
+/* IMAGE */
+
+.adminProductImage{
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  background-color: #f3f4f6;
+}
+
+/* INFO */
+
+.adminProductInfo{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.adminProductTitle{
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.adminProductBrand{
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* PRICE */
+
+.adminProductPrice{
+  font-size: 22px;
+  font-weight: bold;
+  color: #111827;
+}
+
+/* ACTIONS */
+
+.adminProductActions{
+  display: flex;
+  gap: 15px;
+  margin-top: auto;
+}
+
+/* EDIT */
+
+.adminEditIcon{
+  background-color: #e0f2fe;
+  color: #0284c7;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 40px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.adminEditIcon:hover{
+  transform: scale(1.08);
+}
+
+/* DELETE */
+
+.adminDeleteIcon{
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 40px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.adminDeleteIcon:hover{
+  transform: scale(1.08);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+  .adminProductsMainContainer{
+    padding: 20px;
+  }
+
+  .adminProductsTopBar{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .adminProductsSearchInput{
+    width: 100%;
+  }
+
+  .adminProductsSortSelect{
+    width: 100%;
+  }
+}

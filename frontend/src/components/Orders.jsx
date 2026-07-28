@@ -12,6 +12,7 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 
+import "./Orders.css";
 import {
   useNavigate,
 } from "react-router-dom";

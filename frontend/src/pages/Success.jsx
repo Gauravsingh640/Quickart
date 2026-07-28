@@ -13,6 +13,8 @@ import {
 import {
   FaCheckCircle,
 } from "react-icons/fa";
+
+import "./Success.css";
  
 import {
   FaRegCopy,

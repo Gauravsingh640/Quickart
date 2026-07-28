@@ -37,48 +37,65 @@ const detectCategory = (query) => {
 };
 
 // ==========================================
-// BRAND
+// BRANDS
 // ==========================================
 
-const detectBrand = (query) => {
+const detectBrands = (query) => {
   const text = query.toLowerCase();
 
-  if (
-    /\b(apple|iphone|iphones|macbook|macbooks|airpod|airpods)\b/i.test(
-      text
-    )
-  ) {
-    return "Apple";
+  const brands = [];
+
+  const brandPatterns = [
+    {
+      brand: "Apple",
+      regex:
+        /\b(apple|iphone|iphones|macbook|macbooks|airpod|airpods)\b/i,
+    },
+    {
+      brand: "OnePlus",
+      regex: /\b(oneplus|one plus)\b/i,
+    },
+    {
+      brand: "Samsung",
+      regex: /\b(samsung|galaxy)\b/i,
+    },
+    {
+      brand: "Dell",
+      regex: /\bdell\b/i,
+    },
+    {
+      brand: "HP",
+      regex: /\bhp\b/i,
+    },
+    {
+      brand: "Asus",
+      regex: /\basus\b/i,
+    },
+    {
+      brand: "Lenovo",
+      regex: /\blenovo\b/i,
+    },
+    {
+      brand: "Acer",
+      regex: /\bacer\b/i,
+    },
+    {
+      brand: "Boat",
+      regex: /\bboat\b/i,
+    },
+    {
+      brand: "Sony",
+      regex: /\bsony\b/i,
+    },
+  ];
+
+  for (const item of brandPatterns) {
+    if (item.regex.test(text)) {
+      brands.push(item.brand);
+    }
   }
 
-  if (/\b(oneplus|one plus)\b/i.test(text))
-    return "OnePlus";
-
-  if (/\b(samsung|galaxy)\b/i.test(text))
-    return "Samsung";
-
-  if (/\bdell\b/i.test(text))
-    return "Dell";
-
-  if (/\bhp\b/i.test(text))
-    return "HP";
-
-  if (/\basus\b/i.test(text))
-    return "Asus";
-
-  if (/\blenovo\b/i.test(text))
-    return "Lenovo";
-
-  if (/\bacer\b/i.test(text))
-    return "Acer";
-
-  if (/\bboat\b/i.test(text))
-    return "Boat";
-
-  if (/\bsony\b/i.test(text))
-    return "Sony";
-
-  return null;
+  return brands;
 };
 
 // ==========================================
@@ -102,7 +119,7 @@ const extractBudget = (query) => {
 };
 
 // ==========================================
-// USER ASKING FOR HIS/HER PREFERENCE?
+// USER ASKING FOR PREFERENCE?
 // ==========================================
 
 const isPreferenceQuery = (query) => {
@@ -188,12 +205,15 @@ export const retrieveRelevantProducts = async (
       return [];
     }
 
+    // ==========================================
+    // DETECT CURRENT QUERY
+    // ==========================================
+
     const category =
       detectCategory(query);
 
-    // Explicit brand in CURRENT query
-    const explicitBrand =
-      detectBrand(query);
+    const explicitBrands =
+      detectBrands(query);
 
     const budget =
       extractBudget(query);
@@ -227,63 +247,83 @@ export const retrieveRelevantProducts = async (
         memories
       );
 
-    console.log("================================");
-    console.log("RAG Query:", query);
-    console.log("Category:", category);
     console.log(
-      "Explicit Brand:",
-      explicitBrand
+      "================================"
     );
+
+    console.log(
+      "RAG Query:",
+      query
+    );
+
+    console.log(
+      "Category:",
+      category
+    );
+
+    console.log(
+      "Explicit Brands:",
+      explicitBrands
+    );
+
     console.log(
       "Favorite Brand:",
       favoriteBrand
     );
+
     console.log(
       "Disliked Brands:",
       dislikedBrands
     );
+
     console.log(
       "Preference Query:",
       preferenceQuery
     );
+
     console.log(
       "Show All:",
       allQuery
     );
-    console.log("Budget:", budget);
-    console.log("================================");
+
+    console.log(
+      "Budget:",
+      budget
+    );
+
+    console.log(
+      "================================"
+    );
 
     // ==========================================
     // DETERMINE BRAND FILTER
     // ==========================================
 
-    let requiredBrand = null;
+    let requiredBrands = [];
 
-    /*
-     * Highest priority:
-     *
-     * "show Dell laptops"
-     *
-     * Even if Dell is disliked,
-     * user explicitly requested Dell.
-     */
-    if (explicitBrand) {
-      requiredBrand =
-        explicitBrand;
+    // Explicit brands always have highest priority.
+    //
+    // "show Samsung phones"
+    // -> ["Samsung"]
+    //
+    // "compare Samsung and iPhone"
+    // -> ["Samsung", "Apple"]
+
+    if (explicitBrands.length > 0) {
+      requiredBrands =
+        explicitBrands;
     }
 
-    /*
-     * "show laptops that I like"
-     *
-     * No explicit brand mentioned,
-     * therefore use saved favourite.
-     */
+    // No explicit brand but user asks according
+    // to saved preference.
+
     else if (
       preferenceQuery &&
       favoriteBrand
     ) {
-      requiredBrand =
-        favoriteBrand;
+      requiredBrands = [
+        favoriteBrand,
+      ];
     }
 
     // ==========================================
@@ -350,18 +390,37 @@ export const retrieveRelevantProducts = async (
     }
 
     // ==========================================
-    // REQUIRED BRAND
+    // REQUIRED BRANDS
     // ==========================================
 
-    if (requiredBrand) {
+    if (requiredBrands.length > 0) {
+
+      const requiredBrandSet =
+        new Set(
+          requiredBrands.map(
+            (brand) =>
+              brand
+                .trim()
+                .toLowerCase()
+          )
+        );
+
       products =
         products.filter(
-          (product) =>
-            product.brand
-              ?.trim()
-              .toLowerCase() ===
-            requiredBrand
-              .toLowerCase()
+          (product) => {
+
+            const productBrand =
+              product.brand
+                ?.trim()
+                .toLowerCase();
+
+            return (
+              productBrand &&
+              requiredBrandSet.has(
+                productBrand
+              )
+            );
+          }
         );
     }
 
@@ -369,20 +428,28 @@ export const retrieveRelevantProducts = async (
     // DISLIKED BRANDS
     // ==========================================
     //
-    // Only exclude dislikes when user has NOT
-    // explicitly requested that brand.
+    // IMPORTANT:
     //
-    // "show all laptops"
-    // -> Dell removed
+    // Explicit brand request overrides dislike.
     //
-    // "show Dell laptops"
-    // -> Dell allowed
+    // Example:
+    // User dislikes Samsung
+    //
+    // "show phones"
+    // -> Samsung removed
+    //
+    // "show Samsung phones"
+    // -> Samsung allowed
+    //
+    // "compare Samsung and iPhone"
+    // -> Samsung allowed
     // ==========================================
 
     if (
-      !explicitBrand &&
+      explicitBrands.length === 0 &&
       dislikedBrands.length > 0
     ) {
+
       const dislikedSet =
         new Set(
           dislikedBrands.map(
@@ -431,14 +498,9 @@ export const retrieveRelevantProducts = async (
     // SIMILARITY
     // ==========================================
 
-    /*
-     * For hard-filtered requests,
-     * category/brand matters more.
-     */
-
     if (
       !category &&
-      !requiredBrand
+      requiredBrands.length === 0
     ) {
       products =
         products.filter(
@@ -466,18 +528,103 @@ export const retrieveRelevantProducts = async (
     );
 
     // ==========================================
+    // MULTI-BRAND BALANCING
+    // ==========================================
+    //
+    // This is important for:
+    //
+    // "compare Samsung and iPhone"
+    //
+    // Without balancing, top 5 vector results
+    // could theoretically contain mostly one
+    // brand.
+    //
+    // We make sure each explicitly requested
+    // brand gets represented.
+    // ==========================================
+
+    if (explicitBrands.length >= 2) {
+
+      const balancedProducts = [];
+
+      const addedIds =
+        new Set();
+
+      // First take products from every brand.
+
+      for (const brand of explicitBrands) {
+
+        const brandProducts =
+          products.filter(
+            (product) =>
+              product.brand
+                ?.trim()
+                .toLowerCase() ===
+              brand
+                .trim()
+                .toLowerCase()
+          );
+
+        // Up to 2 products per explicitly
+        // requested brand.
+
+        for (
+          const product of
+          brandProducts.slice(0, 2)
+        ) {
+
+          const id =
+            product._id.toString();
+
+          if (!addedIds.has(id)) {
+
+            balancedProducts.push(
+              product
+            );
+
+            addedIds.add(id);
+          }
+        }
+      }
+
+      // Fill remaining slots from normal
+      // similarity ranking.
+
+      for (const product of products) {
+
+        if (
+          balancedProducts.length >= 5
+        ) {
+          break;
+        }
+
+        const id =
+          product._id.toString();
+
+        if (!addedIds.has(id)) {
+
+          balancedProducts.push(
+            product
+          );
+
+          addedIds.add(id);
+        }
+      }
+
+      products =
+        balancedProducts;
+    }
+
+    // ==========================================
     // LIMIT
     // ==========================================
 
-    /*
-     * Your UI currently works with max 5.
-     *
-     * "show all" can be changed later
-     * if you want pagination.
-     */
-
     products =
       products.slice(0, 5);
+
+    // ==========================================
+    // DEBUG
+    // ==========================================
 
     console.log(
       "Final Products:",
@@ -494,7 +641,9 @@ export const retrieveRelevantProducts = async (
     );
 
     return products;
+
   } catch (error) {
+
     console.error(
       "Vector Search Error:",
       error

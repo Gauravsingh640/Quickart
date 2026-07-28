@@ -59,30 +59,22 @@ export const compareProducts = async (
   userId = null,
   chatId = null
 ) => {
-  // ==========================================
-  // NO USER / SESSION
-  // ==========================================
-
-  if (!userId) {
-    return await retrieveRelevantProducts(
-      message,
-      null
-    );
-  }
+  const text = message.toLowerCase().trim();
 
   // ==========================================
   // LOAD PREVIOUS PRODUCTS
   // ==========================================
 
-  const lastProducts =
-    await getLastProducts(userId,chatId);
+  let lastProducts = [];
+  let searchProducts = [];
 
-  const searchProducts =
-    await getSearchProducts(userId, chatId);
+  if (userId) {
+    lastProducts =
+      await getLastProducts(userId, chatId);
 
-  const text = message
-    .toLowerCase()
-    .trim();
+    searchProducts =
+      await getSearchProducts(userId, chatId);
+  }
 
   console.log(
     "COMPARE - Message:",
@@ -102,22 +94,6 @@ export const compareProducts = async (
   // ==========================================
   // 1. WINNER / BEST FOLLOW-UP
   // ==========================================
-  //
-  // IMPORTANT:
-  //
-  // Previous response:
-  // Samsung + Sony
-  //
-  // User:
-  // "which one is best?"
-  //
-  // We MUST return Samsung + Sony here.
-  //
-  // DO NOT call RAG.
-  //
-  // LLM will decide winner using these
-  // exact products.
-  // ==========================================
 
   const bestFollowUp =
     /\b(which\s+(one\s+)?(is\s+)?(best|better)|which\s+(is\s+)?(best|better)|best\s+(one\s+)?(among|between|from)|better\s+(one\s+)?(among|between|from)|which\s+(one\s+)?should\s+i\s+(buy|choose|pick)|which\s+(one\s+)?would\s+you\s+(choose|pick|recommend)|what\s+(would|do)\s+you\s+recommend|recommend\s+(one|the\s+best)|pick\s+(one|the\s+best))\b/i.test(
@@ -129,11 +105,7 @@ export const compareProducts = async (
     lastProducts.length >= 2
   ) {
     console.log(
-      "🏆 Winner Follow-up detected"
-    );
-
-    console.log(
-      "Using previous comparison products:",
+      "Winner Follow-up → Previous Products:",
       lastProducts.map((p) => p.name)
     );
 
@@ -141,14 +113,7 @@ export const compareProducts = async (
   }
 
   // ==========================================
-  // 2. GENERIC COMPARISON FOLLOW-UP
-  // ==========================================
-  //
-  // compare them
-  // compare both
-  // compare these
-  // compare these two
-  // difference between them
+  // 2. GENERIC COMPARISON
   // ==========================================
 
   const genericCompare =
@@ -170,10 +135,6 @@ export const compareProducts = async (
 
   // ==========================================
   // 3. POSITION BASED COMPARISON
-  // ==========================================
-  //
-  // compare first and second
-  // compare 1st and 3rd
   // ==========================================
 
   const positions = [
@@ -220,16 +181,115 @@ export const compareProducts = async (
   if (selectedProducts.length >= 2) {
     console.log(
       "Position Compare:",
-      selectedProducts.map(
-        (p) => p.name
-      )
+      selectedProducts.map((p) => p.name)
     );
 
     return selectedProducts;
   }
 
   // ==========================================
-  // 4. CREATE PRODUCT POOL
+  // 4. EXTRACT COMPARISON TERMS
+  // ==========================================
+  //
+  // Examples:
+  //
+  // Compare iPhone and Samsung
+  // → ["iphone", "samsung"]
+  //
+  // Samsung vs Apple
+  // → ["samsung", "apple"]
+  //
+  // OnePlus and iPhone
+  // → ["oneplus", "iphone"]
+  // ==========================================
+
+  let cleanedQuery = text
+    .replace(/\bcompare\b/g, "")
+    .replace(/\bcomparison\b/g, "")
+    .replace(/\bdifference between\b/g, "")
+    .replace(/\bdifferences between\b/g, "")
+    .replace(/\bversus\b/g, " vs ")
+    .replace(/\bwith\b/g, " and ")
+    .replace(/\bin mobile phones?\b/g, "")
+    .replace(/\bin mobiles?\b/g, "")
+    .replace(/\bin smartphones?\b/g, "")
+    .replace(/\bin laptops?\b/g, "")
+    .replace(/\bin headphones?\b/g, "")
+    .replace(/\bin earbuds?\b/g, "")
+    .trim();
+
+  const comparisonTerms =
+    cleanedQuery
+      .split(/\s+(?:and|vs)\s+/i)
+      .map((term) => term.trim())
+      .filter(
+        (term) =>
+          term.length >= 2
+      );
+
+  console.log(
+    "COMPARE - Comparison Terms:",
+    comparisonTerms
+  );
+
+  // ==========================================
+  // 5. RETRIEVE EACH SIDE SEPARATELY
+  // ==========================================
+
+  const freshProducts = [];
+
+  if (comparisonTerms.length >= 2) {
+    for (const term of comparisonTerms) {
+      try {
+        console.log(
+          "COMPARE - Searching separately:",
+          term
+        );
+
+        const results =
+          await retrieveRelevantProducts(
+            term,
+            userId
+          );
+
+        console.log(
+          `COMPARE - Results for "${term}":`,
+          results.map((p) => p.name)
+        );
+
+        freshProducts.push(
+          ...results
+        );
+      } catch (error) {
+        console.log(
+          `COMPARE retrieval failed for "${term}":`,
+          error
+        );
+      }
+    }
+  } else {
+    // Normal fallback
+
+    try {
+      const results =
+        await retrieveRelevantProducts(
+          message,
+          userId
+        );
+
+      freshProducts.push(
+        ...results
+      );
+    } catch (error) {
+      console.log(
+        "COMPARE - Fresh RAG Failed:",
+        error
+      );
+    }
+  }
+
+  // ==========================================
+  // 6. CREATE COMPLETE PRODUCT POOL
   // ==========================================
 
   const productMap = new Map();
@@ -237,6 +297,7 @@ export const compareProducts = async (
   for (const product of [
     ...lastProducts,
     ...searchProducts,
+    ...freshProducts,
   ]) {
     if (!product?._id) {
       continue;
@@ -255,107 +316,187 @@ export const compareProducts = async (
   console.log(
     "COMPARE - Available Products:",
     availableProducts.map(
-      (p) => p.name
+      (p) => `${p.name} (${p.brand})`
     )
   );
 
   // ==========================================
-  // 5. EXACT PRODUCT NAME MATCH
+  // 7. SELECT PRODUCTS FOR EACH TERM
+  // ==========================================
+
+  if (comparisonTerms.length >= 2) {
+    const finalProducts = [];
+
+    for (const term of comparisonTerms) {
+      const words =
+        term
+          .toLowerCase()
+          .replace(/[^\w\s]/g, " ")
+          .split(/\s+/)
+          .filter(Boolean);
+
+      const scored =
+        availableProducts
+          .map((product) => {
+            const productText = `
+              ${product.name || ""}
+              ${product.brand || ""}
+              ${product.category || ""}
+            `.toLowerCase();
+
+            let score = 0;
+
+            for (const word of words) {
+              if (
+                productText.includes(word)
+              ) {
+                score++;
+              }
+            }
+
+            return {
+              product,
+              score,
+            };
+          })
+          .filter(
+            ({ score }) =>
+              score > 0
+          )
+          .sort(
+            (a, b) =>
+              b.score - a.score
+          );
+
+      // Return up to 2 products
+      // for each comparison side
+
+      const matches =
+        scored
+          .slice(0, 2)
+          .map(
+            ({ product }) =>
+              product
+          );
+
+      console.log(
+        `COMPARE - Selected for "${term}":`,
+        matches.map((p) => p.name)
+      );
+
+      finalProducts.push(
+        ...matches
+      );
+    }
+
+    // REMOVE DUPLICATES
+
+    const uniqueMap =
+      new Map();
+
+    for (const product of finalProducts) {
+      uniqueMap.set(
+        product._id.toString(),
+        product
+      );
+    }
+
+    const uniqueProducts = [
+      ...uniqueMap.values(),
+    ];
+
+    if (uniqueProducts.length >= 2) {
+      console.log(
+        "COMPARE - FINAL PRODUCTS:",
+        uniqueProducts.map(
+          (p) =>
+            `${p.name} (${p.brand})`
+        )
+      );
+
+      return uniqueProducts;
+    }
+  }
+
+  // ==========================================
+  // 8. EXACT PRODUCT NAME MATCH
   // ==========================================
 
   const exactMatches =
-    availableProducts.filter((product) => {
-      const productName =
-        product.name
-          ?.toLowerCase()
-          .trim();
+    availableProducts.filter(
+      (product) => {
+        const productName =
+          product.name
+            ?.toLowerCase()
+            .trim();
 
-      if (!productName) {
-        return false;
+        if (!productName) {
+          return false;
+        }
+
+        return text.includes(
+          productName
+        );
       }
-
-      return text.includes(productName);
-    });
-
-  if (exactMatches.length >= 2) {
-    console.log(
-      "Exact Compare:",
-      exactMatches.map(
-        (p) => p.name
-      )
     );
 
+  if (exactMatches.length >= 2) {
     return exactMatches;
   }
 
   // ==========================================
-  // 6. QUERY WORDS
+  // 9. QUERY WORD SCORING
   // ==========================================
 
-  const ignoredWords = new Set([
-    "compare",
-    "comparison",
+  const ignoredWords =
+    new Set([
+      "compare",
+      "comparison",
+      "vs",
+      "versus",
+      "and",
+      "with",
+      "between",
+      "the",
+      "a",
+      "an",
+      "me",
+      "please",
+      "product",
+      "products",
+      "one",
+      "ones",
+      "show",
+      "tell",
+      "about",
+      "this",
+      "that",
+      "these",
+      "those",
+      "which",
+      "best",
+      "better",
+      "according",
+      "you",
+      "should",
+      "choose",
+      "pick",
+      "recommend",
+    ]);
 
-    "vs",
-    "versus",
-
-    "and",
-    "with",
-    "between",
-
-    "the",
-    "a",
-    "an",
-
-    "me",
-    "please",
-
-    "product",
-    "products",
-
-    "one",
-    "ones",
-
-    "show",
-    "tell",
-    "about",
-
-    "this",
-    "that",
-    "these",
-    "those",
-
-    "which",
-    "best",
-    "better",
-
-    "according",
-    "you",
-
-    "should",
-    "choose",
-    "pick",
-    "recommend",
-  ]);
-
-  const queryWords = text
-    .replace(/[^\w\s]/g, " ")
-    .split(/\s+/)
-    .map((word) => word.trim())
-    .filter(
-      (word) =>
-        word.length >= 2 &&
-        !ignoredWords.has(word)
-    );
-
-  console.log(
-    "COMPARE Query Words:",
-    queryWords
-  );
-
-  // ==========================================
-  // 7. SCORE AVAILABLE PRODUCTS
-  // ==========================================
+  const queryWords =
+    text
+      .replace(/[^\w\s]/g, " ")
+      .split(/\s+/)
+      .map(
+        (word) =>
+          word.trim()
+      )
+      .filter(
+        (word) =>
+          word.length >= 2 &&
+          !ignoredWords.has(word)
+      );
 
   const scoredProducts =
     availableProducts
@@ -368,31 +509,13 @@ export const compareProducts = async (
           .toLowerCase()
           .replace(/[^\w\s]/g, " ");
 
-        const productWords =
-          productText
-            .split(/\s+/)
-            .filter(Boolean);
-
         let score = 0;
 
         for (const word of queryWords) {
-          // Exact word match
           if (
-            productWords.includes(word)
+            productText.includes(word)
           ) {
-            score += 2;
-            continue;
-          }
-
-          // Partial word match
-          if (
-            productWords.some(
-              (productWord) =>
-                productWord.includes(word) ||
-                word.includes(productWord)
-            )
-          ) {
-            score += 1;
+            score++;
           }
         }
 
@@ -402,138 +525,34 @@ export const compareProducts = async (
         };
       })
       .filter(
-        (item) => item.score > 0
+        ({ score }) =>
+          score > 0
       )
       .sort(
         (a, b) =>
           b.score - a.score
       );
 
-  console.log(
-    "COMPARE Scored Products:",
-    scoredProducts.map((item) => ({
-      name: item.product.name,
-      score: item.score,
-    }))
-  );
-
-  // ==========================================
-  // 8. DETECT MENTIONED BRANDS
-  // ==========================================
-  //
-  // Example:
-  //
-  // compare Sony Wireless Ear Headphone
-  // and Samsung Galaxy Buds4 Pro
-  //
-  // Sony + Samsung must both be returned.
-  // ==========================================
-
-  const mentionedBrands = [];
-
-  for (const product of availableProducts) {
-    const brand =
-      product.brand
-        ?.toLowerCase()
-        .trim();
-
-    if (
-      brand &&
-      text.includes(brand) &&
-      !mentionedBrands.includes(brand)
-    ) {
-      mentionedBrands.push(brand);
-    }
-  }
-
-  console.log(
-    "COMPARE Mentioned Brands:",
-    mentionedBrands
-  );
-
-  if (mentionedBrands.length >= 2) {
-    const brandSelected = [];
-
-    for (const brand of mentionedBrands) {
-      const candidates =
-        scoredProducts.filter(
-          ({ product }) =>
-            product.brand
-              ?.toLowerCase()
-              .trim() === brand
-        );
-
-      if (candidates.length > 0) {
-        brandSelected.push(
-          candidates[0].product
-        );
-      }
-    }
-
-    if (brandSelected.length >= 2) {
-      console.log(
-        "Brand Specific Compare:",
-        brandSelected.map(
-          (p) => p.name
-        )
-      );
-
-      return brandSelected;
-    }
-  }
-
-  // ==========================================
-  // 9. SMART TOP TWO
-  // ==========================================
-
   if (scoredProducts.length >= 2) {
-    const topTwo =
-      scoredProducts
-        .slice(0, 2)
-        .map(
-          (item) =>
-            item.product
-        );
-
-    console.log(
-      "Smart Top Two Compare:",
-      topTwo.map((p) => p.name)
-    );
-
-    return topTwo;
+    return scoredProducts
+      .slice(0, 2)
+      .map(
+        ({ product }) =>
+          product
+      );
   }
 
   // ==========================================
-  // 10. SPECIAL SAFETY FALLBACK
-  // ==========================================
-  //
-  // We already have two previous products.
-  //
-  // Since intent is COMPARE, it is safer
-  // to compare those instead of returning
-  // unrelated RAG products.
+  // 10. PREVIOUS PRODUCTS FALLBACK
   // ==========================================
 
   if (lastProducts.length >= 2) {
-    console.log(
-      "⚠️ Compare fallback → using previous products:",
-      lastProducts.map((p) => p.name)
-    );
-
     return lastProducts;
   }
 
   // ==========================================
-  // 11. FINAL RAG FALLBACK
+  // 11. FINAL FALLBACK
   // ==========================================
-
-  console.log(
-    "COMPARE: No usable previous comparison."
-  );
-
-  console.log(
-    "COMPARE: Falling back to RAG."
-  );
 
   return await retrieveRelevantProducts(
     message,

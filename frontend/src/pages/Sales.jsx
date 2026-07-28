@@ -5,6 +5,8 @@ import {
 
 import axios from "axios";
 
+import "./Sales.css";
+
 import { toast }
 from "react-toastify";
 
@@ -139,9 +141,7 @@ function Sales() {
 
       {/* GRAPH */}
 
-      <div className="graph">
-        <h2>Sales Overview</h2>
-        <br />
+      <div className="graph"> 
         <div> <SalesOverview /> </div>
 
       </div>

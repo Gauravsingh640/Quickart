@@ -20,6 +20,8 @@ import {
   toast,
 } from "react-toastify";
 
+import "./Checkout.css";
+
 function Checkout() {
 
   const navigate =

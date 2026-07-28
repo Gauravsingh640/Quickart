@@ -1,0 +1,124 @@
+
+/* Userorder.jsx */
+.userOrdersContainer{
+  padding:30px;
+}
+
+.singleUserOrderCard{
+
+  background:white;
+
+  border-radius:14px;
+
+  padding:25px;
+
+  margin-bottom:25px;
+
+  box-shadow:
+  0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* TOP */
+
+.orderTopSection{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  margin-bottom:25px;
+}
+
+.orderTopSection h3{
+
+  margin-bottom:10px;
+}
+
+.orderTopSection p{
+
+  color:#555;
+
+  margin-bottom:5px;
+}
+
+/* RIGHT */
+
+.orderRightSide{
+
+  text-align:right;
+}
+
+.orderRightSide h3{
+
+  margin-bottom:12px;
+}
+
+/* STATUS */
+
+.orderStatus{
+
+  padding:8px 14px;
+
+  border-radius:8px;
+
+  color:white;
+
+  font-size:14px;
+
+  font-weight:bold;
+}
+
+.orderStatus.Pending{
+  background:orange;
+}
+
+.orderStatus.Paid{
+  background:green;
+}
+
+.orderStatus.Failed{
+  background:red;
+}
+
+/* PRODUCTS */
+
+.orderProductsSection{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:18px;
+}
+
+.singleOrderedProduct{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:20px;
+
+  border-top:1px solid #eee;
+
+  padding-top:18px;
+}
+
+.singleOrderedProduct img{
+
+  width:80px;
+
+  height:80px;
+
+  object-fit:contain;
+}
+
+.singleOrderedProduct h4{
+
+  margin-bottom:8px;
+}
+
+.singleOrderedProduct p{
+
+  color:#666;
+}

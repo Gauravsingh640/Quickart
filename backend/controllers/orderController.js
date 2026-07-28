@@ -88,6 +88,9 @@ async (req, res) => {
 
       "",
 
+      category: 
+      item.category,
+
       price:
       item.price,
 

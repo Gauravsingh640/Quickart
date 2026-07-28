@@ -16,6 +16,7 @@ import {
 import { toast }
 from "react-toastify";
 
+import "./Users.css";
 
 function Users() {
 
