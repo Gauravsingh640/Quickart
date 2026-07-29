@@ -534,7 +534,7 @@ https://quickart-jxc5.onrender.com
 ## 🏠 Home Page
 
 ```
-![Home](./frontend/src/assets/Home.png)
+![Home](assets/Home.png)
 ```
 
 ---
@@ -542,7 +542,7 @@ https://quickart-jxc5.onrender.com
 ## 🛍️ Product Details
 
 ```
-![Product Details](./frontend/src/assets/product.png) 
+![Product Details](assets/product.png) 
 ```
 
 ---
@@ -550,7 +550,7 @@ https://quickart-jxc5.onrender.com
 ## 🛒 Shopping Cart
 
 ```
-![Shopping Cart](./frontend/src/assets/cart.png) 
+![Shopping Cart](assets/cart.png) 
 ```
 
 ---
@@ -558,7 +558,7 @@ https://quickart-jxc5.onrender.com
 ## 💳 Checkout
 
 ```
-![Checkout](./frontend/src/assets/checkout.png) 
+![Checkout](assets/checkout.png) 
 ```
 
 ---
@@ -566,7 +566,7 @@ https://quickart-jxc5.onrender.com
 ## 📦 Orders
 
 ```
-![Orders](./frontend/src/assets/adminorder.png) 
+![Orders](assets/adminorder.png) 
 ```
 
 ---
@@ -574,7 +574,7 @@ https://quickart-jxc5.onrender.com
 ## 📊 Admin Dashboard
 
 ```
-![Admin Dashboard](./frontend/src/assets/dashboard.png) 
+![Admin Dashboard](assets/dashboard.png) 
 
 ```
 
@@ -583,7 +583,7 @@ https://quickart-jxc5.onrender.com
 ## 🤖 AI Shopping Assistant
 
 ```
-![AI Shopping Assistant](./frontend/src/assets/shopping%20ai.png) 
+![AI Shopping Assistant](assets/shopping%20ai.png) 
 ```
 
 ---
@@ -591,7 +591,7 @@ https://quickart-jxc5.onrender.com
 ## 🧠 AI Admin Assistant
 
 ```
-![AI Admin Assistant](./frontend/src/assets/adminai.png) 
+![AI Admin Assistant](assets/adminai.png) 
 ```
 
 ---
