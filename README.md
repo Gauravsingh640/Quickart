@@ -533,68 +533,65 @@ https://quickart-jxc5.onrender.com
 
 ## 🏠 Home Page
 
-<img src="assets/Home.png" width="700">
-```
-
 ![Home](assets/Home.png)
-```
+
 
 ---
 
 ## 🛍️ Product Details
 
-```
+
 ![Product Details](assets/product.png) 
-```
+
 
 ---
 
 ## 🛒 Shopping Cart
 
-```
+
 ![Shopping Cart](assets/cart.png) 
-```
+
 
 ---
 
 ## 💳 Checkout
 
-```
+
 ![Checkout](assets/checkout.png) 
-```
+
 
 ---
 
 ## 📦 Orders
 
-```
+
 ![Orders](assets/adminorder.png) 
-```
+
 
 ---
 
 ## 📊 Admin Dashboard
 
-```
+
 ![Admin Dashboard](assets/dashboard.png) 
 
-```
+
 
 ---
 
 ## 🤖 AI Shopping Assistant
 
-```
+
 ![AI Shopping Assistant](assets/shopping%20ai.png) 
-```
+
 
 ---
 
 ## 🧠 AI Admin Assistant
 
-```
+
 ![AI Admin Assistant](assets/adminai.png) 
-```
+
 
 ---
 
