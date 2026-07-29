@@ -533,8 +533,9 @@ https://quickart-jxc5.onrender.com
 
 ## 🏠 Home Page
 
-```
 <img src="assets/Home.png" width="700">
+```
+
 ![Home](assets/Home.png)
 ```
 
