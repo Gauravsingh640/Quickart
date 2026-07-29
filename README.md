@@ -529,8 +529,6 @@ https://quickart-jxc5.onrender.com
 
 # 📸 Screenshots
 
-> Add screenshots here after deployment.
-
 ## 🏠 Home Page
 
 ![Home](assets/Home.png)
